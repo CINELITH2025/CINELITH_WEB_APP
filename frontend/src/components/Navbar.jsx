@@ -17,7 +17,7 @@ const Navbar = () => {
           <Link to="/movies" className="hover:text-primary transition-colors">Movies</Link>
           <Link to="/movies" className="hover:text-primary transition-colors">Series</Link>
           <Link to="/actor/1" className="hover:text-primary transition-colors">People</Link>
-          <Link to="/dashboard" className="hover:text-primary transition-colors">Community</Link>
+          <Link to="/community" className="hover:text-primary transition-colors">Community</Link>
         </div>
       </div>
 
@@ -34,17 +34,17 @@ const Navbar = () => {
         </div>
 
         {/* Icons */}
-        <button className="p-2 rounded-full hover:bg-white/10 transition-colors">
+        <Link to="/notifications" className="p-2 rounded-full hover:bg-white/10 transition-colors">
           <Bell className="w-5 h-5 text-foreground/80" />
-        </button>
-        <button className="p-2 rounded-full hover:bg-white/10 transition-colors">
+        </Link>
+        <Link to="/profile" className="p-2 rounded-full hover:bg-white/10 transition-colors">
           <Bookmark className="w-5 h-5 text-foreground/80" />
-        </button>
+        </Link>
 
         {/* Avatar Placeholder */}
-        <div className="w-8 h-8 rounded-full overflow-hidden ml-2 border border-white/20 cursor-pointer hover:border-primary transition-colors">
+        <Link to="/profile" className="w-8 h-8 rounded-full overflow-hidden ml-2 border border-white/20 cursor-pointer hover:border-primary transition-colors">
           <img src="/images/actor_1.png" alt="Profile" className="w-full h-full object-cover" />
-        </div>
+        </Link>
       </div>
     </nav>
   );
