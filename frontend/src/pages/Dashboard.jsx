@@ -1,0 +1,31 @@
+import React, { useEffect } from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import SummaryCards from '../components/dashboard/SummaryCards';
+import Rankings from '../components/dashboard/Rankings';
+import Analytics from '../components/dashboard/Analytics';
+
+const Dashboard = () => {
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
+      <Navbar />
+      
+      <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-10">Your Dashboard</h1>
+        
+        <SummaryCards />
+        <Rankings />
+        <Analytics />
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Dashboard;
