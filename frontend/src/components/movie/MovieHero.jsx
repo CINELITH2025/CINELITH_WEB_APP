@@ -1,10 +1,37 @@
 import React, { useState } from 'react';
-import { Bookmark, Award, HelpCircle, User } from 'lucide-react';
+import { Bookmark, Award, Check, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import useUserStore from '../../store/useUserStore';
 
 const MovieHero = ({ movie }) => {
   const [showFullOverview, setShowFullOverview] = useState(false);
-  const [inWatchlist, setInWatchlist] = useState(false);
+
+  const user = useUserStore((state) => state.user);
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const toggleMovieWatchlist = useUserStore((state) => state.toggleMovieWatchlist);
+  const toggleMovieWatched = useUserStore((state) => state.toggleMovieWatched);
+  const addMovieRating = useUserStore((state) => state.addMovieRating);
+
+  const inWatchlist = isAuthenticated && user?.watchlist?.some(m => m.id === movie.id);
+  const isWatched = isAuthenticated && user?.watchedMovies?.some(m => m.id === movie.id);
+  const existingRating = isAuthenticated ? user?.ratings?.find(r => r.id === movie.id) : null;
+
+  const [hoverRating, setHoverRating] = useState(0);
+
+  const handleWatchlistToggle = () => {
+    if (!isAuthenticated) return;
+    toggleMovieWatchlist(movie);
+  };
+
+  const handleWatchedToggle = () => {
+    if (!isAuthenticated) return;
+    toggleMovieWatched(movie);
+  };
+
+  const handleRate = (value) => {
+    if (!isAuthenticated) return;
+    addMovieRating(movie, value);
+  };
 
   return (
     <section className="flex flex-col lg:flex-row gap-10 mb-16">
@@ -105,18 +132,75 @@ const MovieHero = ({ movie }) => {
           </div>
         </div>
 
-        {/* Watchlist Toggle */}
-        <Button 
-          onClick={() => setInWatchlist(!inWatchlist)}
-          className={`w-fit mt-8 font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg ${
-            inWatchlist 
-              ? 'bg-white/10 border border-white/20 text-white' 
-              : 'bg-[#FACC15] text-black hover:bg-[#E2B710]'
-          }`}
-        >
-          <Bookmark className="w-4 h-4 mr-2 fill-current" />
-          {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
-        </Button>
+        {/* === INTERACTIVE ACTION BUTTONS === */}
+        <div className="flex flex-wrap items-center gap-4 mt-8 border-t border-white/5 pt-8">
+          {/* Watchlist Toggle */}
+          <Button 
+            onClick={handleWatchlistToggle}
+            className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
+              inWatchlist 
+                ? 'bg-white/10 border border-[#FACC15]/40 text-[#FACC15]' 
+                : 'bg-[#FACC15] text-black hover:bg-[#E2B710]'
+            }`}
+          >
+            <Bookmark className={`w-4 h-4 mr-2 ${inWatchlist ? 'fill-[#FACC15]' : 'fill-current'}`} />
+            {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+          </Button>
+
+          {/* Watched Toggle */}
+          <Button 
+            onClick={handleWatchedToggle}
+            className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
+              isWatched 
+                ? 'bg-emerald-500/10 border border-emerald-500/40 text-emerald-400' 
+                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'
+            }`}
+          >
+            <Check className={`w-4 h-4 mr-2 ${isWatched ? 'text-emerald-400' : ''}`} strokeWidth={3} />
+            {isWatched ? 'Watched' : 'Mark Watched'}
+          </Button>
+        </div>
+
+        {/* === STAR RATING WIDGET === */}
+        {isAuthenticated && (
+          <div className="mt-6 flex flex-col gap-3">
+            <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Your Rating</span>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => {
+                const activeRating = hoverRating || existingRating?.rating || 0;
+                const isFilled = value <= activeRating;
+                return (
+                  <button
+                    key={value}
+                    onClick={() => handleRate(value)}
+                    onMouseEnter={() => setHoverRating(value)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    className="p-0.5 cursor-pointer transition-transform hover:scale-125"
+                    title={`Rate ${value}/10`}
+                  >
+                    <Star 
+                      className={`w-5 h-5 transition-colors ${
+                        isFilled 
+                          ? 'fill-[#FACC15] text-[#FACC15]' 
+                          : 'text-gray-600 hover:text-gray-400'
+                      }`} 
+                    />
+                  </button>
+                );
+              })}
+              {existingRating && (
+                <span className="text-sm font-black text-[#FACC15] ml-3">{existingRating.rating}/10</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Login prompt for anonymous users */}
+        {!isAuthenticated && (
+          <p className="mt-6 text-xs text-gray-500 font-medium italic">
+            Sign in to add to watchlist, mark as watched, and rate this movie.
+          </p>
+        )}
       </div>
     </section>
   );

@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { ThumbsUp, MessageSquare, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import useUserStore from '../../store/useUserStore';
 
-const Discussion = ({ comments: initialComments }) => {
+const Discussion = ({ comments: initialComments, movieId }) => {
   const [activeTab, setActiveTab] = useState("Top");
   const [comments, setComments] = useState(initialComments);
   const [newCommentText, setNewCommentText] = useState("");
 
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
+  const addReviewPoints = useUserStore((state) => state.addReviewPoints);
+
   const handlePostComment = () => {
     if (!newCommentText.trim()) return;
     const newComment = {
-      user: "You",
+      user: isAuthenticated ? user?.name || "You" : "Guest",
       time: "Just now",
       text: newCommentText,
       likes: 0,
-      avatar: "/images/actor_1.png"
+      avatar: user?.avatar || "/images/actor_1.png"
     };
     setComments([newComment, ...comments]);
     setNewCommentText("");
+
+    // Award +30 Cinephile points for posting a review
+    if (isAuthenticated && movieId) {
+      addReviewPoints(movieId, newCommentText);
+    }
   };
 
   return (

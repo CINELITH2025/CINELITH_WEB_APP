@@ -58,6 +58,7 @@ const useUserStore = create(
           favoriteActors: [],
           favoriteGenres: [],
           ratings: [],
+          reviews: [],
           cinephileScore: 50, // base signup score
           streak: 1
         };
@@ -186,13 +187,34 @@ const useUserStore = create(
         const currentUser = get().user;
         if (!currentUser) return;
 
+        const alreadyRated = currentUser.ratings.some(r => r.id === movie.id);
         const otherRatings = currentUser.ratings.filter(r => r.id !== movie.id);
         const updatedRatings = [...otherRatings, { id: movie.id, title: movie.title, rating: ratingValue }];
+
+        // Award +15 points only on first rating of this movie
+        const scoreDiff = alreadyRated ? 0 : 15;
 
         set({
           user: {
             ...currentUser,
-            ratings: updatedRatings
+            ratings: updatedRatings,
+            cinephileScore: currentUser.cinephileScore + scoreDiff
+          }
+        });
+      },
+
+      addReviewPoints: (movieId, commentText) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+
+        const reviews = currentUser.reviews || [];
+        const updatedReviews = [...reviews, { movieId, text: commentText, date: new Date().toISOString() }];
+
+        set({
+          user: {
+            ...currentUser,
+            reviews: updatedReviews,
+            cinephileScore: currentUser.cinephileScore + 30
           }
         });
       }
