@@ -1,50 +1,99 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Bell, Bookmark } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Bell, LogOut } from 'lucide-react';
+import useUserStore from '../store/useUserStore';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
+  const logout = useUserStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
-    <nav className="flex items-center justify-between px-8 py-4 border-b border-white/10 bg-background text-sm">
-      {/* Logo */}
-      <div className="flex items-center gap-12">
-        <Link to="/" className="text-2xl font-black tracking-tighter text-primary">
-          CINELITH
+    <nav className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-white/10 bg-[#08060d]/95 backdrop-blur-sm sticky top-0 z-50">
+      {/* Left: Logo + Nav Links */}
+      <div className="flex items-center gap-10">
+        {/* Logo with diamond icon */}
+        <Link to="/" className="flex items-center gap-2.5">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 2L20 11L11 20L2 11L11 2Z" fill="#FACC15" />
+          </svg>
+          <span className="text-lg font-black tracking-tight text-white">CINELITH</span>
         </Link>
 
         {/* Nav Links */}
-        <div className="hidden md:flex items-center gap-6 font-medium text-foreground/80">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-          <Link to="/movies" className="hover:text-primary transition-colors">Movies</Link>
-          <Link to="/movies" className="hover:text-primary transition-colors">Series</Link>
-          <Link to="/actor/1" className="hover:text-primary transition-colors">People</Link>
-          <Link to="/community" className="hover:text-primary transition-colors">Community</Link>
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
+          <Link to="/" className="hover:text-white transition-colors">Home</Link>
+          <Link to="/movies" className="hover:text-white transition-colors">Movies</Link>
+          <Link to="/movies" className="hover:text-white transition-colors">TV Shows</Link>
+          <Link to="/actor/1" className="hover:text-white transition-colors">Actors</Link>
+          <Link to="/community" className="hover:text-white transition-colors">Community</Link>
         </div>
       </div>
 
-      {/* Right Side Actions */}
-      <div className="flex items-center gap-4">
-        {/* Search Bar */}
+      {/* Right Side */}
+      <div className="flex items-center gap-3">
+        {/* Search */}
         <div className="relative hidden md:flex items-center group">
-          <Search className="absolute left-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-3 w-4 h-4 text-gray-500 group-focus-within:text-[#FACC15] transition-colors" />
           <input
             type="text"
-            placeholder="Search"
-            className="pl-9 pr-4 py-2 w-64 rounded-full bg-white/5 border border-white/10 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all text-sm placeholder:text-muted-foreground"
+            placeholder="Search..."
+            className="pl-9 pr-4 py-2 w-48 lg:w-64 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-sm placeholder:text-gray-600 text-white"
           />
         </div>
 
-        {/* Icons */}
-        <Link to="/notifications" className="p-2 rounded-full hover:bg-white/10 transition-colors">
-          <Bell className="w-5 h-5 text-foreground/80" />
-        </Link>
-        <Link to="/profile" className="p-2 rounded-full hover:bg-white/10 transition-colors">
-          <Bookmark className="w-5 h-5 text-foreground/80" />
+        {/* Bell */}
+        <Link to="/notifications" className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+          <Bell className="w-5 h-5" />
         </Link>
 
-        {/* Avatar Placeholder */}
-        <Link to="/profile" className="w-8 h-8 rounded-full overflow-hidden ml-2 border border-white/20 cursor-pointer hover:border-primary transition-colors">
-          <img src="/images/actor_1.png" alt="Profile" className="w-full h-full object-cover" />
-        </Link>
+        {/* Dynamic Auth Actions */}
+        {isAuthenticated ? (
+          <div className="flex items-center gap-3">
+            {/* Sign Out Icon */}
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white cursor-pointer"
+              title="Sign Out"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+            {/* User Profile Avatar Link */}
+            <Link 
+              to="/profile" 
+              className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/20 cursor-pointer hover:border-[#FACC15] transition-colors shrink-0"
+              title={`${user?.name}'s Profile`}
+            >
+              <img src={user?.avatar || "/images/actor_1.png"} alt="Profile" className="w-full h-full object-cover" />
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            {/* Sign In Button */}
+            <Link 
+              to="/auth"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 text-sm font-bold text-white hover:bg-white/10 transition-all"
+            >
+              Sign In
+            </Link>
+            {/* Default Placeholder linking to login */}
+            <Link 
+              to="/auth" 
+              className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/20 cursor-pointer hover:border-white/40 transition-colors shrink-0"
+              title="Guest Profile"
+            >
+              <div className="w-full h-full bg-white/5 flex items-center justify-center text-xs text-gray-500 font-bold">
+                ?
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );

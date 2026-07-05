@@ -9,12 +9,16 @@ import Community from './pages/Community'
 import Profile from './pages/Profile'
 import Notifications from './pages/Notifications'
 import Messages from './pages/Messages'
+import Auth from './pages/Auth'
+import Onboarding from './pages/Onboarding'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/actor/:id" element={<ActorProfile />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/movies" element={<Movies />} />

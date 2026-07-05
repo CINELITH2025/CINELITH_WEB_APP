@@ -1,40 +1,64 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Users, HelpCircle, Swords } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const FeatureSection = ({ title, features }) => {
+  const navigate = useNavigate();
+
+  // We assign specific icons based on index
+  const getIcon = (index) => {
+    switch (index) {
+      case 0:
+        return <Users className="w-8 h-8 text-[#FACC15]" />;
+      case 1:
+        return <HelpCircle className="w-8 h-8 text-[#FACC15]" />;
+      case 2:
+        return <Swords className="w-8 h-8 text-[#FACC15]" />;
+      default:
+        return <Users className="w-8 h-8 text-[#FACC15]" />;
+    }
+  };
+
+  const getRoute = (index) => {
+    switch (index) {
+      case 0:
+        return '/community';
+      case 1:
+        return '/dashboard';
+      default:
+        return '/';
+    }
+  };
+
   return (
-    <section className="py-8 px-4 md:px-8">
+    <section className="py-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">{title}</h2>
-        <Link to="#" className="text-sm font-semibold text-primary hover:underline">
-          View All
-        </Link>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl md:text-2xl font-bold text-[#E2B710] tracking-wide">{title}</h2>
       </div>
 
-      {/* Feature Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Feature Grid - 3 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {features.map((feature, idx) => (
-          <div key={idx} className="relative aspect-[21/9] rounded-2xl overflow-hidden group">
-            {/* Background Image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url(${feature.image})` }}
-            ></div>
-            
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            
-            {/* Content */}
-            <div className="absolute inset-x-0 bottom-0 p-6 flex items-end justify-between">
-              <h3 className="text-2xl md:text-3xl font-bold text-white drop-shadow-md">
-                {feature.title}
-              </h3>
-              <Button className="bg-primary text-black font-bold hover:bg-primary/90 px-8 rounded-full shadow-lg">
-                {feature.buttonText}
-              </Button>
+          <div 
+            key={idx} 
+            onClick={() => navigate(getRoute(idx))}
+            className="flex flex-col items-center text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-[#FACC15]/30 cursor-pointer group hover:bg-white/10 transition-all duration-300 shadow-xl"
+          >
+            {/* Icon Box */}
+            <div className="p-4 bg-white/5 rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 border border-white/5 shadow-inner">
+              {getIcon(idx)}
             </div>
+
+            {/* Title */}
+            <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#FACC15] transition-colors">
+              {feature.title}
+            </h3>
+
+            {/* Description Text */}
+            <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-medium">
+              {feature.buttonText}
+            </p>
           </div>
         ))}
       </div>

@@ -1,60 +1,64 @@
-import React, { useState } from 'react';
-import { Search, ChevronDown, RotateCcw } from 'lucide-react';
-
-const filterOptions = [
-  "Sort By", "Genre", "Actors", "Director", "Year", "Region", "Language"
-];
-
-const tabs = ["Popular", "Trending", "Latest"];
+import React from 'react';
+import { ChevronDown, X, ArrowUpDown } from 'lucide-react';
 
 const MovieFilters = () => {
-  const [activeTab, setActiveTab] = useState("Popular");
-
   return (
     <section className="mb-10 flex flex-col gap-6">
-      {/* Search Bar */}
-      <div className="relative w-full group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-        <input
-          type="text"
-          placeholder="Search for movies, actors, directors..."
-          className="w-full pl-12 pr-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all text-base placeholder:text-muted-foreground"
-        />
-      </div>
-
       {/* Filter Row */}
       <div className="flex flex-wrap items-center gap-3">
-        {filterOptions.map((filter) => (
-          <button
-            key={filter}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all"
-          >
-            {filter}
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
-          </button>
-        ))}
+        {/* Genre Filter */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
+          Genre
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </button>
 
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-bold text-foreground hover:bg-white/10 transition-all ml-auto">
+        {/* Selected Genre Tag */}
+        <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#FACC15] text-black text-sm font-black shadow-md cursor-pointer hover:bg-[#E2B710] transition-all">
+          Action
+          <X className="w-4 h-4 text-black" strokeWidth={3} />
+        </div>
+
+        {/* Year Filter */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
+          Year
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </button>
+
+        {/* Director Filter */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
+          Director
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </button>
+
+        {/* Actors Filter */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
+          Actors
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </button>
+
+        {/* Language Filter */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium text-foreground hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer">
+          Language
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </button>
+
+        {/* Reset button - plain style matching Mockup 1 */}
+        <button className="text-sm font-bold text-gray-400 hover:text-white transition-all ml-4 cursor-pointer">
           Reset Filters
-          <RotateCcw className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex items-center p-1 bg-white/5 rounded-xl w-fit">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-8 py-2 rounded-lg text-sm font-bold transition-all ${
-              activeTab === tab 
-                ? 'bg-[#2A261A] text-white shadow-lg' 
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      {/* Results Count & Sort Dropdown */}
+      <div className="flex items-center justify-between border-t border-white/5 pt-6 mt-2">
+        <span className="text-sm font-medium text-gray-400">
+          Showing 24 results
+        </span>
+
+        {/* Sort Select */}
+        <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm font-bold text-foreground hover:bg-white/10 transition-all cursor-pointer">
+          <ArrowUpDown className="w-4 h-4 text-[#FACC15]" />
+          Sort by: Popular
+        </button>
       </div>
     </section>
   );

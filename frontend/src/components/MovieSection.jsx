@@ -1,34 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MovieSection = ({ title, movies }) => {
+  const navigate = useNavigate();
+
   return (
-    <section className="py-8 px-4 md:px-8">
+    <section className="py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">{title}</h2>
-        <Link to="#" className="text-sm font-semibold text-primary hover:underline">
-          View All
-        </Link>
+        <h2 className="text-xl md:text-2xl font-bold text-[#E2B710] tracking-wide">{title}</h2>
       </div>
 
-      {/* Movie Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* Movie Grid - 5 columns */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
         {movies.map((movie, idx) => (
-          <div key={idx} className="flex flex-col group cursor-pointer">
-            <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/5">
+          <div 
+            key={idx} 
+            className="flex flex-col group cursor-pointer"
+            onClick={() => navigate(`/movie/${idx + 1}`)}
+          >
+            <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-xl group-hover:border-[#FACC15]/40 transition-all duration-300">
               <img 
                 src={movie.image} 
                 alt={movie.title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span className="text-white font-medium border border-white/30 px-4 py-2 rounded-full backdrop-blur-sm">View Details</span>
+              {/* Subtle overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span className="text-white text-xs font-bold bg-[#FACC15]/20 border border-[#FACC15]/30 px-3 py-1.5 rounded-md backdrop-blur-md">
+                  View Info
+                </span>
               </div>
             </div>
-            <h3 className="font-semibold text-foreground truncate">{movie.title}</h3>
-            <p className="text-sm text-muted-foreground truncate">{movie.genre}</p>
+            <h3 className="font-bold text-white text-sm truncate group-hover:text-[#FACC15] transition-colors leading-tight">{movie.title}</h3>
+            <p className="text-xs text-gray-500 mt-1">{movie.genre}</p>
           </div>
         ))}
       </div>

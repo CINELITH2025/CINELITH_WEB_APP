@@ -2,117 +2,215 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
-
-const wishlist = [
-  { image: "/images/poster_1.png" },
-  { image: "/images/poster_2.png" },
-  { image: "/images/poster_1.png" },
-  { image: "/images/poster_2.png" },
-  { image: "/images/poster_1.png" },
-  { image: "/images/poster_2.png" }
-];
+import { useNavigate } from 'react-router-dom';
+import useUserStore from '../store/useUserStore';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState("My Wishlist");
+  const navigate = useNavigate();
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
+  const logout = useUserStore((state) => state.logout);
 
+  const [activeTab, setActiveTab] = useState("Wishlist");
+
+  // Redirect to auth if not logged in
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (!isAuthenticated || !user) {
+      navigate('/auth');
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  if (!isAuthenticated || !user) {
+    return null; // Prevents render flash before redirect
+  }
+
+  // Determine which list of movies to display based on active tab
+  const getTabMovies = () => {
+    switch (activeTab) {
+      case "Wishlist":
+        return user.watchlist || [];
+      case "Liked Movies":
+        return user.favoriteMovies || [];
+      case "Rated Movies":
+        return user.watchedMovies || [];
+      default:
+        return [];
+    }
+  };
+
+  // Helper to calculate top director dynamically
+  const getTopDirector = () => {
+    const movies = [...(user.favoriteMovies || []), ...(user.watchedMovies || [])];
+    if (movies.length === 0) return "None";
+    
+    const counts = {};
+    movies.forEach(m => {
+      if (m.director) {
+        counts[m.director] = (counts[m.director] || 0) + 1;
+      }
+    });
+
+    let topDir = "Denis Villeneuve"; // sensible fallback
+    let max = 0;
+    Object.keys(counts).forEach(dir => {
+      if (counts[dir] > max) {
+        max = counts[dir];
+        topDir = dir;
+      }
+    });
+    return topDir;
+  };
+
+  const currentMovies = getTabMovies();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
       <Navbar />
       
-      <main className="flex-1 w-full max-w-[1000px] mx-auto pb-16 px-4 md:px-8 pt-12 flex flex-col items-center">
-        {/* Profile Header */}
-        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 mb-6 p-1 bg-primary/10">
-          <img src="/images/actor_1.png" alt="Sophia Carter" className="w-full h-full object-cover rounded-full" />
-        </div>
+      <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-10">
         
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-1">Sophia Carter</h1>
-          <p className="text-muted-foreground font-medium mb-3">@sophiacarter</p>
-          <p className="text-sm text-foreground/80 max-w-sm mx-auto leading-relaxed italic">
-            Film enthusiast | Aspiring director | Sharing my cinematic journey
-          </p>
-        </div>
-
-        <Button className="w-full max-w-lg py-6 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-2xl font-bold mb-10 transition-all">
-          Edit Profile
-        </Button>
-
-        {/* Stats Summary */}
-        <div className="w-full grid grid-cols-2 gap-6 mb-12">
-          <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-center group hover:border-primary/50 transition-colors">
-            <p className="text-4xl font-bold text-primary mb-2">250</p>
-            <p className="text-sm text-muted-foreground font-semibold uppercase tracking-widest">Followers</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-center group hover:border-primary/50 transition-colors">
-            <p className="text-4xl font-bold text-primary mb-2">180</p>
-            <p className="text-sm text-muted-foreground font-semibold uppercase tracking-widest">Following</p>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="w-full mb-8 flex border-b border-white/5">
-          {["My Wishlist", "My Reviews", "My Lists"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-8 py-4 text-sm font-bold transition-all relative ${
-                activeTab === tab ? 'text-white' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {tab}
-              {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"></div>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Wishlist Grid */}
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 mb-20">
-          {wishlist.map((item, idx) => (
-            <div key={idx} className="aspect-[2/3] rounded-xl overflow-hidden border border-white/5 bg-white/5 group cursor-pointer shadow-xl">
-              <img src={item.image} alt="movie" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+        {/* Profile Card Header */}
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 mb-10 shadow-2xl relative overflow-hidden group">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
+            {/* Avatar circle */}
+            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-[#FACC15]/20 p-1 bg-white/5 shrink-0 shadow-lg">
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover rounded-full" />
             </div>
-          ))}
-        </div>
 
-        {/* Quick Stats Section */}
-        <div className="w-full">
-          <h2 className="text-2xl font-bold text-white mb-8 text-left">Quick Stats</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {/* Stat Box 1 */}
-            <div className="bg-[#1A1A1A] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Total Movies Watched</span>
-              <span className="text-3xl font-bold text-white">520</span>
-              <span className="text-xs font-bold text-green-400">+10%</span>
-            </div>
-            {/* Stat Box 2 */}
-            <div className="bg-[#1A1A1A] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Top Actor Watched</span>
-              <span className="text-2xl font-bold text-white truncate">Ethan Blake</span>
-              <span className="text-xs font-bold text-green-400">+5%</span>
-            </div>
-            {/* Stat Box 3 */}
-            <div className="bg-[#1A1A1A] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Favorite Genre</span>
-              <span className="text-3xl font-bold text-white">Drama</span>
-              <span className="text-xs font-bold text-green-400">+15%</span>
-            </div>
-            {/* Stat Box 4 */}
-            <div className="bg-[#1A1A1A] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Cinephile Score</span>
-              <span className="text-3xl font-bold text-white">95</span>
-              <span className="text-xs font-bold text-green-400">+20%</span>
+            {/* Profile detail details */}
+            <div className="flex-1 text-center md:text-left flex flex-col pt-2">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div>
+                  <h1 className="text-3xl font-black text-white tracking-tight leading-tight">{user.name}</h1>
+                  <p className="text-xs text-gray-500 font-bold tracking-wider mt-1">{user.username}</p>
+                </div>
+                
+                {/* Buttons row */}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                  <Button 
+                    onClick={() => navigate('/onboarding')}
+                    className="bg-[#E2B710] hover:bg-[#C59E0C] text-black font-black text-xs px-6 py-4.5 rounded-lg shadow-md cursor-pointer"
+                  >
+                    Retake Onboarding
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/dashboard')}
+                    variant="outline" 
+                    className="border-white/20 hover:border-white/40 text-white hover:bg-white/5 font-bold text-xs px-6 py-4.5 rounded-lg cursor-pointer"
+                  >
+                    Dashboard
+                  </Button>
+                </div>
+              </div>
+
+              {/* Bio quote */}
+              <p className="text-sm text-gray-400 max-w-xl leading-relaxed italic mb-6">
+                "{user.bio}"
+              </p>
+
+              {/* Followers metric */}
+              <div className="flex items-center justify-center md:justify-start gap-6 font-bold">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-lg text-white font-black">1,234</span>
+                  <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Following</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-lg text-white font-black">5,678</span>
+                  <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Followers</span>
+                </div>
+              </div>
             </div>
           </div>
-          <button className="w-full text-center text-sm text-muted-foreground hover:text-white transition-colors font-medium">
-            View Full Stats
-          </button>
         </div>
+
+        {/* Content columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          
+          {/* Left / Middle: Tab collection & Grid */}
+          <div className="lg:col-span-2 flex flex-col">
+            {/* Tabs */}
+            <div className="flex border-b border-white/5 mb-8">
+              {["Wishlist", "Liked Movies", "Rated Movies"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-4 text-xs md:text-sm font-black tracking-wider uppercase transition-all relative cursor-pointer ${
+                    activeTab === tab ? 'text-white' : 'text-gray-500 hover:text-white'
+                  }`}
+                >
+                  {tab}
+                  {activeTab === tab && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FACC15]"></div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Poster Grid */}
+            {currentMovies.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
+                {currentMovies.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    onClick={() => navigate(`/movie/${item.id}`)}
+                    className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#FACC15]/40 transition-all duration-300"
+                  >
+                    <img 
+                      src={item.image} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-white/[0.02] border border-white/5 rounded-3xl mb-12">
+                <p className="text-gray-500 text-sm font-medium">No movies in this list yet.</p>
+                <Button 
+                  onClick={() => navigate('/movies')}
+                  className="mt-4 bg-[#FACC15] hover:bg-[#E2B710] text-black font-bold text-xs px-4 py-2 rounded-lg"
+                >
+                  Browse Movies
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Quick Stats */}
+          <div className="flex flex-col gap-6">
+            <div className="bg-white/5 border border-white/10 p-8 rounded-3xl shadow-xl flex flex-col gap-6">
+              <h3 className="text-lg font-black text-white tracking-tight border-b border-white/5 pb-4 mb-2">
+                Quick Stats
+              </h3>
+
+              {/* Stat 1 */}
+              <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Total Movies Watched</span>
+                <span className="text-2xl font-black text-white">{user.watchedMovies?.length || 0}</span>
+              </div>
+
+              {/* Stat 2 */}
+              <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Favorite Genre</span>
+                <span className="text-2xl font-black text-[#FACC15]">{user.favoriteGenres?.[0] || "None"}</span>
+              </div>
+
+              {/* Stat 3 */}
+              <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Top Director</span>
+                <span className="text-lg font-black text-white truncate">{getTopDirector()}</span>
+              </div>
+
+              {/* Stat 4 */}
+              <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cinephile Score</span>
+                <span className="text-2xl font-black text-[#FACC15]">{user.cinephileScore?.toLocaleString() || "0"}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </main>
 
       <Footer />
