@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Star, Clapperboard } from 'lucide-react';
 
-const MovieGrid = ({ movies }) => {
+const MovieGrid = ({ movies, filterQuery, setFilterQuery }) => {
   const navigate = useNavigate();
-  const [filterQuery, setFilterQuery] = useState('');
-
-  // Simple filtering mechanism to showcase dynamic "No movies found"
-  const filteredMovies = movies.filter(m => 
-    m.title.toLowerCase().includes(filterQuery.toLowerCase())
-  );
 
   return (
     <div className="flex flex-col gap-12">
@@ -20,17 +14,17 @@ const MovieGrid = ({ movies }) => {
           value={filterQuery}
           onChange={(e) => setFilterQuery(e.target.value)}
           placeholder="Search within these results..."
-          className="w-full pl-6 pr-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/50 focus:bg-white/10 transition-all text-base placeholder:text-gray-500 shadow-xl"
+          className="w-full pl-6 pr-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-500 shadow-xl"
         />
       </div>
 
-      {filteredMovies.length > 0 ? (
+      {movies.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-6 gap-y-10">
-          {filteredMovies.map((movie, idx) => (
+          {movies.map((movie) => (
             <div 
-              key={idx} 
+              key={movie.id} 
               className="flex flex-col group cursor-pointer"
-              onClick={() => navigate(`/movie/${idx + 1}`)}
+              onClick={() => navigate(`/movie/${movie.id}`)}
             >
               <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#FACC15]/40 transition-all duration-300">
                 <img 

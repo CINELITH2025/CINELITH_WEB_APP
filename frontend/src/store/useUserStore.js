@@ -42,6 +42,19 @@ const useUserStore = create(
     (set, get) => ({
       user: null,
       isAuthenticated: false,
+      chats: {
+        "Liam": [
+          { sender: "Liam", text: "Hey there! Did you catch Oppenheimer yet? Nolan's cinematography is out of this world.", timestamp: new Date(Date.now() - 3600000 * 2).toISOString() },
+          { sender: "You", text: "Yes! The Trinity test scene was absolutely breathtaking.", timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString() },
+          { sender: "Liam", text: "Agreed. The sound design in that sequence was pure genius. What did you think of the score?", timestamp: new Date(Date.now() - 3600000).toISOString() }
+        ],
+        "Sophia": [
+          { sender: "Sophia", text: "Have you seen Dune: Part Two? Villeneuve is a master of scale.", timestamp: new Date(Date.now() - 3600000 * 5).toISOString() },
+          { sender: "You", text: "Not yet, is it as good as the first one?", timestamp: new Date(Date.now() - 3600000 * 4.5).toISOString() },
+          { sender: "Sophia", text: "It's even better. The arena scene in black and white is a masterpiece. You have to watch it ASAP!", timestamp: new Date(Date.now() - 3600000 * 4).toISOString() }
+        ]
+      },
+      following: [],
 
       signup: (name, email, password) => {
         // Clean name to generate a handle
@@ -217,6 +230,70 @@ const useUserStore = create(
             cinephileScore: currentUser.cinephileScore + 30
           }
         });
+      },
+
+      sendMessage: (contactName, text) => {
+        const chats = get().chats || {};
+        const conversation = chats[contactName] || [];
+        const updatedConversation = [
+          ...conversation,
+          { sender: "You", text, timestamp: new Date().toISOString() }
+        ];
+        
+        set({
+          chats: {
+            ...chats,
+            [contactName]: updatedConversation
+          }
+        });
+
+        // Trigger simulated response
+        setTimeout(() => {
+          const currentChats = get().chats || {};
+          const currentConversation = currentChats[contactName] || [];
+          
+          const liamReplies = [
+            "I totally get that. Christopher Nolan really knows how to build suspense.",
+            "Have you seen his other film, Inception? It's one of my absolute favorites.",
+            "I love how he uses practical effects instead of relying solely on CGI.",
+            "What's your favorite sci-fi movie of all time?"
+          ];
+          const sophiaReplies = [
+            "Definitely! Hans Zimmer's soundtrack also adds so much depth to the experience.",
+            "I can't wait for Denis Villeneuve's next project.",
+            "Poor Things was another visually stunning movie from Yorgos Lanthimos. Did you watch it?",
+            "Honestly, that performance was Oscar-worthy."
+          ];
+          const defaultReplies = [
+            "Hey! That's really interesting. What other movies are you planning to watch this weekend?",
+            "Thanks for sharing! We should discuss more about this on the community page.",
+            "Oh, I completely agree with your take!",
+            "Fascinating perspective! What did you think about the cinematography?"
+          ];
+
+          let replies = defaultReplies;
+          if (contactName.toLowerCase().includes("liam")) replies = liamReplies;
+          else if (contactName.toLowerCase().includes("sophia")) replies = sophiaReplies;
+
+          const randomReply = replies[Math.floor(Math.random() * replies.length)];
+          const replyMsg = { sender: contactName, text: randomReply, timestamp: new Date().toISOString() };
+
+          set({
+            chats: {
+              ...currentChats,
+              [contactName]: [...currentConversation, replyMsg]
+            }
+          });
+        }, 1500);
+      },
+
+      toggleFollowUser: (username) => {
+        const following = get().following || [];
+        const isFollowing = following.includes(username);
+        const updatedFollowing = isFollowing
+          ? following.filter(u => u !== username)
+          : [...following, username];
+        set({ following: updatedFollowing });
       }
     }),
     {
