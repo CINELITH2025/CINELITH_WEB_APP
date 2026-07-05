@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SummaryCards from '../components/dashboard/SummaryCards';
 import Rankings from '../components/dashboard/Rankings';
+import InteractiveActivities from '../components/dashboard/InteractiveActivities';
 import Analytics from '../components/dashboard/Analytics';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../store/useUserStore';
@@ -32,6 +33,7 @@ const Dashboard = () => {
         
         <SummaryCards />
         <Rankings />
+        <InteractiveActivities />
         <Analytics />
       </main>
 

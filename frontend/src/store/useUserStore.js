@@ -294,6 +294,17 @@ const useUserStore = create(
           ? following.filter(u => u !== username)
           : [...following, username];
         set({ following: updatedFollowing });
+      },
+
+      awardPoints: (amount) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        set({
+          user: {
+            ...currentUser,
+            cinephileScore: currentUser.cinephileScore + amount
+          }
+        });
       }
     }),
     {

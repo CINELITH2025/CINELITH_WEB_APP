@@ -24,6 +24,7 @@ const FeatureSection = ({ title, features }) => {
       case 0:
         return '/community';
       case 1:
+      case 2:
         return '/dashboard';
       default:
         return '/';
