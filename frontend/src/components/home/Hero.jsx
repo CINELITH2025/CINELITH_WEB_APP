@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import useUserStore from '../store/useUserStore';
+import useUserStore from '../../store/useUserStore';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 const Hero = () => {

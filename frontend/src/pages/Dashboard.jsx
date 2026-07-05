@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 import SummaryCards from '../components/dashboard/SummaryCards';
 import Rankings from '../components/dashboard/Rankings';
 import InteractiveActivities from '../components/dashboard/InteractiveActivities';

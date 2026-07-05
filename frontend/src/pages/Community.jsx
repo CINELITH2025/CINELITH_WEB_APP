@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 import { Search, ChevronDown, Check, UserPlus, MessageCircle, X, Sparkles } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import { Button } from '@/components/ui/button';

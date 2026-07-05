@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 import MovieHero from '../components/movie/MovieHero';
 import CastAndCrew from '../components/movie/CastAndCrew';
 import Discussion from '../components/movie/Discussion';

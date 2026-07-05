@@ -1,10 +1,10 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import MovieSection from '../components/MovieSection';
-import ActorSection from '../components/ActorSection';
-import FeatureSection from '../components/FeatureSection';
-import Footer from '../components/Footer';
+import Navbar from '../components/layout/Navbar';
+import Hero from '../components/home/Hero';
+import MovieSection from '../components/home/MovieSection';
+import ActorSection from '../components/home/ActorSection';
+import FeatureSection from '../components/home/FeatureSection';
+import Footer from '../components/layout/Footer';
 import { MOVIE_CATALOG, ACTOR_CATALOG } from '../store/useUserStore';
 
 const Home = () => {

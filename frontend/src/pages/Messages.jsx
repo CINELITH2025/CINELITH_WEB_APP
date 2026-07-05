@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 import { Search, Send, Film, MessageCircle, Phone, Video, Info, User, CheckCheck } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 

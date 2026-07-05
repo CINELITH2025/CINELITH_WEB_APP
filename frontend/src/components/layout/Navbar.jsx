@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Bell, LogOut } from 'lucide-react';
-import useUserStore from '../store/useUserStore';
+import useUserStore from '../../store/useUserStore';
 
 const Navbar = () => {
   const navigate = useNavigate();
