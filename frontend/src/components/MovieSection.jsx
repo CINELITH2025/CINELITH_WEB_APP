@@ -17,7 +17,7 @@ const MovieSection = ({ title, movies }) => {
           <div 
             key={idx} 
             className="flex flex-col group cursor-pointer"
-            onClick={() => navigate(`/movie/${idx + 1}`)}
+            onClick={() => navigate(`/movie/${movie.id || (idx + 1)}`)}
           >
             <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-xl group-hover:border-[#FACC15]/40 transition-all duration-300">
               <img 

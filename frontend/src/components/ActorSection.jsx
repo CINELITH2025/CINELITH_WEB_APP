@@ -16,7 +16,7 @@ const ActorSection = ({ title, actors }) => {
         {actors.map((actor, idx) => (
           <div 
             key={idx} 
-            onClick={() => navigate(`/actor/${idx + 1}`)}
+            onClick={() => navigate(`/actor/${actor.id || (idx + 1)}`)}
             className="flex flex-col items-center group cursor-pointer"
           >
             <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 border-2 border-transparent group-hover:border-[#FACC15] transition-all p-1 bg-white/5 shadow-xl">

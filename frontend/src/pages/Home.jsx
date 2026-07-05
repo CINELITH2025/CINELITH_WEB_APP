@@ -5,51 +5,32 @@ import MovieSection from '../components/MovieSection';
 import ActorSection from '../components/ActorSection';
 import FeatureSection from '../components/FeatureSection';
 import Footer from '../components/Footer';
-
-const trendingMovies = [
-  { title: "Dune: Part Two", genre: "2024", image: "/images/poster_1.png" },
-  { title: "Oppenheimer", genre: "2023", image: "/images/poster_2.png" },
-  { title: "Poor Things", genre: "2023", image: "/images/poster_1.png" },
-  { title: "The Holdovers", genre: "2023", image: "/images/poster_2.png" },
-  { title: "Anatomy of a Fall", genre: "2023", image: "/images/poster_1.png" }
-];
-
-const classicMovies = [
-  { title: "The Godfather", genre: "1972", image: "/images/poster_2.png" },
-  { title: "Pulp Fiction", genre: "1994", image: "/images/poster_1.png" },
-  { title: "2001: A Space Odyssey", genre: "1968", image: "/images/poster_2.png" },
-  { title: "Blade Runner", genre: "1982", image: "/images/poster_1.png" },
-  { title: "Citizen Kane", genre: "1941", image: "/images/poster_2.png" }
-];
-
-const starPower = [
-  { name: "Timothée Chalamet", image: "/images/actor_1.png" },
-  { name: "Zendaya", image: "/images/actor_1.png" },
-  { name: "Austin Butler", image: "/images/actor_1.png" },
-  { name: "Cillian Murphy", image: "/images/actor_1.png" },
-  { name: "Emma Stone", image: "/images/actor_1.png" },
-  { name: "Mark Ruffalo", image: "/images/actor_1.png" }
-];
-
-const platformFeatures = [
-  { 
-    title: "Community Discussions", 
-    buttonText: "Join conversations, share reviews, and debate theories with a passionate community.",
-    image: "community" 
-  },
-  { 
-    title: "Film Quizzes", 
-    buttonText: "Test your cinematic knowledge with trivia on everything from silent films to modern blockbusters.",
-    image: "quiz" 
-  },
-  { 
-    title: "Movie Battles", 
-    buttonText: "Pit your favorite films against each other and vote to see which ones come out on top.",
-    image: "battle" 
-  }
-];
+import { MOVIE_CATALOG, ACTOR_CATALOG } from '../store/useUserStore';
 
 const Home = () => {
+  // Dynamically slice trending, classic movies and popular actors from central catalog
+  const trendingMovies = MOVIE_CATALOG.slice(0, 5);
+  const classicMovies = MOVIE_CATALOG.filter(m => parseInt(m.year, 10) < 2000).slice(0, 5);
+  const starPower = ACTOR_CATALOG.slice(0, 6);
+
+  const platformFeatures = [
+    { 
+      title: "Community Discussions", 
+      buttonText: "Join conversations, share reviews, and debate theories with a passionate community.",
+      image: "community" 
+    },
+    { 
+      title: "Film Quizzes", 
+      buttonText: "Test your cinematic knowledge with trivia on everything from silent films to modern blockbusters.",
+      image: "quiz" 
+    },
+    { 
+      title: "Movie Battles", 
+      buttonText: "Pit your favorite films against each other and vote to see which ones come out on top.",
+      image: "battle" 
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
       <Navbar />
