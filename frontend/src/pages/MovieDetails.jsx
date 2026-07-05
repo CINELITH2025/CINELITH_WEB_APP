@@ -3,61 +3,54 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MovieHero from '../components/movie/MovieHero';
-import MovieStats from '../components/movie/MovieStats';
 import CastAndCrew from '../components/movie/CastAndCrew';
 import Discussion from '../components/movie/Discussion';
 import RelatedMovies from '../components/movie/RelatedMovies';
-import { Award } from 'lucide-react';
 
 const mockMovie = {
-  title: "The Mystery Of Adventure Island",
-  description: "A seasoned detective, Sarah Walker, haunted by a past case, finds herself entangled in a web of deceit and danger when a series of cryptic clues resurface, leading her on a relentless pursuit of a cunning criminal mastermind.",
-  genre: "Drama, Mystery",
-  runtime: "2h 15m",
-  releaseDate: "November 15, 2023",
-  awards: "3 Wins & 7 Nominations",
+  title: "Movie Title",
+  year: "2023",
+  pgRating: "PG-13",
+  clScore: 88,
+  userScore: 92,
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Nullam ac erat ante. Pellentesque eget urna at lectus gravida ultricies. Phasellus quis justo sem. Duis non erat id nisl vestibulum finibus. Nulla facilisi. Sed ac lorem feugiat, scelerisque sem et, varius nibh. Suspendisse potenti. In hac habitasse platea dictumst. Curabitur et libero lacus. Nunc at elit nec est laoreet posuere. Morbi non quam nec dui commodo tincidunt.",
+  genre: "Action, Sci-Fi, Adventure",
+  runtime: "2h 28m",
+  releaseDate: "October 26, 2023",
+  awards: "Winner of 4 Academy Awards",
   image: "/images/poster_1.png",
-  stats: {
-    views: "4.5M",
-    likes: "1.1M",
-    shares: "50K"
-  },
+  director: "Jane Doe",
+  writer: "John Smith, Emily Rogers",
   cast: [
-    { name: "Olivia Bennett", image: "/images/actor_1.png" },
-    { name: "Ethan Carter", image: "/images/actor_1.png" },
-    { name: "Daniel Hayes", image: "/images/actor_1.png" },
-    { name: "Sophia Clark", image: "/images/actor_1.png" },
-    { name: "James Foster", image: "/images/actor_1.png" }
+    { name: "Actor Name", role: "Character Role", image: "/images/actor_1.png" },
+    { name: "Actress Name", role: "Character Role", image: "/images/actor_1.png" },
+    { name: "Another Actor", role: "Another Character", image: "/images/actor_1.png" },
+    { name: "Another Actress", role: "Main Antagonist", image: "/images/actor_1.png" },
+    { name: "Veteran Actor", role: "Supporting Role", image: "/images/actor_1.png" }
   ],
-  crew: {
-    director: "Mark Thompson",
-    writers: ["Laura Evans", "Mark Thompson"],
-    producers: ["Robert Green", "Emily White"]
-  },
   comments: [
     { 
-      user: "Alex Turner", 
-      time: "2 weeks ago", 
-      text: "The plot twists kept me on the edge of my seat! Olivia Bennett's performance was outstanding.",
+      user: "CommentorName", 
+      time: "2 hours ago", 
+      text: "This is an amazing take on the source material. The cinematography alone is worth the price of admission. What did everyone think of the final act?",
       likes: 12,
-      dislikes: 2,
       avatar: "/images/actor_1.png"
     },
     { 
-      user: "Chloe Davis", 
-      time: "1 week ago", 
-      text: "I agree! The cinematography was also top-notch, creating a truly immersive experience.",
-      likes: 8,
-      dislikes: 1,
+      user: "AnotherUser", 
+      time: "1 hour ago", 
+      text: "Totally agree! I was on the edge of my seat. I think it was a bold choice but it paid off.",
+      likes: 3,
       avatar: "/images/actor_1.png"
     }
   ],
   related: [
-    { title: "Shadows of Doubt", image: "/images/poster_2.png" },
-    { title: "The Silent Witness", image: "/images/poster_1.png" },
-    { title: "Code Red", image: "/images/poster_2.png" },
-    { title: "Twisted Fate", image: "/images/poster_1.png" },
-    { title: "Crimson Tide", image: "/images/poster_2.png" }
+    { title: "Similar Film One", image: "/images/poster_2.png" },
+    { title: "Another Sci-Fi", image: "/images/poster_1.png" },
+    { title: "The Prequel", image: "/images/poster_2.png" },
+    { title: "From the Same Director", image: "/images/poster_1.png" },
+    { title: "Fan Favorite", image: "/images/poster_2.png" },
+    { title: "Classic Flick", image: "/images/poster_1.png" }
   ]
 };
 
@@ -73,25 +66,16 @@ const MovieDetails = () => {
       <Navbar />
       
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
+        {/* Main Movie Hero Section */}
         <MovieHero movie={mockMovie} />
-        <MovieStats stats={mockMovie.stats} />
         
-        {/* Awards Small Row */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-8">Awards & Recognition</h2>
-          <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl w-fit">
-            <div className="p-3 bg-primary/20 rounded-lg">
-              <Award className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <p className="font-bold text-white">Best Thriller Film</p>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Nominee</p>
-            </div>
-          </div>
-        </div>
-
-        <CastAndCrew cast={mockMovie.cast} crew={mockMovie.crew} />
+        {/* Cast section beneath overview */}
+        <CastAndCrew cast={mockMovie.cast} />
+        
+        {/* Community Discussion forums */}
         <Discussion comments={mockMovie.comments} />
+        
+        {/* Related Titles */}
         <RelatedMovies movies={mockMovie.related} />
       </main>
 

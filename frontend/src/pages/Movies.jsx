@@ -5,18 +5,11 @@ import MovieFilters from '../components/movies/MovieFilters';
 import MovieGrid from '../components/movies/MovieGrid';
 
 const movieData = [
-  { title: "The Midnight Bloom", year: "2023", genre: "Drama, Romance", image: "/images/poster_1.png" },
-  { title: "Echoes of the Past", year: "2022", genre: "Thriller, Mystery", image: "/images/poster_2.png" },
-  { title: "Crimson Horizon", year: "2024", genre: "Action, Adventure", image: "/images/poster_1.png" },
-  { title: "Whispers of the Wind", year: "2023", genre: "Fantasy, Sci-Fi", image: "/images/poster_2.png" },
-  { title: "Starlight Serenade", year: "2022", genre: "Musical, Romance", image: "/images/poster_1.png" },
-  { title: "Shadows of Destiny", year: "2024", genre: "Crime, Drama", image: "/images/poster_2.png" },
-  { title: "Emerald Enigma", year: "2023", genre: "Mystery, Thriller", image: "/images/poster_1.png" },
-  { title: "Golden Legacy", year: "2022", genre: "Historical, Drama", image: "/images/poster_2.png" },
-  { title: "Silver Lining", year: "2024", genre: "Romance, Comedy", image: "/images/poster_1.png" },
-  { title: "Velvet Veil", year: "2023", genre: "Drama, Mystery", image: "/images/poster_2.png" },
-  { title: "Azure Ascent", year: "2022", genre: "Sci-Fi, Adventure", image: "/images/poster_1.png" },
-  { title: "Obsidian Echo", year: "2024", genre: "Thriller, Crime", image: "/images/poster_2.png" }
+  { title: "Dune", year: "2021", genre: "Sci-Fi, Adventure", rating: 8.0, image: "/images/poster_1.png" },
+  { title: "The Creator", year: "2023", genre: "Sci-Fi, Action", rating: 7.1, image: "/images/poster_2.png" },
+  { title: "Oppenheimer", year: "2023", genre: "Drama, History", rating: 8.1, image: "/images/poster_1.png" },
+  { title: "The Dark Knight", year: "2008", genre: "Action, Crime", rating: 8.5, image: "/images/poster_2.png" },
+  { title: "Blade Runner 2049", year: "2017", genre: "Sci-Fi, Thriller", rating: 7.9, image: "/images/poster_1.png" }
 ];
 
 const Movies = () => {
@@ -28,7 +21,13 @@ const Movies = () => {
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
       <Navbar />
       
-      <main className="flex-1 w-full max-w-[1400px] mx-auto pb-16 px-4 md:px-8 pt-8">
+      <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
+        {/* Header Title Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">Explore Cinema</h1>
+          <p className="text-sm md:text-base text-gray-400">Find movies by your mood, taste, or curiosity.</p>
+        </div>
+
         <MovieFilters />
         <MovieGrid movies={movieData} />
       </main>

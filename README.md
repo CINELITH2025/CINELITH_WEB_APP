@@ -5,7 +5,7 @@ CINELITH is a premium, community-driven cinematic exploration platform. It allow
 ## 🚀 Project Overview
 
 The project is divided into two main parts:
-- **Frontend**: A modern React application built with Vite and Tailwind CSS (v4), featuring a dark cinematic aesthetic and interactive analytics.
+- **Frontend**: A modern React application built with Vite and Tailwind CSS (v4), featuring a dark cinematic aesthetic, interactive onboarding wizard, and interactive analytics.
 - **Backend**: A Node.js/Express server integrated with MongoDB and TheTVDB API for real-time cinematic data and social features.
 
 ## 📁 Repository Structure
@@ -15,7 +15,8 @@ CINELITH_WEB_APP/
 ├── frontend/           # React + Vite application
 │   ├── src/
 │   │   ├── components/ # Modular UI components
-│   │   ├── pages/      # Route-level page components
+│   │   ├── pages/      # Route-level page components (Auth, Onboarding, Profile, Dashboard, etc.)
+│   │   ├── store/      # Local state stores (Zustand)
 │   │   └── App.jsx     # Routing configuration
 │   └── public/         # Static assets and images
 └── backend/            # Node.js + Express server
@@ -29,10 +30,11 @@ CINELITH_WEB_APP/
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **Framework**: React 18 (Vite)
+- **Framework**: React 19 (Vite)
 - **Styling**: Tailwind CSS v4
+- **State Management**: Zustand (with localStorage persistence)
 - **Icons**: Lucide React
-- **Routing**: React Router DOM v6
+- **Routing**: React Router DOM v7
 - **UI Components**: Custom components + Shadcn UI (Radix)
 
 ### Backend
@@ -41,6 +43,18 @@ CINELITH_WEB_APP/
 - **Database**: MongoDB (Mongoose)
 - **Real-time**: Socket.io
 - **Data Source**: TheTVDB (TVDB)
+
+## ✨ Implemented Features: User Onboarding Flow (Step 1)
+We have implemented a high-fidelity visual and logical flow for User Onboarding, which works completely client-side in fallback/demo mode:
+- **Persisted Session Store**: A Zustand store handles authentication state, custom user parameters, and onboarding selections.
+- **Auth Page (`/auth`)**: A glassmorphic screen featuring a sliding quote carousel and split login/signup forms.
+- **Onboarding Questionnaire (`/onboarding`)**:
+  - **Step 1: Top 5 Favorite Movies**: A selection page with live counting and filter/search capabilities.
+  - **Step 2: Movies Watched & Watchlist**: Toggles status on a card catalog to calculate watched numbers and watchlist additions.
+  - **Step 3: Top 5 Favorite Actors**: Displays trending stars with circular profiles.
+  - **Step 4: Top 5 Favorite Genres**: Selects user genre metrics.
+  - **Step 5: Cinema Profile Generation**: Renders a processing loader animation with rolling status messages before redirect.
+- **Dynamic Profile & Dashboard Integration**: Links onboarding selections directly to `/profile` tabs (Wishlist, Liked Movies, Rated Movies), summary cards, top ranked selections, and genre distribution charts on the dashboard.
 
 ## 🏁 Getting Started
 

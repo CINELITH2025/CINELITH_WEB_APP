@@ -3,27 +3,34 @@ import { Trophy } from 'lucide-react';
 
 const AwardsSection = ({ awards }) => {
   return (
-    <section className="my-12 px-2">
-      <h2 className="text-2xl font-bold text-foreground mb-6">Awards & Achievements</h2>
+    <section className="my-16 px-4 md:px-6">
+      <h2 className="text-2xl font-black text-white tracking-tight mb-8">Awards & Nominations</h2>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="flex flex-col gap-4">
         {awards.map((award, index) => (
-          <div key={index} className="flex flex-col group">
-            {/* Image / Trophy Placeholder */}
-            <div className="relative aspect-square w-full rounded-2xl overflow-hidden mb-4 bg-[#EAD5B9] flex flex-col items-center justify-center border border-white/5 shadow-inner">
-              <Trophy className="w-20 h-20 md:w-24 md:h-24 text-[#C19A5B] drop-shadow-md transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-2" strokeWidth={1.5} />
-              
-              {/* Subtle gradient overlay to make it look 3D-ish */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/20 mix-blend-overlay"></div>
+          <div 
+            key={index} 
+            className="flex items-center justify-between bg-white/5 border border-white/10 p-5 rounded-2xl hover:border-[#FACC15]/30 hover:bg-white/10 transition-all duration-300 shadow-lg group"
+          >
+            {/* Left Side: Icon & Details */}
+            <div className="flex items-center gap-5">
+              <div className="p-3.5 bg-white/5 rounded-xl border border-white/5 shadow-inner text-[#FACC15] group-hover:scale-105 transition-transform duration-300">
+                <Trophy className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-bold text-white text-sm md:text-base mb-1">
+                  {award.title}
+                </h3>
+                <p className="text-xs text-gray-400 font-medium">
+                  {award.details}
+                </p>
+              </div>
             </div>
-            
-            {/* Text */}
-            <h3 className="font-bold text-foreground text-sm leading-snug mb-1">
-              {award.title}
-            </h3>
-            <p className="text-xs text-muted-foreground font-medium">
+
+            {/* Right Side: Year */}
+            <span className="text-sm font-black text-[#FACC15] shrink-0 ml-4">
               {award.year}
-            </p>
+            </span>
           </div>
         ))}
       </div>

@@ -3,49 +3,39 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ActorBanner from '../components/actor/ActorBanner';
 import ActorBio from '../components/actor/ActorBio';
-import FanBanner from '../components/actor/FanBanner';
 import Filmography from '../components/actor/Filmography';
 import AwardsSection from '../components/actor/AwardsSection';
-import PersonalInsights from '../components/actor/PersonalInsights';
 
 const actorData = {
-  name: "Sophia Turner",
+  name: "Actor Name",
   image: "/images/actor_hero_bg.png",
   stats: {
-    movies: 120,
-    series: 85,
-    rating: 4.8
+    movies: 86,
+    awards: 24
   },
   bio: [
-    "Sophia Turner, born in Los Angeles, California, is an acclaimed actress known for her versatile roles in both blockbuster films and critically acclaimed indie projects. With a career spanning over a decade, she has garnered numerous awards and nominations, solidifying her status as one of the most talented performers of her generation.",
-    "Sophia Turner, born indie projects. With a career spanning over a decade, she has garnered numerous awards and nominations, solidifying her status as one of the most talented performers of her generation.",
-    "Sophia Turner, born in Los Angeles, California, is an acclaimed actress known for her versatile has garnered numerous awards and nominations, solidifying her status as one of the most talented performers of her generation. Sophia Turner, born in Los Angeles, California, is an acclaimed actress known for her versatile roles in both blockbuster films and critically acclaimed indie projects."
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nulla varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris."
   ],
   facts: [
-    { label: "Born", value: "July 15, 1993" },
-    { label: "Age", value: "58" }, // Based on the mock image data
-    { label: "Nationality", value: "Indian" },
-    { label: "Debut", value: "1992" },
-    { label: "Active Years", value: "2004 - Present" }
+    { label: "Born", value: "January 1, 1980" },
+    { label: "Age", value: "44" },
+    { label: "Nationality", value: "American" },
+    { label: "Debut", value: "1998" },
+    { label: "Active Years", value: "1998 - Present" }
   ],
-  fanPercentage: 87,
   filmography: [
-    { title: "The Starlight Sonata", year: "2022", views: "3M views", image: "/images/poster_2.png" },
-    { title: "Echoes of the Past", year: "2020", views: "2.4M views", image: "/images/poster_1.png" },
-    { title: "City of Dreams", year: "2018", views: "1.9M views", image: "/images/poster_1.png" }, // Reusing posters
-    { title: "Silent Whispers", year: "2016", views: "900K views", image: "/images/poster_2.png" }
+    { title: "Dune", year: "2021", views: "3M views", image: "/images/poster_1.png" },
+    { title: "The Creator", year: "2023", views: "2.4M views", image: "/images/poster_2.png" },
+    { title: "Oppenheimer", year: "2023", views: "1.9M views", image: "/images/poster_1.png" },
+    { title: "The Dark Knight", year: "2008", views: "900K views", image: "/images/poster_2.png" },
+    { title: "Blade Runner 2049", year: "2017", views: "800K views", image: "/images/poster_1.png" }
   ],
   awards: [
-    { title: "Best Actress - The Starlight Sonata", year: "2023" },
-    { title: "Critics' Choice Award - Echoes of the Past", year: "2021" },
-    { title: "Golden Globe Nomination - City of Dreams", year: "2019" },
-    { title: "Screen Actors Guild Award - Silent Whispers", year: "2017" }
-  ],
-  insights: {
-    relationships: "Currently single, previously linked to actor Ethan Blake.",
-    quotes: "The only way to do great work is to love what you do.",
-    trivia: "Enjoys painting and playing the piano in her free time."
-  }
+    { title: "Best Actor - Academy Awards", details: "For the film \"The Third One\"", year: "2021" },
+    { title: "Best Actor - Golden Globe Awards", details: "For the film \"Noir Detective\"", year: "2019" },
+    { title: "Nominee: Best Supporting Actor - BAFTA", details: "For the film \"Sci-Fi Saga\"", year: "2017" }
+  ]
 };
 
 const ActorProfile = () => {
@@ -70,16 +60,9 @@ const ActorProfile = () => {
           facts={actorData.facts} 
         />
         
-        <FanBanner 
-          percentage={actorData.fanPercentage} 
-          name={actorData.name} 
-        />
-        
         <Filmography movies={actorData.filmography} />
         
         <AwardsSection awards={actorData.awards} />
-        
-        <PersonalInsights insights={actorData.insights} />
       </main>
 
       <Footer />
