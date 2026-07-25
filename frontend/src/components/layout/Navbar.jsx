@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Bell, LogOut } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
+import Logo from '../ui/Logo';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -18,21 +19,16 @@ const Navbar = () => {
     <nav className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-white/10 bg-[#08060d]/95 backdrop-blur-sm sticky top-0 z-50">
       {/* Left: Logo + Nav Links */}
       <div className="flex items-center gap-10">
-        {/* Logo with diamond icon */}
-        <Link to="/" className="flex items-center gap-2.5">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M11 2L20 11L11 20L2 11L11 2Z" fill="#FACC15" />
-          </svg>
-          <span className="text-lg font-black tracking-tight text-white">CINELITH</span>
+        {/* Logo with final ribbon path */}
+        <Link to="/" className="flex items-center">
+          <Logo className="h-9 w-auto" />
         </Link>
 
         {/* Nav Links */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
           <Link to="/" className="hover:text-white transition-colors">Home</Link>
-          <Link to="/movies" className="hover:text-white transition-colors">Movies</Link>
-          <Link to="/movies" className="hover:text-white transition-colors">TV Shows</Link>
-          <Link to="/actor/1" className="hover:text-white transition-colors">Actors</Link>
-          <Link to="/community" className="hover:text-white transition-colors">Community</Link>
+          <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
+          <Link to="/people" className="hover:text-white transition-colors">People</Link>
         </div>
       </div>
 

@@ -1,25 +1,33 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Curated movie data helper to populate onboarding and search
+// Curated movie & TV show data helper to populate onboarding and explore
 export const MOVIE_CATALOG = [
-  { id: 1, title: "Dune: Part Two", year: "2024", genre: "Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Denis Villeneuve" },
-  { id: 2, title: "Oppenheimer", year: "2023", genre: "Drama, History", rating: 8.9, image: "/images/poster_2.png", director: "Christopher Nolan" },
-  { id: 3, title: "Poor Things", year: "2023", genre: "Comedy, Romance, Sci-Fi", rating: 8.4, image: "/images/poster_1.png", director: "Yorgos Lanthimos" },
-  { id: 4, title: "The Holdovers", year: "2023", genre: "Comedy, Drama", rating: 8.0, image: "/images/poster_2.png", director: "Alexander Payne" },
-  { id: 5, title: "Anatomy of a Fall", year: "2023", genre: "Thriller, Drama, Crime", rating: 7.8, image: "/images/poster_1.png", director: "Justine Triet" },
-  { id: 6, title: "The Godfather", year: "1972", genre: "Crime, Drama", rating: 9.2, image: "/images/poster_2.png", director: "Francis Ford Coppola" },
-  { id: 7, title: "Pulp Fiction", year: "1994", genre: "Crime, Thriller", rating: 8.9, image: "/images/poster_1.png", director: "Quentin Tarantino" },
-  { id: 8, title: "2001: A Space Odyssey", year: "1968", genre: "Sci-Fi, Adventure", rating: 8.3, image: "/images/poster_2.png", director: "Stanley Kubrick" },
-  { id: 9, title: "Blade Runner", year: "1982", genre: "Sci-Fi, Thriller", rating: 8.1, image: "/images/poster_1.png", director: "Ridley Scott" },
-  { id: 10, title: "Citizen Kane", year: "1941", genre: "Drama, Mystery", rating: 8.3, image: "/images/poster_2.png", director: "Orson Welles" },
-  { id: 11, title: "The Creator", year: "2023", genre: "Sci-Fi, Action", rating: 7.1, image: "/images/poster_2.png", director: "Gareth Edwards" },
-  { id: 12, title: "The Dark Knight", year: "2008", genre: "Action, Crime, Thriller", rating: 9.0, image: "/images/poster_2.png", director: "Christopher Nolan" },
-  { id: 13, title: "Blade Runner 2049", year: "2017", genre: "Sci-Fi, Thriller", rating: 8.0, image: "/images/poster_1.png", director: "Denis Villeneuve" },
-  { id: 14, title: "Inception", year: "2010", genre: "Action, Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Christopher Nolan" },
-  { id: 15, title: "Interstellar", year: "2014", genre: "Sci-Fi, Drama", rating: 8.7, image: "/images/poster_2.png", director: "Christopher Nolan" },
-  { id: 16, title: "Parasite", year: "2019", genre: "Thriller, Drama, Comedy", rating: 8.6, image: "/images/poster_2.png", director: "Bong Joon Ho" },
-  { id: 17, title: "Fight Club", year: "1999", genre: "Drama, Thriller", rating: 8.8, image: "/images/poster_2.png", director: "David Fincher" }
+  { id: 1, title: "Dune: Part Two", year: "2024", genre: "Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Timothée Chalamet", "Zendaya", "Austin Butler", "Florence Pugh"] },
+  { id: 2, title: "Oppenheimer", year: "2023", genre: "Drama, History", rating: 8.9, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr."] },
+  { id: 3, title: "Poor Things", year: "2023", genre: "Comedy, Romance, Sci-Fi", rating: 8.4, image: "/images/poster_1.png", director: "Yorgos Lanthimos", type: "movie", region: "United Kingdom", language: "English", cast: ["Emma Stone", "Mark Ruffalo", "Willem Dafoe"] },
+  { id: 4, title: "The Holdovers", year: "2023", genre: "Comedy, Drama", rating: 8.0, image: "/images/poster_2.png", director: "Alexander Payne", type: "movie", region: "United States", language: "English", cast: ["Paul Giamatti", "Da'Vine Joy Randolph", "Dominic Sessa"] },
+  { id: 5, title: "Anatomy of a Fall", year: "2023", genre: "Thriller, Drama, Crime", rating: 7.8, image: "/images/poster_1.png", director: "Justine Triet", type: "movie", region: "France", language: "French", cast: ["Sandra Hüller", "Swann Arlaud", "Milo Machado-Graner"] },
+  { id: 6, title: "The Godfather", year: "1972", genre: "Crime, Drama", rating: 9.2, image: "/images/poster_2.png", director: "Francis Ford Coppola", type: "movie", region: "United States", language: "English", cast: ["Marlon Brando", "Al Pacino", "James Caan"] },
+  { id: 7, title: "Pulp Fiction", year: "1994", genre: "Crime, Thriller", rating: 8.9, image: "/images/poster_1.png", director: "Quentin Tarantino", type: "movie", region: "United States", language: "English", cast: ["John Travolta", "Samuel L. Jackson", "Uma Thurman", "Bruce Willis"] },
+  { id: 8, title: "2001: A Space Odyssey", year: "1968", genre: "Sci-Fi, Adventure", rating: 8.3, image: "/images/poster_2.png", director: "Stanley Kubrick", type: "movie", region: "United Kingdom", language: "English", cast: ["Keir Dullea", "Gary Lockwood"] },
+  { id: 9, title: "Blade Runner", year: "1982", genre: "Sci-Fi, Thriller", rating: 8.1, image: "/images/poster_1.png", director: "Ridley Scott", type: "movie", region: "United States", language: "English", cast: ["Harrison Ford", "Rutger Hauer", "Sean Young"] },
+  { id: 10, title: "Citizen Kane", year: "1941", genre: "Drama, Mystery", rating: 8.3, image: "/images/poster_2.png", director: "Orson Welles", type: "movie", region: "United States", language: "English", cast: ["Orson Welles", "Joseph Cotten", "Dorothy Comingore"] },
+  { id: 11, title: "The Creator", year: "2023", genre: "Sci-Fi, Action", rating: 7.1, image: "/images/poster_2.png", director: "Gareth Edwards", type: "movie", region: "United States", language: "English", cast: ["John David Washington", "Gemma Chan"] },
+  { id: 12, title: "The Dark Knight", year: "2008", genre: "Action, Crime, Thriller", rating: 9.0, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Christian Bale", "Heath Ledger", "Gary Oldman"] },
+  { id: 13, title: "Blade Runner 2049", year: "2017", genre: "Sci-Fi, Thriller", rating: 8.0, image: "/images/poster_1.png", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Ryan Gosling", "Harrison Ford", "Ana de Armas"] },
+  { id: 14, title: "Inception", year: "2010", genre: "Action, Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"] },
+  { id: 15, title: "Interstellar", year: "2014", genre: "Sci-Fi, Drama", rating: 8.7, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"] },
+  { id: 16, title: "Parasite", year: "2019", genre: "Thriller, Drama, Comedy", rating: 8.6, image: "/images/poster_2.png", director: "Bong Joon Ho", type: "movie", region: "South Korea", language: "Korean", cast: ["Song Kang-ho", "Lee Sun-kyun", "Cho Yeo-jeong"] },
+  { id: 17, title: "Fight Club", year: "1999", genre: "Drama, Thriller", rating: 8.8, image: "/images/poster_2.png", director: "David Fincher", type: "movie", region: "United States", language: "English", cast: ["Brad Pitt", "Edward Norton", "Helena Bonham Carter"] },
+  
+  // TV Shows
+  { id: 18, title: "Breaking Bad", year: "2008", genre: "Crime, Drama, Thriller", rating: 9.5, image: "/images/poster_1.png", director: "Vince Gilligan", type: "tv", region: "United States", language: "English", cast: ["Bryan Cranston", "Aaron Paul", "Bob Odenkirk"] },
+  { id: 19, title: "Game of Thrones", year: "2011", genre: "Action, Adventure, Drama", rating: 9.2, image: "/images/poster_2.png", director: "David Benioff", type: "tv", region: "United Kingdom", language: "English", cast: ["Emilia Clarke", "Kit Harington", "Peter Dinklage"] },
+  { id: 20, title: "Succession", year: "2018", genre: "Drama", rating: 8.8, image: "/images/poster_1.png", director: "Jesse Armstrong", type: "tv", region: "United States", language: "English", cast: ["Brian Cox", "Jeremy Strong", "Sarah Snook"] },
+  { id: 21, title: "Severance", year: "2022", genre: "Sci-Fi, Thriller", rating: 8.7, image: "/images/poster_2.png", director: "Dan Erickson", type: "tv", region: "United States", language: "English", cast: ["Adam Scott", "Patricia Arquette", "John Turturro"] },
+  { id: 22, title: "Chernobyl", year: "2019", genre: "Drama, History", rating: 9.4, image: "/images/poster_1.png", director: "Craig Mazin", type: "tv", region: "United Kingdom", language: "English", cast: ["Jared Harris", "Stellan Skarsgård", "Emily Watson"] },
+  { id: 23, title: "Squid Game", year: "2021", genre: "Thriller, Drama, Action", rating: 8.0, image: "/images/poster_2.png", director: "Hwang Dong-hyuk", type: "tv", region: "South Korea", language: "Korean", cast: ["Lee Jung-jae", "Park Hae-soo", "Jung Ho-yeon"] }
 ];
 
 export const ACTOR_CATALOG = [
@@ -55,15 +63,16 @@ const useUserStore = create(
         ]
       },
       following: [],
+      followRequests: [],
 
-      signup: (name, email, password) => {
-        // Clean name to generate a handle
-        const username = name.toLowerCase().replace(/\s+/g, '_');
+      signup: (name, email, password, username, bio) => {
+        const finalUsername = username ? (username.startsWith('@') ? username : `@${username}`) : `@${name.toLowerCase().replace(/\s+/g, '_')}`;
+        const finalBio = bio || "Cinephile exploring the world of cinema.";
         const newUser = {
           name,
-          username: `@${username}`,
+          username: finalUsername,
           email,
-          bio: "Cinephile exploring the world of cinema.",
+          bio: finalBio,
           avatar: "/images/actor_1.png",
           favoriteMovies: [],
           watchlist: [],
@@ -72,7 +81,8 @@ const useUserStore = create(
           favoriteGenres: [],
           ratings: [],
           reviews: [],
-          cinephileScore: 50, // base signup score
+          customLists: [],
+          cinephileScore: 100, // base signup score
           streak: 1
         };
 
@@ -83,7 +93,6 @@ const useUserStore = create(
       },
 
       login: (email, password) => {
-        // Simulated login for existing static user details if password is provided
         const name = "Alex Mercer";
         const username = "@alex_cinephile";
         const mockUser = {
@@ -101,6 +110,13 @@ const useUserStore = create(
             { id: 1, title: "Dune: Part Two", rating: 9 },
             { id: 2, title: "Oppenheimer", rating: 10 }
           ],
+          reviews: [
+            { id: 1, movieId: 2, text: "Oppenheimer is a landmark achievement in modern cinema. Nolan orchestrates sound and light like a maestro.", date: new Date(Date.now() - 86400000).toISOString() }
+          ],
+          customLists: [
+            { id: 101, name: "Nolan Collection", movies: [MOVIE_CATALOG[1], MOVIE_CATALOG[11], MOVIE_CATALOG[14]] },
+            { id: 102, name: "Sci-Fi Favorites", movies: [MOVIE_CATALOG[0], MOVIE_CATALOG[8]] }
+          ],
           cinephileScore: 8950,
           streak: 14
         };
@@ -115,6 +131,92 @@ const useUserStore = create(
         set({
           user: null,
           isAuthenticated: false
+        });
+      },
+
+      updateProfile: (name, bio, avatar) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        set({
+          user: {
+            ...currentUser,
+            name: name || currentUser.name,
+            bio: bio || currentUser.bio,
+            avatar: avatar || currentUser.avatar
+          }
+        });
+      },
+
+      createCustomList: (name) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentLists = currentUser.customLists || [];
+        const newList = {
+          id: Date.now(),
+          name,
+          movies: []
+        };
+        set({
+          user: {
+            ...currentUser,
+            customLists: [...currentLists, newList]
+          }
+        });
+      },
+
+      deleteCustomList: (id) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentLists = currentUser.customLists || [];
+        set({
+          user: {
+            ...currentUser,
+            customLists: currentLists.filter(l => l.id !== id)
+          }
+        });
+      },
+
+      addMovieToCustomList: (listId, movie) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentLists = currentUser.customLists || [];
+        const updatedLists = currentLists.map(list => {
+          if (list.id === listId) {
+            const exists = list.movies.some(m => m.id === movie.id);
+            if (exists) return list;
+            return {
+              ...list,
+              movies: [...list.movies, movie]
+            };
+          }
+          return list;
+        });
+        set({
+          user: {
+            ...currentUser,
+            customLists: updatedLists
+          }
+        });
+      },
+
+      removeMovieFromCustomList: (listId, movieId) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentLists = currentUser.customLists || [];
+        const updatedLists = currentLists.map(list => {
+          if (list.id === listId) {
+            return {
+              ...list,
+              movies: list.movies.filter(m => m.id !== movieId)
+            };
+          }
+          return list;
+        });
+        set({
+          user: {
+            ...currentUser,
+            customLists: updatedLists
+          }
         });
       },
 
@@ -221,7 +323,7 @@ const useUserStore = create(
         if (!currentUser) return;
 
         const reviews = currentUser.reviews || [];
-        const updatedReviews = [...reviews, { movieId, text: commentText, date: new Date().toISOString() }];
+        const updatedReviews = [...reviews, { id: Date.now(), movieId, text: commentText, date: new Date().toISOString() }];
 
         set({
           user: {
@@ -289,11 +391,35 @@ const useUserStore = create(
 
       toggleFollowUser: (username) => {
         const following = get().following || [];
-        const isFollowing = following.includes(username);
-        const updatedFollowing = isFollowing
-          ? following.filter(u => u !== username)
-          : [...following, username];
-        set({ following: updatedFollowing });
+        const followRequests = get().followRequests || [];
+        
+        // Simulating private accounts
+        const privateHandles = ["@sophia_b", "@ava_g", "@caleb_r", "@grace_y"];
+        const isPrivate = privateHandles.includes(username);
+        
+        if (following.includes(username)) {
+          // Unfollow
+          set({
+            following: following.filter(u => u !== username)
+          });
+        } else if (followRequests.includes(username)) {
+          // Cancel follow request
+          set({
+            followRequests: followRequests.filter(u => u !== username)
+          });
+        } else {
+          if (isPrivate) {
+            // Send request
+            set({
+              followRequests: [...followRequests, username]
+            });
+          } else {
+            // Follow immediately
+            set({
+              following: [...following, username]
+            });
+          }
+        }
       },
 
       awardPoints: (amount) => {

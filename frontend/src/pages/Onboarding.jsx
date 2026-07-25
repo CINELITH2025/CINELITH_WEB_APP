@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserStore, { MOVIE_CATALOG, ACTOR_CATALOG, GENRE_CATALOG } from '../store/useUserStore';
 import { Search, Film, Star, Check, Sparkles, User, Bookmark } from 'lucide-react';
+import Logo from '../components/ui/Logo';
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -51,11 +52,11 @@ const Onboarding = () => {
     }
   }, [currentStep]);
 
-  // Once loading completes, save to Zustand and redirect to profile
+  // Once loading completes, save to Zustand and redirect to dashboard
   useEffect(() => {
     if (loadingComplete) {
       saveOnboarding(favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres);
-      navigate('/profile');
+      navigate('/dashboard');
     }
   }, [loadingComplete, navigate]);
 
@@ -134,10 +135,8 @@ const Onboarding = () => {
         <header className="w-full border-b border-white/5 py-4 px-6 bg-black/40 backdrop-blur-md sticky top-0 z-40">
           <div className="max-w-[1200px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-                <path d="M11 2L20 11L11 20L2 11L11 2Z" fill="#FACC15" />
-              </svg>
-              <span className="text-sm font-black tracking-wider">ONBOARDING</span>
+              <Logo className="h-5 w-auto" />
+              <span className="text-sm font-black tracking-wider border-l border-white/20 pl-3">ONBOARDING</span>
             </div>
             
             <div className="flex items-center gap-2">
@@ -453,12 +452,10 @@ const Onboarding = () => {
           <div className="flex flex-col items-center justify-center py-20 text-center relative">
             <div className="absolute inset-0 bg-radial-gradient from-[#FACC15]/5 to-transparent pointer-events-none"></div>
 
-            {/* Pulsing diamond box */}
+            {/* Pulsing logo box */}
             <div className="relative mb-10 w-24 h-24 flex items-center justify-center">
               <div className="absolute inset-0 bg-[#FACC15]/20 rounded-full blur-xl animate-pulse"></div>
-              <svg width="60" height="60" viewBox="0 0 22 22" fill="none" className="relative z-10 animate-bounce">
-                <path d="M11 2L20 11L11 20L2 11L11 2Z" fill="#FACC15" />
-              </svg>
+              <Logo className="h-10 w-auto relative z-10 animate-bounce" />
             </div>
 
             <h2 className="text-2xl font-black tracking-tight text-white mb-2">Creating Your Cinephile Identity</h2>
