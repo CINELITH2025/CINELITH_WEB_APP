@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
+import Landing from './pages/Landing'
 import ActorProfile from './pages/ActorProfile'
 import Dashboard from './pages/Dashboard'
 import Explore from './pages/Explore'
@@ -16,7 +17,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/app" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/actor/:id" element={<ActorProfile />} />
