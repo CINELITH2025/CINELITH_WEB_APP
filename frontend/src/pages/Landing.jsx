@@ -1321,18 +1321,18 @@ const Landing = () => {
             <button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors cursor-pointer">About</button>
             <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="/terms" className="hover:text-white transition-colors">Terms & Conditions</a>
-            <a href="mailto:info@cinelith.com" className="hover:text-white transition-colors">Contact</a>
+            <a href="mailto:team@cinelith.com" className="hover:text-white transition-colors">team@cinelith.com</a>
           </div>
 
           {/* Social Icons */}
           <div className="flex items-center gap-4 text-[#B5B5B5]">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+            <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" title="Instagram @cinelithofficial">
               <Instagram className="w-4 h-4" />
             </a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               <Linkedin className="w-4 h-4" />
             </a>
-            <a href="mailto:info@cinelith.com" className="hover:text-white transition-colors">
+            <a href="mailto:team@cinelith.com" className="hover:text-white transition-colors" title="Email team@cinelith.com">
               <Mail className="w-4 h-4" />
             </a>
           </div>
