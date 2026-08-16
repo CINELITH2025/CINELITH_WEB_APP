@@ -1172,7 +1172,7 @@ const Landing = () => {
                   </div>
 
                   <p className="text-xs text-gray-400 max-w-sm mx-auto">
-                    Your Founding Pass is activated! We have sent a confirmation email to <b className="text-white">{formData.email}</b>.
+                    Your Founding Pass is activated! You are now locked in for early access.
                   </p>
                 </motion.div>
               )}
