@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MessageSquare, Sparkles, Trophy, Award,
+  MessageSquare, Sparkles, Trophy, Award, Lock,
   Check, X, ChevronDown, ChevronUp, Loader2, Mail, 
-  ShieldCheck, Star, ArrowUpRight, Compass, Activity
+  ShieldCheck, Star, ArrowUpRight, Compass, Activity,
+  ChevronLeft, ChevronRight, Film, Globe, User
 } from 'lucide-react';
+import Cinema3DStage from '../components/ui/Cinema3DStage';
 
 // Custom inline SVG icons since brand icons are not in the installed lucide-react version
 const Instagram = (props) => (
@@ -26,9 +28,37 @@ const Linkedin = (props) => (
 // Helper to determine API URL
 const API_URL = import.meta.env.DEV ? 'http://localhost:5050/api' : '/api';
 
+const POSTERS = [
+  { title: "Interstellar", director: "Christopher Nolan", url: "/images/poster_1.jpg" },
+  { title: "Inception", director: "Christopher Nolan", url: "/images/poster_2.jpg" },
+  { title: "The Dark Knight", director: "Christopher Nolan", url: "/images/poster_3.jpg" },
+  { title: "Dune: Part Two", director: "Denis Villeneuve", url: "/images/poster_4.jpg" },
+  { title: "Oppenheimer", director: "Christopher Nolan", url: "/images/poster_5.jpg" },
+  { title: "Barbie", director: "Greta Gerwig", url: "/images/poster_6.jpg" },
+  { title: "La La Land", director: "Damien Chazelle", url: "/images/poster_7.jpg" },
+  { title: "Pulp Fiction", director: "Quentin Tarantino", url: "/images/poster_8.jpg" },
+  { title: "Fight Club", director: "David Fincher", url: "/images/poster_9.jpg" },
+  { title: "The Matrix", director: "Lana Wachowski", url: "/images/poster_10.jpg" },
+  { title: "Parasite", director: "Bong Joon-ho", url: "/images/poster_11.jpg" },
+  { title: "The Shawshank Redemption", director: "Frank Darabont", url: "/images/poster_12.jpg" },
+  { title: "The Godfather", director: "Francis Ford Coppola", url: "/images/poster_13.jpg" },
+  { title: "Blade Runner 2049", director: "Denis Villeneuve", url: "/images/poster_14.jpg" },
+  { title: "Whiplash", director: "Damien Chazelle", url: "/images/poster_15.jpg" },
+  { title: "Spirited Away", director: "Hayao Miyazaki", url: "/images/poster_16.jpg" },
+  { title: "Spider-Man: Into the Spider-Verse", director: "Peter Ramsey", url: "/images/poster_17.jpg" },
+  { title: "Gladiator", director: "Ridley Scott", url: "/images/poster_18.jpg" },
+  { title: "Django Unchained", director: "Quentin Tarantino", url: "/images/poster_19.jpg" },
+  { title: "Your Name.", director: "Makoto Shinkai", url: "/images/poster_20.jpg" },
+  { title: "Inglourious Basterds", director: "Quentin Tarantino", url: "/images/poster_21.jpg" },
+  { title: "Avatar", director: "James Cameron", url: "/images/poster_22.jpg" },
+  { title: "Star Wars: A New Hope", director: "George Lucas", url: "/images/poster_23.jpg" },
+  { title: "The Lord of the Rings: The Fellowship of the Ring", director: "Peter Jackson", url: "/images/poster_24.jpg" },
+  { title: "Forrest Gump", director: "Robert Zemeckis", url: "/images/poster_25.jpg" }
+];
+
 const Landing = () => {
   // Waitlist form states
-  const [formData, setFormData] = useState({ name: '', email: '', favoriteMovie: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', country: '', favoriteMovie: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -37,6 +67,15 @@ const Landing = () => {
 
   // FAQ states
   const [openFaq, setOpenFaq] = useState(null);
+
+  // Autoplay for movie posters carousel
+  const [activePosterIndex, setActivePosterIndex] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActivePosterIndex((prev) => (prev + 1) % 25);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Preview tab state
   const [activePreviewTab, setActivePreviewTab] = useState('Home Page');
@@ -113,8 +152,7 @@ const Landing = () => {
     { id: 'Movie Detail Page', label: 'Movie Detail Page' },
     { id: 'Actor Profile', label: 'Actor Profile' },
     { id: 'Dashboard', label: 'Dashboard' },
-    { id: 'Community Discussions', label: 'Discussions' },
-    { id: 'Mobile Version', label: 'Mobile Version' }
+    { id: 'Community Discussions', label: 'Discussions' }
   ];
 
   return (
@@ -122,9 +160,9 @@ const Landing = () => {
       
       {/* BACKGROUND EFFECTS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-radial from-[#FFD60A]/10 to-transparent blur-[120px]" />
+        <div className="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-radial from-[#F4C618]/10 to-transparent blur-[120px]" />
         <div className="absolute top-[20%] -right-[30%] w-[80%] h-[80%] rounded-full bg-radial from-[#F4C430]/8 to-transparent blur-[120px]" />
-        <div className="absolute top-[60%] -left-[30%] w-[85%] h-[85%] rounded-full bg-radial from-[#FFD60A]/5 to-transparent blur-[150px]" />
+        <div className="absolute top-[60%] -left-[30%] w-[85%] h-[85%] rounded-full bg-radial from-[#F4C618]/5 to-transparent blur-[150px]" />
       </div>
 
       {/* A. FLOATING NAVIGATION */}
@@ -132,12 +170,7 @@ const Landing = () => {
         <div className="backdrop-blur-xl bg-[#111111]/70 border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-full px-6 py-3 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-8 h-8 rounded-lg bg-[#FFD60A] flex items-center justify-center font-black text-black tracking-tighter">
-              C
-            </div>
-            <span className="font-extrabold text-xl tracking-wider bg-gradient-to-r from-white via-white to-[#FFD60A] bg-clip-text text-transparent">
-              CINELITH
-            </span>
+            <img src="/images/logo_text.png" alt="CINELITH" className="h-10 md:h-11 w-auto object-contain" />
           </div>
 
           {/* Links */}
@@ -153,7 +186,7 @@ const Landing = () => {
           <div>
             <button 
               onClick={() => scrollToSection('signup')}
-              className="bg-gradient-to-r from-[#FFD60A] to-[#F4C430] hover:from-[#F5C400] hover:to-[#E2B220] text-black font-semibold text-xs md:text-sm px-5 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(255,214,10,0.3)] hover:shadow-[0_0_25px_rgba(255,214,10,0.5)] cursor-pointer"
+              className="bg-gradient-to-r from-[#F4C618] to-[#F4C430] hover:from-[#F5C400] hover:to-[#E2B220] text-black font-semibold text-xs md:text-sm px-5 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(244,198,24,0.3)] hover:shadow-[0_0_25px_rgba(244,198,24,0.5)] cursor-pointer"
             >
               Join Early Access
             </button>
@@ -175,7 +208,7 @@ const Landing = () => {
             className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white"
           >
             Discover. Discuss. <br />
-            <span className="text-[#FFD60A] filter drop-shadow-[0_0_30px_rgba(255,214,10,0.15)]">
+            <span className="text-[#F4C618] filter drop-shadow-[0_0_30px_rgba(244,198,24,0.15)]">
               Connect Through Cinema.
             </span>
           </motion.h1>
@@ -199,7 +232,7 @@ const Landing = () => {
           >
             <button 
               onClick={() => scrollToSection('signup')}
-              className="bg-[#FFD60A] hover:bg-[#F4C430] text-black font-bold px-10 py-4 rounded-full transition-all duration-300 shadow-[0_0_40px_rgba(255,214,10,0.35)] hover:shadow-[0_0_50px_rgba(255,214,10,0.55)] transform hover:scale-105 cursor-pointer text-sm md:text-base tracking-wide"
+              className="bg-[#F4C618] hover:bg-[#F4C430] text-black font-bold px-10 py-4 rounded-full transition-all duration-300 shadow-[0_0_40px_rgba(244,198,24,0.35)] hover:shadow-[0_0_50px_rgba(244,198,24,0.55)] transform hover:scale-105 cursor-pointer text-sm md:text-base tracking-wide"
             >
               Secure Your Spot
             </button>
@@ -232,7 +265,7 @@ const Landing = () => {
             {/* User Profile */}
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
-              <div className="w-6 h-6 rounded-full bg-[#FFD60A] text-black font-black text-[9px] flex items-center justify-center">VA</div>
+              <div className="w-6 h-6 rounded-full bg-[#F4C618] text-black font-black text-[9px] flex items-center justify-center">VA</div>
             </div>
           </div>
 
@@ -240,52 +273,87 @@ const Landing = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 md:p-8 min-h-[360px] items-center">
             
             {/* Widescreen Overlapping Movie Posters Carousel */}
-            <div className="lg:col-span-8 flex justify-center items-center relative min-h-[280px]">
+            <div className="lg:col-span-8 flex justify-center items-center relative min-h-[320px]">
               
-              {/* Overlapping Poster Stack */}
-              <div className="flex items-center justify-center -space-x-12 relative w-full max-w-lg">
+              {/* Overlapping Poster Stack with Slidable Controls */}
+              <div className="relative w-full max-w-xl h-[320px] flex items-center justify-center overflow-hidden group/carousel">
                 
-                {/* Poster 1 */}
-                <div className="w-28 md:w-36 aspect-[2/3] bg-neutral-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl transform -rotate-12 translate-x-8 scale-85 opacity-40 transition-all duration-300 relative group">
-                  <img src="/images/dune.jpg" alt="Dune" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-2">
-                    <span className="text-[10px] font-bold tracking-tight text-white/50 truncate">DUNE</span>
-                  </div>
+                {/* Left Arrow */}
+                <button 
+                  type="button"
+                  onClick={() => setActivePosterIndex((prev) => (prev - 1 + 25) % 25)}
+                  className="absolute left-2 z-40 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full border border-white/10 transition-all hover:scale-110 cursor-pointer opacity-0 group-hover/carousel:opacity-100 duration-300 focus:outline-none"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Posters Wrapper */}
+                <div className="flex items-center justify-center relative w-full h-full">
+                  {POSTERS.map((poster, idx) => {
+                    let offset = idx - activePosterIndex;
+                    if (offset < -12) offset += 25;
+                    if (offset > 12) offset -= 25;
+
+                    const isVisible = offset >= -2 && offset <= 2;
+                    if (!isVisible) return null;
+
+                    let transformClass = "";
+                    let zIndexClass = 0;
+                    let opacityClass = 0;
+                    let scaleClass = 1;
+                    let borderClass = "border-white/10";
+                    let shadowClass = "shadow-2xl";
+
+                    if (offset === 0) {
+                      transformClass = "translate-x-0 rotate-0 z-30 opacity-100 scale-100 pointer-events-auto";
+                      borderClass = "border-[#F4C618] border-2";
+                      shadowClass = "shadow-[0_0_40px_rgba(244,198,24,0.25)]";
+                    } else if (offset === -1) {
+                      transformClass = "-translate-x-20 md:-translate-x-28 -rotate-6 z-20 opacity-75 scale-90 pointer-events-auto";
+                    } else if (offset === 1) {
+                      transformClass = "translate-x-20 md:translate-x-28 rotate-6 z-20 opacity-75 scale-90 pointer-events-auto";
+                    } else if (offset === -2) {
+                      transformClass = "-translate-x-36 md:-translate-x-52 -rotate-12 z-10 opacity-30 scale-80 pointer-events-auto";
+                    } else if (offset === 2) {
+                      transformClass = "translate-x-36 md:translate-x-52 rotate-12 z-10 opacity-30 scale-80 pointer-events-auto";
+                    }
+
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => setActivePosterIndex(idx)}
+                        className={`absolute w-36 md:w-44 aspect-[2/3] bg-neutral-900 border rounded-xl overflow-hidden cursor-pointer transition-all duration-500 ease-out select-none ${transformClass} ${borderClass} ${shadowClass}`}
+                      >
+                        <img 
+                          src={poster.url} 
+                          alt={poster.title} 
+                          className="w-full h-full object-cover pointer-events-none"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent flex flex-col justify-end p-3 text-left">
+                          {offset === 0 ? (
+                            <>
+                              <span className="text-[#F4C618] text-[9px] font-black tracking-widest uppercase">NOW PREVIEWING</span>
+                              <h5 className="text-xs md:text-sm font-black text-white leading-tight mt-0.5 truncate">{poster.title}</h5>
+                              <span className="text-[9px] text-[#B5B5B5] truncate mt-0.5">Directed by {poster.director}</span>
+                            </>
+                          ) : (
+                            <span className="text-[10px] font-bold tracking-tight text-white/70 truncate">{poster.title}</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* Poster 2 */}
-                <div className="w-32 md:w-40 aspect-[2/3] bg-neutral-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl transform -rotate-6 translate-x-4 scale-92 opacity-70 z-10 transition-all duration-300 relative group">
-                  <img src="/images/oppenheimer.jpg" alt="Oppenheimer" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-3">
-                    <span className="text-xs font-bold tracking-tight text-white/80 truncate">OPPENHEIMER</span>
-                  </div>
-                </div>
-
-                {/* Poster 3 (Center Highlighted Card) */}
-                <div className="w-36 md:w-48 aspect-[2/3] bg-neutral-900 border-2 border-[#FFD60A] rounded-xl overflow-hidden shadow-[0_0_40px_rgba(255,214,10,0.25)] transform rotate-0 scale-100 z-20 transition-all duration-300 relative group">
-                  <img src="/images/interstellar.jpg" alt="Interstellar" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent flex flex-col justify-end p-4 text-left">
-                    <span className="text-[#FFD60A] text-[10px] font-bold tracking-widest uppercase">NOW PREVIEWING</span>
-                    <h5 className="text-sm md:text-base font-black text-white leading-tight mt-1">INTERSTELLAR</h5>
-                    <span className="text-[10px] text-[#B5B5B5] mt-0.5">Directed by C. Nolan</span>
-                  </div>
-                </div>
-
-                {/* Poster 4 */}
-                <div className="w-32 md:w-40 aspect-[2/3] bg-neutral-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl transform rotate-6 -translate-x-4 scale-92 opacity-70 z-10 transition-all duration-300 relative group">
-                  <img src="/images/barbie.jpg" alt="Barbie" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-3">
-                    <span className="text-xs font-bold tracking-tight text-white/80 truncate">BARBIE</span>
-                  </div>
-                </div>
-
-                {/* Poster 5 */}
-                <div className="w-28 md:w-36 aspect-[2/3] bg-neutral-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl transform rotate-12 -translate-x-8 scale-85 opacity-40 transition-all duration-300 relative group">
-                  <img src="/images/lalaland.jpg" alt="La La Land" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-2">
-                    <span className="text-[10px] font-bold tracking-tight text-white/50 truncate">LA LA LAND</span>
-                  </div>
-                </div>
+                {/* Right Arrow */}
+                <button 
+                  type="button"
+                  onClick={() => setActivePosterIndex((prev) => (prev + 1) % 25)}
+                  className="absolute right-2 z-40 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full border border-white/10 transition-all hover:scale-110 cursor-pointer opacity-0 group-hover/carousel:opacity-100 duration-300 focus:outline-none"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
 
               </div>
 
@@ -298,13 +366,13 @@ const Landing = () => {
               <div className="space-y-2">
                 <span className="text-[10px] font-bold text-[#B5B5B5] uppercase tracking-wider block">Rating Frequency</span>
                 <div className="bg-[#151515] p-3 rounded-xl border border-white/[0.04]">
-                  <svg viewBox="0 0 200 80" className="w-full h-16 text-[#FFD60A]">
+                  <svg viewBox="0 0 200 80" className="w-full h-16 text-[#F4C618]">
                     <path d="M0,50 Q25,20 50,55 T100,20 T150,60 T200,30" fill="none" stroke="currentColor" strokeWidth="2.5" />
                     <path d="M0,50 Q25,20 50,55 T100,20 T150,60 T200,30 L200,80 L0,80 Z" fill="url(#wave-gradient)" opacity="0.1" />
                     <defs>
                       <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#FFD60A" />
-                        <stop offset="100%" stopColor="#FFD60A" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#F4C618" />
+                        <stop offset="100%" stopColor="#F4C618" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -315,7 +383,7 @@ const Landing = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#151515] p-3 rounded-xl border border-white/[0.04] flex flex-col items-center">
                   <span className="text-[9px] font-bold text-[#B5B5B5] uppercase tracking-wider mb-2">Taste Radar</span>
-                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#FFD60A]">
+                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#F4C618]">
                     <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" />
                     <polygon points="50,25 80,45 65,75 35,75 22,48" fill="rgba(255, 214, 10, 0.2)" stroke="currentColor" strokeWidth="2" />
                   </svg>
@@ -343,7 +411,7 @@ const Landing = () => {
                         <span className="font-bold text-white/90">{user.name}</span>
                         <span className="text-[9px] text-[#B5B5B5] truncate max-w-[120px]">"{user.text}"</span>
                       </div>
-                      <span className="text-[8px] bg-[#FFD60A]/10 text-[#FFD60A] px-1.5 py-0.5 rounded font-black">{user.level}</span>
+                      <span className="text-[8px] bg-[#F4C618]/10 text-[#F4C618] px-1.5 py-0.5 rounded font-black">{user.level}</span>
                     </div>
                   ))}
                 </div>
@@ -361,7 +429,7 @@ const Landing = () => {
         <div className="max-w-4xl mx-auto text-center space-y-12">
           
           <div className="space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">The Problem</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">The Problem</h2>
             <h3 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Movie Discovery Shouldn't Be This Complicated
             </h3>
@@ -417,7 +485,7 @@ const Landing = () => {
           </p>
 
           <div className="pt-4">
-            <div className="inline-block bg-[#FFD60A]/10 border border-[#FFD60A]/20 px-6 py-3 rounded-2xl text-[#FFD60A] font-bold text-sm md:text-base">
+            <div className="inline-block bg-[#F4C618]/10 border border-[#F4C618]/20 px-6 py-3 rounded-2xl text-[#F4C618] font-bold text-sm md:text-base">
               ✨ CINELITH brings everything together in one seamless experience.
             </div>
           </div>
@@ -427,77 +495,79 @@ const Landing = () => {
 
       {/* D. ABOUT CINELITH / FEATURES */}
       <section id="about" className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
-        <div className="text-center space-y-4 mb-16 max-w-3xl mx-auto">
-          <p className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">THE EXPERIENCE</p>
-          <h3 className="text-xl md:text-2xl text-[#B5B5B5] font-medium leading-relaxed">
-            Immerse yourself in a platform designed by cinephiles, for cinephiles. Every pixel crafted to respect the art of filmmaking.
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+          <h3 className="text-3xl md:text-5xl font-black text-gray-200 tracking-tight">
+            A unified cinematic experience.
           </h3>
         </div>
 
-        {/* Asymmetric Feature Cards Grid */}
+        {/* 4 Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           
-          {/* Card 1: Curated Discovery */}
-          <div className="md:col-span-8 bg-[#1A1A1A] border border-white/[0.06] hover:border-[#FFD60A]/30 transition-all duration-300 rounded-3xl p-8 min-h-[260px] flex flex-col justify-between relative overflow-hidden group">
-            {/* Gears/Film Reels background overlay */}
-            <div className="absolute right-0 bottom-0 w-64 h-64 opacity-5 pointer-events-none text-[#FFD60A]">
-              <svg className="w-full h-full" viewBox="0 0 100 100" fill="currentColor">
-                <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6,4" />
-                <circle cx="50" cy="50" r="12" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="50" y1="15" x2="50" y2="85" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="15" y1="50" x2="85" y2="50" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="25" y1="25" x2="75" y2="75" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="25" y1="75" x2="75" y2="25" stroke="currentColor" strokeWidth="1.5" />
-              </svg>
-            </div>
+          {/* Card 1: Movie Discovery */}
+          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#F4C618]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col md:flex-row justify-between relative overflow-hidden group">
             
-            <div className="w-12 h-12 bg-[#FFD60A]/10 text-[#FFD60A] rounded-xl flex items-center justify-center mb-6">
-              <Compass className="w-6 h-6" />
+            {/* Left Content Column */}
+            <div className="w-full md:w-[48%] flex flex-col justify-between relative z-20 h-full min-h-[180px] md:min-h-0">
+              <div className="w-10 h-10 rounded-full bg-[#F4C618]/10 border border-[#F4C618]/30 text-[#F4C618] flex items-center justify-center mb-6">
+                <Compass className="w-5 h-5" />
+              </div>
+              
+              <div>
+                <h4 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Movie Discovery</h4>
+                <p className="text-sm text-[#B5B5B5] leading-relaxed font-medium">
+                  Find hidden gems curated by a community that shares your specific cinematic language.
+                </p>
+              </div>
             </div>
-            
+
+            {/* Right Cinematic Background Column */}
+            <div className="w-full md:w-[52%] h-[220px] md:h-full md:absolute md:right-0 md:top-0 z-10 border-t md:border-t-0 md:border-l border-white/[0.06] relative overflow-hidden group/bg mt-6 md:mt-0">
+              <img 
+                src="/images/hero_bg.png" 
+                alt="Movie Discovery" 
+                className="w-full h-full object-cover opacity-60 scale-105 group-hover/bg:scale-110 transition-transform duration-700 filter brightness-90" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#141414] via-[#141414]/40 to-transparent" />
+            </div>
+
+          </div>
+
+          {/* Card 2: Personal Dashboard */}
+          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#F4C618]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F4C618]/10 border border-[#F4C618]/30 text-[#F4C618] flex items-center justify-center mb-6">
+              <Activity className="w-5 h-5" />
+            </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">Curated Discovery</h4>
-              <p className="text-sm text-[#B5B5B5] leading-relaxed max-w-xl">
-                Break out of algorithmic echo chambers. Explore hand-picked collections and hidden gems from global cinema.
+              <h4 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Personal Dashboard</h4>
+              <p className="text-sm text-[#B5B5B5] leading-relaxed font-medium">
+                Your entire film history, elegantly visualized.
               </p>
             </div>
           </div>
 
-          {/* Card 2: Taste Analytics */}
-          <div className="md:col-span-4 bg-[#1A1A1A] border border-white/[0.06] hover:border-[#FFD60A]/30 transition-all duration-300 rounded-3xl p-8 min-h-[260px] flex flex-col justify-between group">
-            <div className="w-12 h-12 bg-[#FFD60A]/10 text-[#FFD60A] rounded-xl flex items-center justify-center mb-6">
-              <Trophy className="w-6 h-6" />
+          {/* Card 3: Taste Analytics */}
+          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#F4C618]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F4C618]/10 border border-[#F4C618]/30 text-[#F4C618] flex items-center justify-center mb-6">
+              <Trophy className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">Taste Analytics</h4>
-              <p className="text-sm text-[#B5B5B5] leading-relaxed">
-                Visualize your viewing habits with beautiful, nuanced data charts.
+              <h4 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Taste Analytics</h4>
+              <p className="text-sm text-[#B5B5B5] leading-relaxed font-medium">
+                Deep dive into your viewing habits with beautiful, insightful charts.
               </p>
             </div>
           </div>
 
-          {/* Card 3: AI Sommelier */}
-          <div className="md:col-span-4 bg-[#1A1A1A] border border-white/[0.06] hover:border-[#FFD60A]/30 transition-all duration-300 rounded-3xl p-8 min-h-[260px] flex flex-col justify-between group">
-            <div className="w-12 h-12 bg-[#FFD60A]/10 text-[#FFD60A] rounded-xl flex items-center justify-center mb-6">
-              <Sparkles className="w-6 h-6" />
+          {/* Card 4: Community & Discussions */}
+          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#F4C618]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F4C618]/10 border border-[#F4C618]/30 text-[#F4C618] flex items-center justify-center mb-6">
+              <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">AI Sommelier</h4>
-              <p className="text-sm text-[#B5B5B5] leading-relaxed">
-                Context-aware recommendations that understand mood, pacing, and visual style.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Meaningful Discourse */}
-          <div className="md:col-span-8 bg-[#1A1A1A] border border-white/[0.06] hover:border-[#FFD60A]/30 transition-all duration-300 rounded-3xl p-8 min-h-[260px] flex flex-col justify-between group">
-            <div className="w-12 h-12 bg-[#FFD60A]/10 text-[#FFD60A] rounded-xl flex items-center justify-center mb-6">
-              <MessageSquare className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-xl font-bold text-white mb-2">Meaningful Discourse</h4>
-              <p className="text-sm text-[#B5B5B5] leading-relaxed max-w-xl">
-                Long-form reviews, spoiler-protected discussions, and a community that values deep analysis over quick takes.
+              <h4 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Community & Discussions</h4>
+              <p className="text-sm text-[#B5B5B5] leading-relaxed max-w-xl font-medium">
+                Engage in nuanced conversations. Form clubs based on directors, genres, or eras.
               </p>
             </div>
           </div>
@@ -505,12 +575,17 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* D2. DYNAMIC 3D CINEMA STAGE */}
+      <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
+        <Cinema3DStage />
+      </section>
+
       {/* E. PRODUCT PREVIEW */}
       <section id="preview" className="py-24 bg-[#111111] border-y border-white/[0.04] relative z-10 px-4 md:px-8">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">Product Preview</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">Product Preview</h2>
             <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
               A Glimpse Inside the Theatre
             </h3>
@@ -524,10 +599,15 @@ const Landing = () => {
             {previewTabs.map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActivePreviewTab(tab.id)}
+                onClick={() => {
+                  setActivePreviewTab(tab.id);
+                  if (tab.id !== 'Home Page' && !isAuthenticated) {
+                    scrollToSection('signup');
+                  }
+                }}
                 className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                   activePreviewTab === tab.id 
-                    ? 'bg-[#FFD60A] text-black shadow-md' 
+                    ? 'bg-[#F4C618] text-black shadow-md' 
                     : 'text-[#B5B5B5] hover:text-white'
                 }`}
               >
@@ -568,7 +648,7 @@ const Landing = () => {
                     <div className="space-y-6">
                       <div className="flex items-center justify-between border-b border-white/[0.05] pb-4">
                         <h4 className="font-extrabold text-lg text-white flex items-center gap-2">
-                          <Compass className="w-5 h-5 text-[#FFD60A]" /> Discover Cinema
+                          <Compass className="w-5 h-5 text-[#F4C618]" /> Discover Cinema
                         </h4>
                         <span className="text-xs text-[#B5B5B5]">Showing 28,491 movies</span>
                       </div>
@@ -579,13 +659,13 @@ const Landing = () => {
                           { title: 'Pulp Fiction', year: '1994', rating: '8.9', genre: 'Crime', poster: '/images/pulpfiction.jpg' },
                           { title: 'Parasite', year: '2019', rating: '8.6', genre: 'Thriller', poster: '/images/parasite.jpg' }
                         ].map((m, idx) => (
-                          <div key={idx} className="bg-[#1A1A1A] border border-white/[0.05] rounded-xl overflow-hidden group hover:border-[#FFD60A]/40 transition-all p-3">
+                          <div key={idx} className="bg-[#1A1A1A] border border-white/[0.05] rounded-xl overflow-hidden group hover:border-[#F4C618]/40 transition-all p-3">
                             <div className="w-full aspect-[2/3] bg-neutral-900 border border-white/5 rounded-lg mb-3 overflow-hidden">
                               <img src={m.poster} alt={m.title} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex items-center justify-between text-[11px] text-[#B5B5B5] mb-1">
                               <span>{m.genre}</span>
-                              <span className="text-[#FFD60A]">★ {m.rating}</span>
+                              <span className="text-[#F4C618]">★ {m.rating}</span>
                             </div>
                             <h5 className="font-bold text-xs text-white truncate">{m.title}</h5>
                             <span className="text-[10px] text-[#B5B5B5]">{m.year}</span>
@@ -595,178 +675,171 @@ const Landing = () => {
                     </div>
                   )}
 
-                  {/* MOVIE DETAIL PAGE PREVIEW */}
-                  {activePreviewTab === 'Movie Detail Page' && (
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                      <div className="md:col-span-4 aspect-[2/3] bg-neutral-900 border border-white/[0.05] rounded-2xl overflow-hidden shadow-lg">
-                        <img src="/images/interstellar.jpg" alt="Interstellar" className="w-full h-full object-cover" />
+                  {/* Non-Home Tabs Lock Gate for unauthenticated guests */}
+                  {activePreviewTab !== 'Home Page' && !isAuthenticated ? (
+                    <div className="text-center space-y-4 p-8 bg-[#121019]/90 border border-[#F4C618]/30 rounded-2xl max-w-md mx-auto backdrop-blur-md">
+                      <div className="w-12 h-12 rounded-xl bg-[#F4C618]/10 text-[#F4C618] flex items-center justify-center mx-auto">
+                        <Lock className="w-6 h-6" />
                       </div>
-                      <div className="md:col-span-8 space-y-4">
-                        <div className="flex items-center gap-2">
-                          <span className="bg-[#FFD60A]/10 text-[#FFD60A] text-[10px] px-2 py-0.5 rounded font-bold">Sci-Fi</span>
-                          <span className="text-xs text-[#B5B5B5]">2014 • 2h 49m</span>
-                        </div>
-                        <h4 className="text-2xl font-black">Interstellar</h4>
-                        <p className="text-xs text-[#B5B5B5] leading-relaxed">
-                          A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.
-                        </p>
-                        
-                        <div className="border-t border-b border-white/[0.05] py-3 flex gap-6 text-center">
-                          <div>
-                            <span className="text-xs text-[#B5B5B5] block">Average Rating</span>
-                            <span className="text-lg font-bold text-[#FFD60A]">★ 9.2</span>
-                          </div>
-                          <div>
-                            <span className="text-xs text-[#B5B5B5] block">Your Rating</span>
-                            <span className="text-lg font-bold text-purple-400">★ 10.0</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h5 className="text-xs font-bold text-white mb-2">Popular Discussion Thread</h5>
-                          <div className="bg-[#1A1A1A] p-3 rounded-xl border border-white/[0.04] text-xs">
-                            <span className="font-bold text-[#FFD60A]">@nolan_fanatic:</span> "The library scene still brings tears. Best space odyssey ever."
-                          </div>
-                        </div>
-                      </div>
+                      <h4 className="text-xl font-black text-white">Sign Up to Unlock Preview</h4>
+                      <p className="text-xs text-gray-400 font-medium leading-relaxed">
+                        Join the early access waitlist to unlock full interactive previews for <b className="text-white">{activePreviewTab}</b>.
+                      </p>
+                      <button
+                        onClick={() => scrollToSection('signup')}
+                        className="bg-[#F4C618] hover:bg-yellow-400 text-black font-extrabold text-xs px-6 py-3 rounded-xl transition-all shadow-lg hover:scale-105 cursor-pointer"
+                      >
+                        Join Early Access Form →
+                      </button>
                     </div>
-                  )}
+                  ) : (
+                    <>
+                      {/* MOVIE DETAIL PAGE PREVIEW */}
+                      {activePreviewTab === 'Movie Detail Page' && (
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 text-left">
+                          <div className="md:col-span-4 aspect-[2/3] bg-neutral-900 border border-white/[0.05] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="/images/interstellar.jpg" alt="Interstellar" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="md:col-span-8 space-y-4">
+                            <div className="flex items-center gap-2">
+                              <span className="bg-[#F4C618]/10 text-[#F4C618] text-[10px] px-2 py-0.5 rounded font-bold">Sci-Fi</span>
+                              <span className="text-xs text-[#B5B5B5]">2014 • 2h 49m</span>
+                            </div>
+                            <h4 className="text-2xl font-black">Interstellar</h4>
+                            <p className="text-xs text-[#B5B5B5] leading-relaxed">
+                              A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.
+                            </p>
+                            
+                            <div className="border-t border-b border-white/[0.05] py-3 flex gap-6 text-center">
+                              <div>
+                                <span className="text-xs text-[#B5B5B5] block">Average Rating</span>
+                                <span className="text-lg font-bold text-[#F4C618]">★ 9.2</span>
+                              </div>
+                              <div>
+                                <span className="text-xs text-[#B5B5B5] block">Your Rating</span>
+                                <span className="text-lg font-bold text-purple-400">★ 10.0</span>
+                              </div>
+                            </div>
 
-                  {/* ACTOR PROFILE PREVIEW */}
-                  {activePreviewTab === 'Actor Profile' && (
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-full bg-neutral-900 border border-white/10 flex-shrink-0 overflow-hidden shadow-lg">
-                          <img src="/images/chalamet.jpg" alt="Timothée Chalamet" className="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                          <h4 className="text-xl font-bold">Timothée Chalamet</h4>
-                          <p className="text-xs text-[#B5B5B5]">Actor • 29 years old • USA</p>
-                          <div className="flex gap-2 mt-2">
-                            <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Dune</span>
-                            <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Interstellar</span>
-                            <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Wonka</span>
+                            <div>
+                              <h5 className="text-xs font-bold text-white mb-2">Popular Discussion Thread</h5>
+                              <div className="bg-[#1A1A1A] p-3 rounded-xl border border-white/[0.04] text-xs">
+                                <span className="font-bold text-[#F4C618]">@nolan_fanatic:</span> "The library scene still brings tears. Best space odyssey ever."
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="space-y-2">
-                        <h5 className="text-xs font-bold uppercase tracking-wider text-[#B5B5B5]">Filmography Performance</h5>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
-                            <span className="text-xs text-[#B5B5B5] block">Dune: Part Two</span>
-                            <span className="text-sm font-bold text-[#FFD60A]">★ 9.4</span>
+                      {/* ACTOR PROFILE PREVIEW */}
+                      {activePreviewTab === 'Actor Profile' && (
+                        <div className="space-y-6 text-left">
+                          <div className="flex items-center gap-6">
+                            <div className="w-20 h-20 rounded-full bg-neutral-900 border border-white/10 flex-shrink-0 overflow-hidden shadow-lg">
+                              <img src="/images/chalamet.jpg" alt="Timothée Chalamet" className="w-full h-full object-cover" />
+                            </div>
+                            <div>
+                              <h4 className="text-xl font-bold">Timothée Chalamet</h4>
+                              <p className="text-xs text-[#B5B5B5]">Actor • 29 years old • USA</p>
+                              <div className="flex gap-2 mt-2">
+                                <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Dune</span>
+                                <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Interstellar</span>
+                                <span className="text-[10px] bg-white/[0.04] border border-white/[0.05] text-[#B5B5B5] px-2 py-0.5 rounded">Wonka</span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
-                            <span className="text-xs text-[#B5B5B5] block">Call Me By Your Name</span>
-                            <span className="text-sm font-bold text-[#FFD60A]">★ 8.8</span>
-                          </div>
-                          <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
-                            <span className="text-xs text-[#B5B5B5] block">Little Women</span>
-                            <span className="text-sm font-bold text-[#FFD60A]">★ 8.4</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
-                  {/* DASHBOARD PREVIEW */}
-                  {activePreviewTab === 'Dashboard' && (
-                    <div className="space-y-6">
-                      <div className="flex justify-between items-center">
-                        <h4 className="font-bold text-sm uppercase tracking-wider text-[#B5B5B5] flex items-center gap-1.5">
-                          <Activity className="w-4 h-4 text-[#FFD60A]" /> Your Cinematic Identity
-                        </h4>
-                        <span className="text-xs text-green-500 font-semibold">+4 watched this week</span>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl space-y-3">
-                          <span className="text-xs font-semibold text-[#B5B5B5]">Director Preference</span>
-                          <div className="space-y-2 text-xs">
-                            <div className="flex justify-between"><span>C. Nolan</span> <span className="font-bold">38%</span></div>
-                            <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#FFD60A] w-[38%] h-full rounded-full" /></div>
-                            <div className="flex justify-between"><span>D. Villeneuve</span> <span className="font-bold">24%</span></div>
-                            <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#FFD60A] w-[24%] h-full rounded-full" /></div>
+                          <div className="space-y-2">
+                            <h5 className="text-xs font-bold uppercase tracking-wider text-[#B5B5B5]">Filmography Performance</h5>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
+                                <span className="text-xs text-[#B5B5B5] block">Dune: Part Two</span>
+                                <span className="text-sm font-bold text-[#F4C618]">★ 9.4</span>
+                              </div>
+                              <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
+                                <span className="text-xs text-[#B5B5B5] block">Call Me By Your Name</span>
+                                <span className="text-sm font-bold text-[#F4C618]">★ 8.8</span>
+                              </div>
+                              <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
+                                <span className="text-xs text-[#B5B5B5] block">Little Women</span>
+                                <span className="text-sm font-bold text-[#F4C618]">★ 8.4</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
+                      )}
 
-                        <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl space-y-3">
-                          <span className="text-xs font-semibold text-[#B5B5B5]">Era Distribution</span>
-                          <div className="space-y-2 text-xs">
-                            <div className="flex justify-between"><span>2010s</span> <span className="font-bold">42%</span></div>
-                            <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C430] w-[42%] h-full rounded-full" /></div>
-                            <div className="flex justify-between"><span>1990s</span> <span className="font-bold">28%</span></div>
-                            <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C430] w-[28%] h-full rounded-full" /></div>
+                      {/* DASHBOARD PREVIEW */}
+                      {activePreviewTab === 'Dashboard' && (
+                        <div className="space-y-6 text-left">
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-bold text-sm uppercase tracking-wider text-[#B5B5B5] flex items-center gap-1.5">
+                              <Activity className="w-4 h-4 text-[#F4C618]" /> Your Cinematic Identity
+                            </h4>
+                            <span className="text-xs text-green-500 font-semibold">+4 watched this week</span>
                           </div>
-                        </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl space-y-3">
+                              <span className="text-xs font-semibold text-[#B5B5B5]">Director Preference</span>
+                              <div className="space-y-2 text-xs">
+                                <div className="flex justify-between"><span>C. Nolan</span> <span className="font-bold">38%</span></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C618] w-[38%] h-full rounded-full" /></div>
+                                <div className="flex justify-between"><span>D. Villeneuve</span> <span className="font-bold">24%</span></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C618] w-[24%] h-full rounded-full" /></div>
+                              </div>
+                            </div>
 
-                        <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl flex flex-col justify-between">
-                          <div>
-                            <span className="text-xs font-semibold text-[#B5B5B5] block">Taste Alignment</span>
-                            <span className="text-2xl font-black text-[#FFD60A]">Cinephile Elite</span>
-                          </div>
-                          <p className="text-[10px] text-[#B5B5B5] mt-2">Your tastes match closely with Criterion Collection curators.</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                            <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl space-y-3">
+                              <span className="text-xs font-semibold text-[#B5B5B5]">Era Distribution</span>
+                              <div className="space-y-2 text-xs">
+                                <div className="flex justify-between"><span>2010s</span> <span className="font-bold">42%</span></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C430] w-[42%] h-full rounded-full" /></div>
+                                <div className="flex justify-between"><span>1990s</span> <span className="font-bold">28%</span></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F4C430] w-[28%] h-full rounded-full" /></div>
+                              </div>
+                            </div>
 
-                  {/* DISCUSSIONS PREVIEW */}
-                  {activePreviewTab === 'Community Discussions' && (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#B5B5B5] uppercase">Discussing: Interstellar (2014)</span>
-                        <span className="text-[11px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" /> Spoilers Allowed
-                        </span>
-                      </div>
-                      
-                      <div className="space-y-3 max-h-[250px] overflow-y-auto">
-                        <div className="p-3 bg-[#1A1A1A] border border-white/[0.04] rounded-xl text-xs space-y-1">
-                          <div className="flex justify-between font-bold text-[#FFD60A]">
-                            <span>@tars_assistant</span>
-                            <span className="text-[#B5B5B5] font-normal text-[10px]">2h ago</span>
+                            <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl flex flex-col justify-between">
+                              <div>
+                                <span className="text-xs font-semibold text-[#B5B5B5] block">Taste Alignment</span>
+                                <span className="text-2xl font-black text-[#F4C618]">Cinephile Elite</span>
+                              </div>
+                              <p className="text-[10px] text-[#B5B5B5] mt-2">Your tastes match closely with Criterion Collection curators.</p>
+                            </div>
                           </div>
-                          <p className="text-white">Did anyone else realize Cooper’s watch ticked in Morse code matching the gravity equations?</p>
                         </div>
-                        <div className="p-3 bg-[#1A1A1A] border border-white/[0.04] rounded-xl text-xs space-y-1 ml-6">
-                          <div className="flex justify-between font-bold text-white">
-                            <span>@nolan_fanatic</span>
-                            <span className="text-[#B5B5B5] font-normal text-[10px]">1h ago</span>
-                          </div>
-                          <p className="text-white">Yes! The watch itself is a Hamilton custom. Such a neat detail that links the beginning and ending.</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                      )}
 
-                  {/* MOBILE VERSION PREVIEW */}
-                  {activePreviewTab === 'Mobile Version' && (
-                    <div className="flex justify-center">
-                      {/* Simulated Phone Container */}
-                      <div className="w-56 bg-[#111111] border-4 border-neutral-800 rounded-3xl overflow-hidden shadow-2xl p-3 space-y-4">
-                        <div className="flex justify-between text-[10px] text-[#B5B5B5] px-1 border-b border-white/[0.05] pb-2">
-                          <span>9:41 AM</span>
-                          <span className="text-[#FFD60A]">CINELITH</span>
-                        </div>
-                        
-                        <div className="h-40 bg-neutral-900 border border-white/5 rounded-xl overflow-hidden shadow-inner relative">
-                          <img src="/images/blackhole.jpg" alt="Mobile Hero" className="w-full h-full object-cover opacity-80" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent flex items-end p-2.5">
-                            <span className="text-[10px] font-black tracking-wider uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Featured Tonight</span>
+                      {/* DISCUSSIONS PREVIEW */}
+                      {activePreviewTab === 'Community Discussions' && (
+                        <div className="space-y-4 text-left">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-[#B5B5B5] uppercase">Discussing: Interstellar (2014)</span>
+                            <span className="text-[11px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" /> Spoilers Allowed
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-3 max-h-[250px] overflow-y-auto">
+                            <div className="p-3 bg-[#1A1A1A] border border-white/[0.04] rounded-xl text-xs space-y-1">
+                              <div className="flex justify-between font-bold text-[#F4C618]">
+                                <span>@tars_assistant</span>
+                                <span className="text-[#B5B5B5] font-normal text-[10px]">2h ago</span>
+                              </div>
+                              <p className="text-white">Did anyone else realize Cooper’s watch ticked in Morse code matching the gravity equations?</p>
+                            </div>
+                            <div className="p-3 bg-[#1A1A1A] border border-white/[0.04] rounded-xl text-xs space-y-1 ml-6">
+                              <div className="flex justify-between font-bold text-white">
+                                <span>@nolan_fanatic</span>
+                                <span className="text-[#B5B5B5] font-normal text-[10px]">1h ago</span>
+                              </div>
+                              <p className="text-white">Yes! The watch itself is a Hamilton custom. Such a neat detail that links the beginning and ending.</p>
+                            </div>
                           </div>
                         </div>
-
-                        <div className="space-y-2">
-                          <h5 className="text-[10px] font-bold text-white uppercase tracking-wider">Top Recs</h5>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="bg-[#1A1A1A] p-2 rounded-lg border border-white/[0.05] text-[10px] font-bold text-center text-[#FFD60A]">Dune 2</div>
-                            <div className="bg-[#1A1A1A] p-2 rounded-lg border border-white/[0.05] text-[10px] font-bold text-center">Tenet</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      )}
+                    </>
                   )}
 
                 </motion.div>
@@ -781,7 +854,7 @@ const Landing = () => {
       {/* F. CORE EXPERIENCE */}
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">The Journey</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">The Journey</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             How CINELITH Works
           </h3>
@@ -800,11 +873,11 @@ const Landing = () => {
             { step: '4', title: 'Connect', desc: 'Follow friends and top critics who share matching tastes and cinematic sensibilities.' },
             { step: '5', title: 'Build Identity', desc: 'Earn your cinematic level, collect badges, and display your personalized taste analytic dashboard.' }
           ].map((item, idx) => (
-            <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative group hover:border-[#FFD60A]/20 transition-all duration-300">
-              <span className="absolute -top-4 -left-4 w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FFD60A] to-[#F4C430] flex items-center justify-center text-black font-extrabold text-sm shadow-md">
+            <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative group hover:border-[#F4C618]/20 transition-all duration-300">
+              <span className="absolute -top-4 -left-4 w-9 h-9 rounded-xl bg-gradient-to-tr from-[#F4C618] to-[#F4C430] flex items-center justify-center text-black font-extrabold text-sm shadow-md">
                 {item.step}
               </span>
-              <h4 className="text-lg font-bold mt-2 mb-3 text-white group-hover:text-[#FFD60A] transition-colors">{item.title}</h4>
+              <h4 className="text-lg font-bold mt-2 mb-3 text-white group-hover:text-[#F4C618] transition-colors">{item.title}</h4>
               <p className="text-xs text-[#B5B5B5] leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -817,7 +890,7 @@ const Landing = () => {
         <div className="max-w-6xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">Comparison</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">Comparison</h2>
             <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
               Why CINELITH?
             </h3>
@@ -835,7 +908,7 @@ const Landing = () => {
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">IMDb</th>
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">Letterboxd</th>
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">OTT Apps</th>
-                  <th className="p-5 text-sm font-bold uppercase tracking-wider text-white text-center bg-[#FFD60A]/5 border-x border-[#FFD60A]/10">CINELITH</th>
+                  <th className="p-5 text-sm font-bold uppercase tracking-wider text-white text-center bg-[#F4C618]/5 border-x border-[#F4C618]/10">CINELITH</th>
                 </tr>
               </thead>
               <tbody>
@@ -872,8 +945,8 @@ const Landing = () => {
                     </td>
 
                     {/* CINELITH */}
-                    <td className="p-5 text-center bg-[#FFD60A]/5 border-x border-[#FFD60A]/10 font-bold text-[#FFD60A]">
-                      <Check className="w-6 h-6 text-[#FFD60A] mx-auto filter drop-shadow-[0_0_8px_rgba(255,214,10,0.5)]" />
+                    <td className="p-5 text-center bg-[#F4C618]/5 border-x border-[#F4C618]/10 font-bold text-[#F4C618]">
+                      <Check className="w-6 h-6 text-[#F4C618] mx-auto filter drop-shadow-[0_0_8px_rgba(244,198,24,0.5)]" />
                     </td>
                   </tr>
                 ))}
@@ -887,7 +960,7 @@ const Landing = () => {
       {/* H. PRODUCT ROADMAP */}
       <section id="roadmap" className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">Vision</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">Vision</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             Product Roadmap
           </h3>
@@ -899,7 +972,7 @@ const Landing = () => {
         {/* Roadmap horizontal timeline */}
         <div className="relative">
           {/* Main Connector Line */}
-          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#FFD60A]/10 via-[#FFD60A] to-[#FFD60A]/10 hidden lg:block -translate-y-1/2" />
+          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#F4C618]/10 via-[#F4C618] to-[#F4C618]/10 hidden lg:block -translate-y-1/2" />
           
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {[
@@ -909,9 +982,9 @@ const Landing = () => {
               { phase: 'Phase 4', title: 'Cinema Experiences', desc: 'Booking cinema slots, local cinephile meetups, and real-life film group check-ins.' },
               { phase: 'Phase 5', title: 'AI Movie Studio', desc: 'Predictive analytics, movie casting analytics, script prediction tools, and creative studio modules.' }
             ].map((step, idx) => (
-              <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative flex flex-col items-center text-center space-y-3 group hover:border-[#FFD60A]/40 transition-all duration-300">
-                <span className="text-[11px] uppercase tracking-wider text-[#FFD60A] font-bold">{step.phase}</span>
-                <div className="w-3 h-3 rounded-full bg-[#FFD60A] group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_rgba(255,214,10,0.5)]" />
+              <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative flex flex-col items-center text-center space-y-3 group hover:border-[#F4C618]/40 transition-all duration-300">
+                <span className="text-[11px] uppercase tracking-wider text-[#F4C618] font-bold">{step.phase}</span>
+                <div className="w-3 h-3 rounded-full bg-[#F4C618] group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_rgba(244,198,24,0.5)]" />
                 <h4 className="font-extrabold text-base text-white">{step.title}</h4>
                 <p className="text-xs text-[#B5B5B5] leading-relaxed">{step.desc}</p>
               </div>
@@ -921,14 +994,14 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* I. EARLY ACCESS REGISTRATION (Waitlist Form) */}
+      {/* I. EARLY ACCESS REGISTRATION (Waitlist Form matching screenshot) */}
       <section id="signup" className="py-24 bg-[#090909] relative z-10 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-xl mx-auto">
           
-          {/* Main Card with top center glow */}
+          {/* Main Card matching screenshot */}
           <div 
-            className="border border-white/[0.08] rounded-3xl p-8 md:p-14 shadow-2xl relative overflow-hidden text-center"
-            style={{ background: 'radial-gradient(circle at top, rgba(255, 214, 10, 0.12) 0%, transparent 60%), #0d0d0d' }}
+            className="border border-white/[0.08] rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.9)] relative overflow-hidden text-center bg-[#0e0e0e]"
+            style={{ background: 'radial-gradient(circle at top, rgba(255, 214, 10, 0.08) 0%, transparent 70%), #0d0d0d' }}
           >
             <AnimatePresence mode="wait">
               {!success ? (
@@ -939,36 +1012,36 @@ const Landing = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-3">
-                    <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-                      Be Among the First
+                    <h3 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
+                      Become one of CINELITH’s first members.
                     </h3>
-                    <p className="text-sm md:text-base text-[#B5B5B5] max-w-xl mx-auto leading-relaxed">
-                      Join the waitlist to secure your early access invitation and reserve your unique handle.
+                    <p className="text-sm md:text-base text-gray-400 font-medium max-w-md mx-auto leading-relaxed">
+                      Secure your username and receive founding member benefits.
                     </p>
                   </div>
 
-                  <form onSubmit={handleFormSubmit} className="space-y-4 max-w-3xl mx-auto">
+                  <form onSubmit={handleFormSubmit} className="space-y-3.5 max-w-md mx-auto pt-2">
                     {error && (
-                      <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-xs font-semibold max-w-lg mx-auto">
+                      <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-xs font-semibold">
                         ⚠️ {error}
                       </div>
                     )}
                     
-                    {/* Horizontal/Inline Row */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 w-full">
-                      <div className="w-full sm:flex-1">
+                    {/* Vertical stacked input fields */}
+                    <div className="space-y-3 text-left">
+                      <div>
                         <input 
                           type="text" 
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          placeholder="Your Name" 
+                          placeholder="Name" 
                           disabled={loading}
-                          className="w-full bg-[#080808] border border-white/[0.08] focus:border-[#FFD60A]/40 rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
 
-                      <div className="w-full sm:flex-1">
+                      <div>
                         <input 
                           type="email" 
                           name="email"
@@ -976,22 +1049,48 @@ const Landing = () => {
                           onChange={handleInputChange}
                           placeholder="Email Address" 
                           disabled={loading}
-                          className="w-full bg-[#080808] border border-white/[0.08] focus:border-[#FFD60A]/40 rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
 
+                      <div>
+                        <input 
+                          type="text" 
+                          name="country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          placeholder="Country" 
+                          disabled={loading}
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
+                        />
+                      </div>
+
+                      <div>
+                        <input 
+                          type="text" 
+                          name="favoriteMovie"
+                          value={formData.favoriteMovie}
+                          onChange={handleInputChange}
+                          placeholder="Your Favorite Movie" 
+                          disabled={loading}
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-3">
                       <button
                         type="submit"
                         disabled={loading}
-                        className="w-full sm:w-auto bg-[#FFD60A] hover:bg-[#F4C430] text-black font-bold px-8 py-3.5 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(255,214,10,0.3)] hover:shadow-[0_0_25px_rgba(255,214,10,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+                        className="w-full bg-[#FFD60A] hover:bg-[#FACC15] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(255,214,10,0.3)] hover:shadow-[0_0_35px_rgba(255,214,10,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                       >
                         {loading ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Requesting...
+                            Securing Spot...
                           </>
                         ) : (
-                          "Request Access"
+                          "Join Early Access"
                         )}
                       </button>
                     </div>
@@ -1002,7 +1101,7 @@ const Landing = () => {
                     <div className="flex -space-x-2">
                       <div className="w-6 h-6 rounded-full bg-neutral-700 border-2 border-[#090909] flex items-center justify-center text-[9px] font-bold">JD</div>
                       <div className="w-6 h-6 rounded-full bg-neutral-600 border-2 border-[#090909] flex items-center justify-center text-[9px] font-bold">AM</div>
-                      <div className="w-6 h-6 rounded-full bg-[#FFD60A]/80 border-2 border-[#090909] flex items-center justify-center text-[9px] font-black text-black">CL</div>
+                      <div className="w-6 h-6 rounded-full bg-[#F4C618]/80 border-2 border-[#090909] flex items-center justify-center text-[9px] font-black text-black">CL</div>
                     </div>
                     <span>Join <b className="text-white font-bold">{waitlistCount}</b> cinephiles waiting in line</span>
                   </div>
@@ -1012,33 +1111,68 @@ const Landing = () => {
                   key="success-container"
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="text-center space-y-6 py-6"
+                  className="text-center space-y-6 py-4"
                 >
-                  {/* Glowing Founding Badge */}
-                  <div className="relative inline-flex items-center justify-center">
-                    <div className="absolute w-24 h-24 rounded-full bg-[#FFD60A]/30 blur-xl animate-pulse" />
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FFD60A] via-[#F4C430] to-yellow-600 border border-white/20 flex flex-col items-center justify-center text-black font-black shadow-2xl relative z-10 select-none rotate-3 hover:rotate-0 transition-transform duration-300">
-                      <span className="text-[10px] tracking-widest font-extrabold uppercase">FOUNDER</span>
-                      <Award className="w-8 h-8 my-0.5" />
-                      <span className="text-[9px] font-black uppercase">BADGE</span>
+                  {/* Interactive Pre-Launch Founding Member Pass Card */}
+                  <div className="bg-gradient-to-br from-[#181524] via-[#110f1c] to-[#0a0812] border-2 border-[#FACC15]/40 p-6 md:p-8 rounded-3xl max-w-md mx-auto shadow-[0_0_50px_rgba(250,204,21,0.2)] text-left relative overflow-hidden">
+                    {/* Glowing Pass Ribbon */}
+                    <div className="absolute top-0 right-0 bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-bl-2xl shadow-md">
+                      Pre-Launch Access Pass
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-6">
+                      <img src="/images/logo_mark.png" alt="CINELITH" className="w-8 h-8 object-contain" />
+                      <div>
+                        <h4 className="text-lg font-black text-white leading-none">CINELITH</h4>
+                        <span className="text-[10px] text-gray-400 font-semibold">Founding Member Pass</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 border-y border-white/10 py-4 mb-4">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-400">Member Name:</span>
+                        <span className="font-extrabold text-white">{formData.name || 'Cinephile'}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-400">Country:</span>
+                        <span className="font-bold text-gray-200">{formData.country || 'Global'}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-400">Favorite Film:</span>
+                        <span className="font-bold text-[#FACC15]">{formData.favoriteMovie || 'Interstellar'}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs pt-1">
+                        <span className="text-gray-400">Founding ID:</span>
+                        <code className="bg-[#FACC15]/10 text-[#FACC15] px-2 py-0.5 rounded font-mono font-bold text-xs border border-[#FACC15]/20">
+                          CINELITH-{userQueueNum || 385}
+                        </code>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-[9px] text-gray-400 uppercase tracking-wider block">Queue Position</span>
+                        <span className="text-2xl font-black text-[#FACC15]">#{userQueueNum || 385}</span>
+                      </div>
+
+                      {/* Unlock Action Button */}
+                      <button
+                        onClick={() => {
+                          login(formData.email || 'alex@cinelith.com', 'password');
+                          navigate('/dashboard');
+                        }}
+                        className="bg-[#FACC15] hover:bg-yellow-400 text-black font-extrabold text-xs px-5 py-3 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center gap-1.5 cursor-pointer"
+                      >
+                        Unlock Member Portal →
+                      </button>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="text-2xl font-black text-white">You're on the list!</h4>
-                    <p className="text-xs text-[#B5B5B5] max-w-sm mx-auto">
-                      Your Founding Member status is locked in. We have sent a confirmation email to <b className="text-white">{formData.email}</b>.
-                    </p>
-                  </div>
-
-                  {/* Waitlist Queue Position card */}
-                  <div className="bg-[#1A1A1A] border border-white/[0.05] p-4 rounded-2xl max-w-xs mx-auto">
-                    <span className="text-[10px] text-[#B5B5B5] uppercase tracking-wider block">Your Queue Position</span>
-                    <span className="text-3xl font-black text-[#FFD60A]">#{userQueueNum}</span>
-                  </div>
-
-                  <p className="text-[11px] text-[#B5B5B5]">
-                    Invite code: <code className="bg-white/[0.04] px-2 py-1 rounded text-white font-mono">CINELITH-{userQueueNum}</code>
+                  <p className="text-xs text-gray-400 max-w-sm mx-auto">
+                    Your Founding Pass is activated! We have sent a confirmation email to <b className="text-white">{formData.email}</b>.
                   </p>
                 </motion.div>
               )}
@@ -1051,7 +1185,7 @@ const Landing = () => {
       {/* J. COMMUNITY SECTION */}
       <section id="community" className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">Community</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">Community</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             Built for People Who Love Cinema
           </h3>
@@ -1063,7 +1197,7 @@ const Landing = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           
           {/* Card 1: Instagram */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#FFD60A]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F4C618]/20 transition-all duration-300">
             <div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-500/10 text-pink-400 flex items-center justify-center mb-4">
                 <Instagram className="w-5 h-5" />
@@ -1071,13 +1205,13 @@ const Landing = () => {
               <h4 className="font-bold text-base mb-1">Instagram</h4>
               <p className="text-xs text-[#B5B5B5]">Daily cinematography highlights, movie trivia, and community features.</p>
             </div>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#FFD60A] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Follow Us <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Card 2: LinkedIn */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#FFD60A]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F4C618]/20 transition-all duration-300">
             <div>
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
                 <Linkedin className="w-5 h-5" />
@@ -1085,27 +1219,27 @@ const Landing = () => {
               <h4 className="font-bold text-base mb-1">LinkedIn</h4>
               <p className="text-xs text-[#B5B5B5]">Tech stack updates, behind-the-scenes progress, and hiring milestones.</p>
             </div>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#FFD60A] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Connect <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Card 3: Community Updates */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#FFD60A]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F4C618]/20 transition-all duration-300">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#FFD60A]/10 text-[#FFD60A] flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-xl bg-[#F4C618]/10 text-[#F4C618] flex items-center justify-center mb-4">
                 <Star className="w-5 h-5" />
               </div>
               <h4 className="font-bold text-base mb-1">Community Updates</h4>
               <p className="text-xs text-[#B5B5B5]">Read about our upcoming meetups and platform guidelines drafts.</p>
             </div>
-            <button onClick={() => scrollToSection('signup')} className="text-left text-xs text-[#FFD60A] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <button onClick={() => scrollToSection('signup')} className="text-left text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Get Notified <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
 
           {/* Card 4: Development Progress */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#FFD60A]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F4C618]/20 transition-all duration-300">
             <div>
               <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center mb-4">
                 <ShieldCheck className="w-5 h-5" />
@@ -1126,7 +1260,7 @@ const Landing = () => {
         <div className="max-w-3xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#FFD60A] font-bold">Answers</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F4C618] font-bold">Answers</h2>
             <h3 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Frequently Asked Questions
             </h3>
@@ -1148,11 +1282,11 @@ const Landing = () => {
               >
                 <button
                   onClick={() => toggleFaq(idx)}
-                  className="w-full text-left p-5 flex items-center justify-between font-bold text-sm md:text-base text-white hover:text-[#FFD60A] transition-colors cursor-pointer select-none"
+                  className="w-full text-left p-5 flex items-center justify-between font-bold text-sm md:text-base text-white hover:text-[#F4C618] transition-colors cursor-pointer select-none"
                 >
                   <span>{faq.q}</span>
                   {openFaq === idx ? (
-                    <ChevronUp className="w-5 h-5 text-[#FFD60A] flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#F4C618] flex-shrink-0" />
                   ) : (
                     <ChevronDown className="w-5 h-5 text-[#B5B5B5] flex-shrink-0" />
                   )}
@@ -1176,9 +1310,7 @@ const Landing = () => {
           
           {/* Brand/Copyright */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-[#FFD60A] flex items-center justify-center font-black text-black text-xs select-none">
-              C
-            </div>
+            <img src="/images/logo_mark.png" alt="CINELITH Logo" className="w-6 h-6 object-contain" />
             <span className="text-xs text-[#B5B5B5]">
               © {new Date().getFullYear()} CINELITH. Discover, Discuss, Connect.
             </span>

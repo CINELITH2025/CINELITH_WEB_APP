@@ -31,14 +31,14 @@ export const MOVIE_CATALOG = [
 ];
 
 export const ACTOR_CATALOG = [
-  { id: 1, name: "Timothée Chalamet", image: "/images/actor_1.png", facts: { nationality: "American/French", debut: "2008" } },
-  { id: 2, name: "Zendaya", image: "/images/actor_1.png", facts: { nationality: "American", debut: "2009" } },
-  { id: 3, name: "Austin Butler", image: "/images/actor_1.png", facts: { nationality: "American", debut: "2005" } },
-  { id: 4, name: "Cillian Murphy", image: "/images/actor_1.png", facts: { nationality: "Irish", debut: "1996" } },
-  { id: 5, name: "Emma Stone", image: "/images/actor_1.png", facts: { nationality: "American", debut: "2004" } },
-  { id: 6, name: "Mark Ruffalo", image: "/images/actor_1.png", facts: { nationality: "American", debut: "1989" } },
-  { id: 7, name: "Leonardo DiCaprio", image: "/images/actor_1.png", facts: { nationality: "American", debut: "1989" } },
-  { id: 8, name: "Christian Bale", image: "/images/actor_1.png", facts: { nationality: "British", debut: "1986" } }
+  { id: 1, name: "Timothée Chalamet", image: "/images/chalamet.jpg", facts: { nationality: "American/French", debut: "2008" } },
+  { id: 2, name: "Zendaya", image: "/images/poster_4.jpg", facts: { nationality: "American", debut: "2009" } },
+  { id: 3, name: "Austin Butler", image: "/images/poster_1.jpg", facts: { nationality: "American", debut: "2005" } },
+  { id: 4, name: "Cillian Murphy", image: "/images/oppenheimer.jpg", facts: { nationality: "Irish", debut: "1996" } },
+  { id: 5, name: "Emma Stone", image: "/images/lalaland.jpg", facts: { nationality: "American", debut: "2004" } },
+  { id: 6, name: "Mark Ruffalo", image: "/images/poster_2.jpg", facts: { nationality: "American", debut: "1989" } },
+  { id: 7, name: "Leonardo DiCaprio", image: "/images/inception.jpg", facts: { nationality: "American", debut: "1989" } },
+  { id: 8, name: "Christian Bale", image: "/images/poster_3.jpg", facts: { nationality: "British", debut: "1986" } }
 ];
 
 export const GENRE_CATALOG = [

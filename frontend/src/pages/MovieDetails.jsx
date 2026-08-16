@@ -6,6 +6,7 @@ import MovieHero from '../components/movie/MovieHero';
 import CastAndCrew from '../components/movie/CastAndCrew';
 import Discussion from '../components/movie/Discussion';
 import RelatedMovies from '../components/movie/RelatedMovies';
+import UnlockGate from '../components/auth/UnlockGate';
 import { MOVIE_CATALOG } from '../store/useUserStore';
 
 // Extended movie details data keyed by catalog ID
@@ -108,17 +109,28 @@ const MovieDetails = () => {
       <Navbar />
       
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
-        {/* Main Movie Hero Section */}
-        <MovieHero movie={movie} />
-        
-        {/* Cast section beneath overview */}
-        <CastAndCrew cast={movie.cast} />
-        
-        {/* Community Discussion forums */}
-        <Discussion comments={movie.comments} movieId={movieId} />
-        
-        {/* Related Titles */}
-        <RelatedMovies movies={movie.related} />
+        <UnlockGate 
+          title="Unlock Movie Details & Taste Match" 
+          subtitle="Explore full movie details, streaming availability (JioHotstar, Netflix), reviews, cast profiles, and your personalized Taste Match score by logging in."
+          features={[
+            "Taste Match Score (e.g. 94% Match) based on your viewing history",
+            "Streaming provider availability (JioHotstar, Netflix, Amazon Prime)",
+            "Community review ratings & spoiler-protected discussions",
+            "Direct cast & crew profile exploration"
+          ]}
+        >
+          {/* Main Movie Hero Section */}
+          <MovieHero movie={movie} />
+          
+          {/* Cast section beneath overview */}
+          <CastAndCrew cast={movie.cast} />
+          
+          {/* Community Discussion forums */}
+          <Discussion comments={movie.comments} movieId={movieId} />
+          
+          {/* Related Titles */}
+          <RelatedMovies movies={movie.related} />
+        </UnlockGate>
       </main>
 
       <Footer />

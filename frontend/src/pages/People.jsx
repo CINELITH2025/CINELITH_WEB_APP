@@ -4,6 +4,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Search, ChevronDown, Check, UserPlus, MessageCircle, X, Sparkles, Hourglass, UserCheck } from 'lucide-react';
 import useUserStore, { MOVIE_CATALOG, ACTOR_CATALOG } from '../store/useUserStore';
+import UnlockGate from '../components/auth/UnlockGate';
 import { Button } from '@/components/ui/button';
 
 // Mock list of community users with extended attributes (genres, actors, movies, profile type)
@@ -197,6 +198,16 @@ const People = () => {
       <Navbar />
 
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
+        <UnlockGate
+          title="Unlock Community Discussions & Taste Match"
+          subtitle="Connect with cinephiles who match your taste (92%+ match score), filter Bollywood & global cinema, and join film discussion clubs by logging in."
+          features={[
+            "Taste Match discovery surfacing cinephiles with 90%+ shared taste",
+            "Filter cinephiles by Genre, Actor, Film, and Regional Indian Cinema",
+            "Direct spoiler-free community discussion threads & clubs",
+            "Private profile viewing & direct messaging access"
+          ]}
+        >
         
         {/* Header */}
         <div className="mb-10 text-center md:text-left">
@@ -370,6 +381,7 @@ const People = () => {
             })}
           </div>
         </section>
+        </UnlockGate>
       </main>
 
       {/* === GLASSMORPHIC PROFILE MODAL === */}

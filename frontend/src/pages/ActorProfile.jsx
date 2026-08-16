@@ -6,6 +6,7 @@ import ActorBanner from '../components/actor/ActorBanner';
 import ActorBio from '../components/actor/ActorBio';
 import Filmography from '../components/actor/Filmography';
 import AwardsSection from '../components/actor/AwardsSection';
+import UnlockGate from '../components/auth/UnlockGate';
 import { ACTOR_CATALOG, MOVIE_CATALOG } from '../store/useUserStore';
 
 // Rich actor details mapped by catalog actor ID
