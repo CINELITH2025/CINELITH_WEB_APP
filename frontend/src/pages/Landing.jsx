@@ -1158,7 +1158,7 @@ const Landing = () => {
                       <div className="w-6 h-6 rounded-full bg-neutral-600 border-2 border-[#090909] flex items-center justify-center text-[9px] font-bold">AM</div>
                       <div className="w-6 h-6 rounded-full bg-[#F4C618]/80 border-2 border-[#090909] flex items-center justify-center text-[9px] font-black text-black">CL</div>
                     </div>
-                    <span>Join <b className="text-white font-bold">{waitlistCount}</b> cinephiles waiting in line</span>
+                    <span>Join <b className="text-[#FACC15] font-extrabold">{waitlistCount}+</b> cinephiles waiting in line</span>
                   </div>
                 </motion.div>
               )}
