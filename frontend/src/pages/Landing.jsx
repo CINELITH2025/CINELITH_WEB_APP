@@ -1121,22 +1121,11 @@ const Landing = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center justify-center pt-2">
+                      <div className="text-center">
                         <span className="text-[9px] text-gray-400 uppercase tracking-wider block">Queue Position</span>
-                        <span className="text-2xl font-black text-[#FACC15]">#{userQueueNum || 385}</span>
+                        <span className="text-3xl font-black text-[#FACC15]">#{userQueueNum || 385}</span>
                       </div>
-
-                      {/* Unlock Action Button */}
-                      <button
-                        onClick={() => {
-                          login(formData.email || 'alex@cinelith.com', 'password');
-                          navigate('/dashboard');
-                        }}
-                        className="bg-[#FACC15] hover:bg-yellow-400 text-black font-extrabold text-xs px-5 py-3 rounded-xl shadow-lg transition-transform hover:scale-105 flex items-center gap-1.5 cursor-pointer"
-                      >
-                        Unlock Member Portal →
-                      </button>
                     </div>
                   </div>
 
