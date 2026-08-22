@@ -32,7 +32,7 @@ const sendEmailOTP = async (email, otp) => {
   if (resend) {
     try {
       const { data, error } = await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'CINELITH <onboarding@resend.dev>',
+        from: process.env.RESEND_FROM_EMAIL || 'CINELITH <team@cinelith.com>',
         to: email,
         subject: `${otp} is your CINELITH verification code`,
         html: htmlContent
