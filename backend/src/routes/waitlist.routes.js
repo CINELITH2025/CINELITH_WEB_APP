@@ -31,13 +31,19 @@ const sendEmailOTP = async (email, otp) => {
 
   if (resend) {
     try {
-      await resend.emails.send({
+      const { data, error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'CINELITH <onboarding@resend.dev>',
         to: email,
         subject: `${otp} is your CINELITH verification code`,
         html: htmlContent
       });
-      console.log(`✉️ Resend OTP email delivered to ${email}`);
+
+      if (error) {
+        console.error("⚠️ Resend Email Error:", error);
+        throw new Error(error.message || "Resend email sending failed");
+      }
+
+      console.log(`✉️ Resend OTP email delivered to ${email}`, data);
       return;
     } catch (err) {
       console.warn("⚠️ Resend delivery warning:", err.message);

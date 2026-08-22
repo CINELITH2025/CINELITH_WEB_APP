@@ -51,6 +51,13 @@ const safeFetchJson = async (url, options = {}) => {
   }
 };
 
+const COUNTRIES = [
+  "United States", "India", "United Kingdom", "Canada", "Australia",
+  "Germany", "France", "Japan", "South Korea", "Brazil", "Mexico",
+  "Spain", "Italy", "Netherlands", "Sweden", "Norway", "Argentina",
+  "Singapore", "United Arab Emirates", "New Zealand", "Ireland", "Other"
+];
+
 const POSTERS = [
   { title: "Interstellar", director: "Christopher Nolan", url: "/images/poster_1.jpg" },
   { title: "Inception", director: "Christopher Nolan", url: "/images/poster_2.jpg" },
@@ -1087,16 +1094,26 @@ const Landing = () => {
                         />
                       </div>
 
-                      <div>
-                        <input 
-                          type="text" 
+                      <div className="relative">
+                        <select 
                           name="country"
                           value={formData.country}
                           onChange={handleInputChange}
-                          placeholder="Country" 
                           disabled={loading}
-                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
-                        />
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 appearance-none cursor-pointer pr-10"
+                        >
+                          <option value="" disabled className="bg-[#151515] text-gray-500">Select Your Country</option>
+                          {COUNTRIES.map((c) => (
+                            <option key={c} value={c} className="bg-[#151515] text-white py-1">
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
                       </div>
 
                       <div>
