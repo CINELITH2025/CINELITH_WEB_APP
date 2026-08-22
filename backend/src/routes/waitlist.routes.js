@@ -48,8 +48,8 @@ const sendEmailOTP = async (email, otp) => {
 router.post("/send-otp", async (req, res) => {
   const { name, email, country, favoriteMovie } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).json({ message: "Name and email are required" });
+  if (!name || !email || typeof email !== 'string' || typeof name !== 'string') {
+    return res.status(400).json({ message: "Valid name and email are required" });
   }
 
   const cleanEmail = email.toLowerCase().trim();
@@ -104,8 +104,8 @@ router.post("/send-otp", async (req, res) => {
 router.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
 
-  if (!email || !otp) {
-    return res.status(400).json({ message: "Email and verification code are required" });
+  if (!email || !otp || typeof email !== 'string' || typeof otp !== 'string') {
+    return res.status(400).json({ message: "Valid email and verification code are required" });
   }
 
   const cleanEmail = email.toLowerCase().trim();
