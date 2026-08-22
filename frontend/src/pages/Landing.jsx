@@ -26,7 +26,7 @@ const Linkedin = (props) => (
 );
 
 // Helper to determine API URL
-const API_URL = import.meta.env.DEV ? 'http://localhost:5050/api' : '/api';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5050/api' : '/api');
 
 const POSTERS = [
   { title: "Interstellar", director: "Christopher Nolan", url: "/images/poster_1.jpg" },
