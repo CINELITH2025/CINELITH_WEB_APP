@@ -36,6 +36,18 @@ const waitlistSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false
+    },
+    passId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: null
+    },
+    queuePosition: {
+      type: Number,
+      unique: true,
+      sparse: true,
+      default: null
     }
   },
   { timestamps: true }

@@ -166,23 +166,45 @@ router.post("/verify-otp", async (req, res) => {
       return res.status(400).json({ message: "Verification code has expired. Please request a new code." });
     }
 
-    // Mark as verified & clear OTP
+    // Zero-Collision Pass ID Generation & Retry Loop
     entry.isVerified = true;
     entry.otp = null;
     entry.otpExpiresAt = null;
-    await entry.save();
 
-    const count = await Waitlist.countDocuments({ isVerified: true });
-    const userQueueNum = count + 384;
+    let isSaved = false;
+    let attempts = 0;
+
+    while (!isSaved && attempts < 5) {
+      attempts++;
+      const verifiedCount = await Waitlist.countDocuments({ isVerified: true });
+      const userQueueNum = verifiedCount + 385 + (attempts - 1);
+      const passId = `CINELITH-${userQueueNum}`;
+
+      entry.passId = passId;
+      entry.queuePosition = userQueueNum;
+
+      try {
+        await entry.save();
+        isSaved = true;
+      } catch (saveErr) {
+        if (saveErr.code === 11000 && (saveErr.keyPattern?.passId || saveErr.keyPattern?.queuePosition)) {
+          // Collision detected! Retry with next available queue number
+          continue;
+        }
+        throw saveErr;
+      }
+    }
 
     return res.status(200).json({
       message: "Email verified successfully! Welcome to CINELITH Early Access.",
       data: {
+        passId: entry.passId,
+        queuePosition: entry.queuePosition,
         name: entry.name,
         email: entry.email,
         country: entry.country,
         favoriteMovie: entry.favoriteMovie,
-        queueNum: userQueueNum
+        queueNum: entry.queuePosition
       }
     });
   } catch (error) {

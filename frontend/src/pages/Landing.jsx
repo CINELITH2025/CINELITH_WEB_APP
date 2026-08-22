@@ -93,6 +93,7 @@ const Landing = () => {
   const [error, setError] = useState('');
   const [waitlistCount, setWaitlistCount] = useState(384);
   const [userQueueNum, setUserQueueNum] = useState(null);
+  const [memberPassId, setMemberPassId] = useState('');
 
   // OTP Verification states ('form' | 'otp' | 'success')
   const [otpStep, setOtpStep] = useState('form');
@@ -192,6 +193,9 @@ const Landing = () => {
       return;
     }
 
+    if (data.data?.passId) {
+      setMemberPassId(data.data.passId);
+    }
     setUserQueueNum(data.data.queueNum);
     setWaitlistCount(prev => prev + 1);
     setOtpStep('success');
@@ -1286,7 +1290,7 @@ const Landing = () => {
                       <div className="flex justify-between items-center text-xs pt-1">
                         <span className="text-gray-400">Founding ID:</span>
                         <code className="bg-[#FACC15]/10 text-[#FACC15] px-2 py-0.5 rounded font-mono font-bold text-xs border border-[#FACC15]/20">
-                          CINELITH-{userQueueNum || 385}
+                          {memberPassId || `CINELITH-${userQueueNum || 385}`}
                         </code>
                       </div>
                     </div>
