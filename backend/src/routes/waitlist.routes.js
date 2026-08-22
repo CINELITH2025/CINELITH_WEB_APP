@@ -1,11 +1,49 @@
 import express from "express";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import Waitlist from "../models/Waitlist.js";
 
 const router = express.Router();
 
-// Helper to send email via SMTP if configured
+// Initialize Resend SDK if API key is provided
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY || "re_S3qQ6PRA_N3pB4MexGJHNcMVuuu8NyD6J";
+  if (apiKey) {
+    return new Resend(apiKey);
+  }
+  return null;
+};
+
+// Helper to send email via Resend or Nodemailer SMTP
 const sendEmailOTP = async (email, otp) => {
+  const resend = getResendClient();
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; background-color: #090909; color: #ffffff; padding: 30px; border-radius: 16px; max-width: 500px; margin: 0 auto; border: 1px solid #333333;">
+      <h2 style="color: #FACC15; font-size: 24px; margin-bottom: 8px;">CINELITH Pre-Launch</h2>
+      <p style="color: #cccccc; font-size: 14px;">Your 6-digit email verification code is:</p>
+      <div style="background-color: #151515; border: 1px solid #FACC15; color: #FACC15; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 16px; text-align: center; border-radius: 12px; margin: 24px 0;">
+        ${otp}
+      </div>
+      <p style="color: #888888; font-size: 12px; leading-relaxed: 1.5;">This code will expire in 10 minutes. If you did not request early access to CINELITH, please ignore this email.</p>
+    </div>
+  `;
+
+  if (resend) {
+    try {
+      await resend.emails.send({
+        from: 'CINELITH <onboarding@resend.dev>',
+        to: email,
+        subject: `${otp} is your CINELITH verification code`,
+        html: htmlContent
+      });
+      console.log(`✉️ Resend OTP email delivered to ${email}`);
+      return;
+    } catch (err) {
+      console.warn("⚠️ Resend delivery warning:", err.message);
+    }
+  }
+
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     try {
       const transporter = nodemailer.createTransport({
@@ -21,21 +59,12 @@ const sendEmailOTP = async (email, otp) => {
       await transporter.sendMail({
         from: `"CINELITH Pre-Launch" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Your CINELITH Pre-Launch Verification Code",
-        html: `
-          <div style="font-family: Arial, sans-serif; background-color: #090909; color: #ffffff; padding: 30px; rounded: 16px;">
-            <h2 style="color: #FACC15; font-size: 24px;">CINELITH Pre-Launch Access</h2>
-            <p>Your 6-digit email verification code is:</p>
-            <div style="background-color: #151515; border: 1px solid #FACC15; color: #FACC15; font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 15px; text-align: center; border-radius: 12px; margin: 20px 0;">
-              ${otp}
-            </div>
-            <p style="color: #999999; font-size: 12px;">This code expires in 10 minutes. If you did not request this, please ignore this email.</p>
-          </div>
-        `
+        subject: `${otp} is your CINELITH verification code`,
+        html: htmlContent
       });
-      console.log(`✉️ Email OTP sent to ${email}`);
+      console.log(`✉️ SMTP Email OTP sent to ${email}`);
     } catch (err) {
-      console.warn("⚠️ SMTP email sending failed, falling back to response demo mode:", err.message);
+      console.warn("⚠️ SMTP email sending failed:", err.message);
     }
   } else {
     console.log(`🔑 Demo OTP for ${email}: ${otp}`);
