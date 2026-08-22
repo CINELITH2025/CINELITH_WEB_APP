@@ -7,7 +7,7 @@ const router = express.Router();
 // @desc    Join the early access waitlist
 // @access  Public
 router.post("/", async (req, res) => {
-  const { name, email, favoriteMovie } = req.body;
+  const { name, email, country, favoriteMovie } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({ message: "Name and email are required" });
@@ -23,6 +23,7 @@ router.post("/", async (req, res) => {
     const waitlistEntry = new Waitlist({
       name,
       email,
+      country: country || "",
       favoriteMovie: favoriteMovie || ""
     });
 
@@ -32,6 +33,7 @@ router.post("/", async (req, res) => {
       data: {
         name: waitlistEntry.name,
         email: waitlistEntry.email,
+        country: waitlistEntry.country,
         favoriteMovie: waitlistEntry.favoriteMovie
       }
     });

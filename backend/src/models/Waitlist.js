@@ -15,6 +15,11 @@ const waitlistSchema = new mongoose.Schema(
       lowercase: true,
       match: [/\S+@\S+\.\S+/, "Please enter a valid email address"]
     },
+    country: {
+      type: String,
+      trim: true,
+      default: ""
+    },
     favoriteMovie: {
       type: String,
       trim: true,
