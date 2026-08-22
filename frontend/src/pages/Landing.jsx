@@ -80,6 +80,9 @@ const Landing = () => {
   // Preview tab state
   const [activePreviewTab, setActivePreviewTab] = useState('Home Page');
 
+  // Policy Modal state ('privacy' | 'terms' | null)
+  const [activePolicyModal, setActivePolicyModal] = useState(null);
+
   // Fetch waitlist count on mount
   useEffect(() => {
     const fetchCount = async () => {
@@ -1319,8 +1322,8 @@ const Landing = () => {
           {/* Nav Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#B5B5B5]">
             <button onClick={() => scrollToSection('about')} className="hover:text-white transition-colors cursor-pointer">About</button>
-            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-white transition-colors">Terms & Conditions</a>
+            <button onClick={() => setActivePolicyModal('privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
+            <button onClick={() => setActivePolicyModal('terms')} className="hover:text-white transition-colors cursor-pointer">Terms & Conditions</button>
             <a href="mailto:team@cinelith.com" className="hover:text-white transition-colors">team@cinelith.com</a>
           </div>
 
@@ -1339,6 +1342,54 @@ const Landing = () => {
 
         </div>
       </footer>
+
+      {/* Policy Modal */}
+      <AnimatePresence>
+        {activePolicyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#121018] border border-[#FACC15]/30 rounded-3xl p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl relative text-left"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <h3 className="text-xl font-black text-white">
+                  {activePolicyModal === 'privacy' ? 'Privacy Policy' : 'Terms & Conditions'}
+                </h3>
+                <button
+                  onClick={() => setActivePolicyModal(null)}
+                  className="p-1 rounded-full hover:bg-white/10 text-gray-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {activePolicyModal === 'privacy' ? (
+                <div className="space-y-3 text-xs md:text-sm text-gray-300 leading-relaxed font-medium">
+                  <p>At <b>CINELITH</b>, we respect your privacy and are committed to protecting your personal data.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">1. Data Collection</h4>
+                  <p>When you join our early access waitlist, we collect your name, email address, country, and favorite movie. This information is strictly used to assign your Founding Member ID and send pre-launch invitations.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">2. Data Security & Sharing</h4>
+                  <p>We never sell, rent, or trade your personal information with third parties. All stored data is encrypted in cloud databases.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">3. Contact</h4>
+                  <p>If you have any questions regarding your data or wish to remove your waitlist spot, please contact <a href="mailto:team@cinelith.com" className="text-[#FACC15] underline">team@cinelith.com</a>.</p>
+                </div>
+              ) : (
+                <div className="space-y-3 text-xs md:text-sm text-gray-300 leading-relaxed font-medium">
+                  <p>Welcome to <b>CINELITH</b>. By accessing our pre-launch portal, you agree to these Terms & Conditions.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">1. Early Access & Founding Member Perks</h4>
+                  <p>Founding Member passes (e.g. CINELITH-385) are non-transferable and grant priority access during closed beta testing waves.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">2. Community Guidelines</h4>
+                  <p>CINELITH promotes constructive film analysis. Harassment, spam, or intentional spoiler posting outside designated spoiler threads will result in pass revocation.</p>
+                  <h4 className="font-bold text-white text-sm pt-2">3. Modifications</h4>
+                  <p>CINELITH reserves the right to update features, platform roadmap dates, and pre-launch perks prior to official release.</p>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
