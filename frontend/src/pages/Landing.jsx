@@ -52,10 +52,15 @@ const Landing = () => {
   // Waitlist form states
   const [formData, setFormData] = useState({ name: '', email: '', country: '', favoriteMovie: '' });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [waitlistCount, setWaitlistCount] = useState(384);
   const [userQueueNum, setUserQueueNum] = useState(null);
+
+  // OTP Verification states ('form' | 'otp' | 'success')
+  const [otpStep, setOtpStep] = useState('form');
+  const [otpCode, setOtpCode] = useState('');
+  const [demoOtpHint, setDemoOtpHint] = useState('');
+  const [otpNotice, setOtpNotice] = useState('');
 
   // FAQ states
   const [openFaq, setOpenFaq] = useState(null);
@@ -96,19 +101,21 @@ const Landing = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = async (e) => {
+  // Step 1: Send OTP to user's email
+  const handleSendOTP = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setOtpNotice('');
 
     if (!formData.name.trim() || !formData.email.trim()) {
-      setError('Name and Email are required.');
+      setError('Name and Email Address are required.');
       setLoading(false);
       return;
     }
 
     try {
-      const res = await fetch(`${API_URL}/waitlist`, {
+      const res = await fetch(`${API_URL}/waitlist/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -116,12 +123,49 @@ const Landing = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong. Please try again.');
+        throw new Error(data.message || 'Verification failed. Please try again.');
       }
 
-      setSuccess(true);
-      setUserQueueNum(waitlistCount + 1);
+      setDemoOtpHint(data.demoOtp || '');
+      setOtpNotice(data.message);
+      setOtpStep('otp');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: Verify 6-digit OTP code
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    if (!otpCode.trim() || otpCode.trim().length !== 6) {
+      setError('Please enter a valid 6-digit verification code.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/waitlist/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          otp: otpCode.trim()
+        })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Verification code failed.');
+      }
+
+      setUserQueueNum(data.data.queueNum);
       setWaitlistCount(prev => prev + 1);
+      setOtpStep('success');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -973,11 +1017,12 @@ const Landing = () => {
             style={{ background: 'radial-gradient(circle at top, rgba(255, 214, 10, 0.08) 0%, transparent 70%), #0d0d0d' }}
           >
             <AnimatePresence mode="wait">
-              {!success ? (
+              {otpStep === 'form' && (
                 <motion.div
                   key="form-container"
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   className="space-y-6"
                 >
                   <div className="space-y-3">
@@ -989,7 +1034,7 @@ const Landing = () => {
                     </p>
                   </div>
 
-                  <form onSubmit={handleFormSubmit} className="space-y-3.5 max-w-md mx-auto pt-2">
+                  <form onSubmit={handleSendOTP} className="space-y-3.5 max-w-md mx-auto pt-2">
                     {error && (
                       <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-xs font-semibold">
                         ⚠️ {error}
@@ -1004,8 +1049,9 @@ const Landing = () => {
                           name="name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          placeholder="Name" 
+                          placeholder="Name *" 
                           disabled={loading}
+                          required
                           className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
@@ -1016,8 +1062,9 @@ const Landing = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="Email Address" 
+                          placeholder="Email Address *" 
                           disabled={loading}
+                          required
                           className="w-full bg-[#151515] border border-white/10 focus:border-[#FFD60A] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
@@ -1056,10 +1103,10 @@ const Landing = () => {
                         {loading ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            Securing Spot...
+                            Checking Email & Sending Code...
                           </>
                         ) : (
-                          "Join Early Access"
+                          "Send Email Verification Code →"
                         )}
                       </button>
                     </div>
@@ -1075,7 +1122,90 @@ const Landing = () => {
                     <span>Join <b className="text-white font-bold">{waitlistCount}</b> cinephiles waiting in line</span>
                   </div>
                 </motion.div>
-              ) : (
+              )}
+
+              {otpStep === 'otp' && (
+                <motion.div
+                  key="otp-container"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-6 max-w-md mx-auto"
+                >
+                  <div className="space-y-2">
+                    <div className="w-12 h-12 rounded-2xl bg-[#FACC15]/10 text-[#FACC15] flex items-center justify-center mx-auto mb-2 border border-[#FACC15]/20">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                      Enter Verification Code
+                    </h3>
+                    <p className="text-xs md:text-sm text-gray-400 font-medium leading-relaxed">
+                      We sent a 6-digit code to <b className="text-white">{formData.email}</b>
+                    </p>
+                  </div>
+
+                  {demoOtpHint && (
+                    <div className="bg-[#FACC15]/10 border border-[#FACC15]/30 text-[#FACC15] p-3 rounded-xl text-xs font-mono font-bold text-center">
+                      🔑 Demo Verification Code: <u className="tracking-widest">{demoOtpHint}</u>
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl text-xs font-semibold">
+                      ⚠️ {error}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleVerifyOTP} className="space-y-4">
+                    <div>
+                      <input
+                        type="text"
+                        maxLength="6"
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                        placeholder="••••••"
+                        autoFocus
+                        disabled={loading}
+                        className="w-full bg-[#151515] border-2 border-[#FACC15]/40 focus:border-[#FACC15] rounded-xl py-4 text-center text-3xl font-mono tracking-[0.5em] font-black text-[#FACC15] focus:outline-none transition-all disabled:opacity-50 placeholder:text-gray-600"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading || otpCode.length !== 6}
+                      className="w-full bg-[#FFD60A] hover:bg-[#FACC15] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(255,214,10,0.3)] hover:shadow-[0_0_35px_rgba(255,214,10,0.5)] disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Verifying Code...
+                        </>
+                      ) : (
+                        "Verify & Secure My Spot"
+                      )}
+                    </button>
+
+                    <div className="flex items-center justify-between text-xs text-gray-400 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => { setOtpStep('form'); setError(''); }}
+                        className="hover:text-white transition-colors cursor-pointer"
+                      >
+                        ← Edit Email
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSendOTP}
+                        className="text-[#FACC15] hover:underline font-semibold cursor-pointer"
+                      >
+                        Resend Code
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
+              {otpStep === 'success' && (
                 <motion.div
                   key="success-container"
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -1086,14 +1216,14 @@ const Landing = () => {
                   <div className="bg-gradient-to-br from-[#181524] via-[#110f1c] to-[#0a0812] border-2 border-[#FACC15]/40 p-6 md:p-8 rounded-3xl max-w-md mx-auto shadow-[0_0_50px_rgba(250,204,21,0.2)] text-left relative overflow-hidden">
                     {/* Glowing Pass Ribbon */}
                     <div className="absolute top-0 right-0 bg-[#FACC15] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-bl-2xl shadow-md">
-                      Pre-Launch Access Pass
+                      Verified Founding Pass
                     </div>
 
                     <div className="flex items-center gap-3 mb-6">
                       <img src="/images/logo_mark.png" alt="CINELITH" className="w-8 h-8 object-contain" />
                       <div>
                         <h4 className="text-lg font-black text-white leading-none">CINELITH</h4>
-                        <span className="text-[10px] text-gray-400 font-semibold">Founding Member Pass</span>
+                        <span className="text-[10px] text-gray-400 font-semibold">Verified Founding Member</span>
                       </div>
                     </div>
 
@@ -1101,6 +1231,11 @@ const Landing = () => {
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-gray-400">Member Name:</span>
                         <span className="font-extrabold text-white">{formData.name || 'Cinephile'}</span>
+                      </div>
+
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-gray-400">Email:</span>
+                        <span className="font-bold text-gray-200">{formData.email}</span>
                       </div>
 
                       <div className="flex justify-between items-center text-xs">
@@ -1130,7 +1265,7 @@ const Landing = () => {
                   </div>
 
                   <p className="text-xs text-gray-400 max-w-sm mx-auto">
-                    Your Founding Pass is activated! You are now locked in for early access.
+                    🎉 Email verified! Your Founding Pass is activated & reserved.
                   </p>
                 </motion.div>
               )}

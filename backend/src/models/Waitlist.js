@@ -24,6 +24,18 @@ const waitlistSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: ""
+    },
+    otp: {
+      type: String,
+      default: null
+    },
+    otpExpiresAt: {
+      type: Date,
+      default: null
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
