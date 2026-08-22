@@ -87,10 +87,12 @@ router.post("/send-otp", async (req, res) => {
     await entry.save();
     await sendEmailOTP(cleanEmail, otp);
 
+    const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.VERCEL_ENV;
+
     return res.status(200).json({
       message: `Verification code sent to ${cleanEmail}`,
       email: cleanEmail,
-      demoOtp: process.env.EMAIL_USER ? undefined : otp // for easy demo testing
+      demoOtp: (isProduction || process.env.EMAIL_USER) ? undefined : otp
     });
   } catch (error) {
     console.error("Error sending OTP:", error);
