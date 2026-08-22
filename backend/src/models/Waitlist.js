@@ -39,18 +39,20 @@ const waitlistSchema = new mongoose.Schema(
     },
     passId: {
       type: String,
-      unique: true,
-      sparse: true,
-      default: null
+      default: undefined
     },
     queuePosition: {
       type: Number,
-      unique: true,
-      sparse: true,
-      default: null
+      default: undefined
     }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Waitlist", waitlistSchema);
+const WaitlistModel = mongoose.model("Waitlist", waitlistSchema);
+
+// Automatically drop broken null-key indexes if they exist from previous schema migrations
+WaitlistModel.collection.dropIndex("passId_1").catch(() => {});
+WaitlistModel.collection.dropIndex("queuePosition_1").catch(() => {});
+
+export default WaitlistModel;
