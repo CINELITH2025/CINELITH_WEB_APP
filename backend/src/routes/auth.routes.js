@@ -8,18 +8,52 @@ const router = express.Router();
 /* =====================
    REGISTER
 ===================== */
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+router.post("/register", async (req, res, next) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      avatar,
+      bio,
+      location,
+      topGenres,
+      topMovies,
+      topActors,
+      preferredLanguages,
+      preferredPlatforms
+    } = req.body;
 
-  const hashed = await bcrypt.hash(password, 10);
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "name, email, password required" });
+    }
 
-  await User.create({
-    name,
-    email,
-    password: hashed
-  });
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
 
-  res.json({ message: "User registered" });
+    const hashed = await bcrypt.hash(password, 10);
+
+    await User.create({
+      name,
+      email,
+      password: hashed,
+      avatar: avatar || null,
+      bio: bio || "",
+      location: location || "",
+      topGenres: topGenres || [],
+      topMovies: topMovies || [],
+      topActors: topActors || [],
+      preferredLanguages: preferredLanguages || [],
+      preferredPlatforms: preferredPlatforms || [],
+      onboardingCompleted: true
+    });
+
+    res.status(201).json({ message: "User registered" });
+  } catch (err) {
+    next(err);
+  }
 });
 
 /* =====================
@@ -46,7 +80,6 @@ router.post("/login", async (req, res) => {
     );
 
     res.json({ token });
-
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });

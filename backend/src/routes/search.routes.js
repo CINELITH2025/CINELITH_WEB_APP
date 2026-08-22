@@ -11,7 +11,7 @@ router.get("/", protect, async (req, res, next) => {
 
     const [movies, people] = await Promise.all([
       tvdbSearch(q),
-      User.find({ name: { $regex: q, $options: "i" } }).select("name")
+      User.find({ name: { $regex: q, $options: "i" } }).select("name avatar bio location")
     ]);
 
     res.json({
