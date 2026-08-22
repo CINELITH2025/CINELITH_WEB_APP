@@ -17,14 +17,6 @@ const Instagram = (props) => (
   </svg>
 );
 
-const Linkedin = (props) => (
-  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect x="2" y="9" width="4" height="12" />
-    <circle cx="4" cy="4" r="2" />
-  </svg>
-);
-
 // Helper to determine API URL
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5050/api' : '/api');
 
@@ -1305,9 +1297,6 @@ const Landing = () => {
           <div className="flex items-center gap-4 text-[#B5B5B5]">
             <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" title="Instagram @cinelithofficial">
               <Instagram className="w-4 h-4" />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-              <Linkedin className="w-4 h-4" />
             </a>
             <a href="mailto:team@cinelith.com" className="hover:text-white transition-colors" title="Email team@cinelith.com">
               <Mail className="w-4 h-4" />
