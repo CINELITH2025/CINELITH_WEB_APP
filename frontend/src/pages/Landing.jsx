@@ -17,8 +17,39 @@ const Instagram = (props) => (
   </svg>
 );
 
-// Helper to determine API URL
-const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5050/api' : '/api');
+// Helper to determine API URL with fail-safe resolution
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5050/api';
+  }
+  return '/api';
+};
+
+const API_URL = getApiUrl();
+
+// Fail-safe fetch helper that prevents HTML JSON parse crashes
+const safeFetchJson = async (url, options = {}) => {
+  try {
+    const res = await fetch(url, options);
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await res.json();
+      return { ok: res.ok, status: res.status, data };
+    }
+    return { 
+      ok: false, 
+      status: res.status, 
+      data: { message: "Connection issue. Please check that backend server is running on port 5050." } 
+    };
+  } catch (err) {
+    return { 
+      ok: false, 
+      status: 500, 
+      data: { message: "Network error. Could not reach backend server." } 
+    };
+  }
+};
 
 const POSTERS = [
   { title: "Interstellar", director: "Christopher Nolan", url: "/images/poster_1.jpg" },
@@ -83,14 +114,9 @@ const Landing = () => {
   // Fetch waitlist count on mount
   useEffect(() => {
     const fetchCount = async () => {
-      try {
-        const res = await fetch(`${API_URL}/waitlist/count`);
-        if (res.ok) {
-          const data = await res.json();
-          setWaitlistCount(data.count);
-        }
-      } catch (err) {
-        console.warn("Could not fetch waitlist count:", err);
+      const { ok, data } = await safeFetchJson(`${API_URL}/waitlist/count`);
+      if (ok && data?.count) {
+        setWaitlistCount(data.count);
       }
     };
     fetchCount();
@@ -114,26 +140,22 @@ const Landing = () => {
       return;
     }
 
-    try {
-      const res = await fetch(`${API_URL}/waitlist/send-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
+    const { ok, data } = await safeFetchJson(`${API_URL}/waitlist/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Verification failed. Please try again.');
-      }
-
-      setDemoOtpHint(data.demoOtp || '');
-      setOtpNotice(data.message);
-      setOtpStep('otp');
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    if (!ok) {
+      setError(data.message || 'Verification failed. Please try again.');
       setLoading(false);
+      return;
     }
+
+    setDemoOtpHint(data.demoOtp || '');
+    setOtpNotice(data.message);
+    setOtpStep('otp');
+    setLoading(false);
   };
 
   // Step 2: Verify 6-digit OTP code
@@ -148,29 +170,25 @@ const Landing = () => {
       return;
     }
 
-    try {
-      const res = await fetch(`${API_URL}/waitlist/verify-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          otp: otpCode.trim()
-        })
-      });
-      const data = await res.json();
+    const { ok, data } = await safeFetchJson(`${API_URL}/waitlist/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.email,
+        otp: otpCode.trim()
+      })
+    });
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Verification code failed.');
-      }
-
-      setUserQueueNum(data.data.queueNum);
-      setWaitlistCount(prev => prev + 1);
-      setOtpStep('success');
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    if (!ok) {
+      setError(data.message || 'Verification code failed.');
       setLoading(false);
+      return;
     }
+
+    setUserQueueNum(data.data.queueNum);
+    setWaitlistCount(prev => prev + 1);
+    setOtpStep('success');
+    setLoading(false);
   };
 
   const toggleFaq = (index) => {
