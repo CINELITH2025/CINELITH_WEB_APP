@@ -1174,22 +1174,22 @@ const Landing = () => {
               <h4 className="font-bold text-base mb-1">Instagram</h4>
               <p className="text-xs text-[#B5B5B5]">Daily cinematography highlights, movie trivia, and community features.</p>
             </div>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
-              Follow Us <ArrowUpRight className="w-4 h-4" />
+            <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+              Follow @cinelithofficial <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
-          {/* Card 2: LinkedIn */}
+          {/* Card 2: Official Contact */}
           <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F4C618]/20 transition-all duration-300">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
-                <Linkedin className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-yellow-500/10 text-[#F4C618] flex items-center justify-center mb-4">
+                <Mail className="w-5 h-5" />
               </div>
-              <h4 className="font-bold text-base mb-1">LinkedIn</h4>
-              <p className="text-xs text-[#B5B5B5]">Tech stack updates, behind-the-scenes progress, and hiring milestones.</p>
+              <h4 className="font-bold text-base mb-1">Official Support</h4>
+              <p className="text-xs text-[#B5B5B5]">Inquiries, founding member support, and partnership requests.</p>
             </div>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
-              Connect <ArrowUpRight className="w-4 h-4" />
+            <a href="mailto:team@cinelith.com" className="text-xs text-[#F4C618] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+              Email team@cinelith.com <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
