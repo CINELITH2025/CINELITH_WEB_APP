@@ -29,35 +29,8 @@ const Navbar = () => {
           {/* Nav Links */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
             <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            {isAuthenticated ? (
-              <>
-                <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
-                <Link to="/people" className="hover:text-white transition-colors">People</Link>
-              </>
-            ) : (
-              <>
-                <a 
-                  href="#signup" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="hover:text-white transition-colors cursor-pointer"
-                >
-                  Explore
-                </a>
-                <a 
-                  href="#signup" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="hover:text-white transition-colors cursor-pointer"
-                >
-                  People
-                </a>
-              </>
-            )}
+            <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
+            <Link to="/people" className="hover:text-white transition-colors">People</Link>
           </div>
         </div>
 

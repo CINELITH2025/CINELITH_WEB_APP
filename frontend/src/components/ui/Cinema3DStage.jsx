@@ -104,8 +104,7 @@ const Cinema3DStage = () => {
             return (
               <div
                 key={movie.id}
-                onClick={() => navigate(`/movie/${movie.id}`)}
-                className="absolute w-48 md:w-56 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 bg-[#121019] shadow-[0_20px_40px_rgba(0,0,0,0.9)] hover:border-[#FACC15] transition-all duration-300 group cursor-pointer"
+                className="absolute w-48 md:w-56 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 bg-[#121019] shadow-[0_20px_40px_rgba(0,0,0,0.9)] hover:border-[#FACC15] transition-all duration-300 group"
                 style={{
                   transformStyle: 'preserve-3d',
                   transform: `rotateY(${angle}deg) translateZ(${radius}px)`

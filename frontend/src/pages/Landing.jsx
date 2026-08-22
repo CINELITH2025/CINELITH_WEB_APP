@@ -602,12 +602,7 @@ const Landing = () => {
             {previewTabs.map(tab => (
               <button
                 key={tab.id}
-                onClick={() => {
-                  setActivePreviewTab(tab.id);
-                  if (tab.id !== 'Home Page' && !isAuthenticated) {
-                    scrollToSection('signup');
-                  }
-                }}
+                onClick={() => setActivePreviewTab(tab.id)}
                 className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                   activePreviewTab === tab.id 
                     ? 'bg-[#F4C618] text-black shadow-md' 
@@ -678,26 +673,7 @@ const Landing = () => {
                     </div>
                   )}
 
-                  {/* Non-Home Tabs Lock Gate for unauthenticated guests */}
-                  {activePreviewTab !== 'Home Page' && !isAuthenticated ? (
-                    <div className="text-center space-y-4 p-8 bg-[#121019]/90 border border-[#F4C618]/30 rounded-2xl max-w-md mx-auto backdrop-blur-md">
-                      <div className="w-12 h-12 rounded-xl bg-[#F4C618]/10 text-[#F4C618] flex items-center justify-center mx-auto">
-                        <Lock className="w-6 h-6" />
-                      </div>
-                      <h4 className="text-xl font-black text-white">Sign Up to Unlock Preview</h4>
-                      <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Join the early access waitlist to unlock full interactive previews for <b className="text-white">{activePreviewTab}</b>.
-                      </p>
-                      <button
-                        onClick={() => scrollToSection('signup')}
-                        className="bg-[#F4C618] hover:bg-yellow-400 text-black font-extrabold text-xs px-6 py-3 rounded-xl transition-all shadow-lg hover:scale-105 cursor-pointer"
-                      >
-                        Join Early Access Form →
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      {/* MOVIE DETAIL PAGE PREVIEW */}
+                  {/* MOVIE DETAIL PAGE PREVIEW */}
                       {activePreviewTab === 'Movie Detail Page' && (
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 text-left">
                           <div className="md:col-span-4 aspect-[2/3] bg-neutral-900 border border-white/[0.05] rounded-2xl overflow-hidden shadow-lg">
@@ -842,8 +818,6 @@ const Landing = () => {
                           </div>
                         </div>
                       )}
-                    </>
-                  )}
 
                 </motion.div>
               </AnimatePresence>

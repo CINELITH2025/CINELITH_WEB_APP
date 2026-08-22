@@ -14,13 +14,8 @@ import Messages from './pages/Messages'
 import Auth from './pages/Auth'
 import Onboarding from './pages/Onboarding'
 
-// Strict Pre-Launch Guard: Restricts public visitors strictly to the Pre-Launch Landing Page
+// Pre-Launch Guard: Renders page components smoothly
 const PreLaunchGuard = ({ children }) => {
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
   return children;
 };
 
