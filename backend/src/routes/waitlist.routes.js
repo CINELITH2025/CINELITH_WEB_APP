@@ -5,11 +5,16 @@ import Waitlist from "../models/Waitlist.js";
 
 const router = express.Router();
 
-// Initialize Resend SDK strictly from environment variables
+// Initialize Resend SDK strictly from environment variables with safety checks
 const getResendClient = () => {
   const apiKey = process.env.RESEND_API_KEY;
-  if (apiKey) {
-    return new Resend(apiKey);
+  if (apiKey && typeof apiKey === 'string' && apiKey.trim().length > 0) {
+    try {
+      return new Resend(apiKey.trim());
+    } catch (e) {
+      console.warn("⚠️ Failed to initialize Resend client:", e.message);
+      return null;
+    }
   }
   return null;
 };
@@ -120,18 +125,23 @@ router.post("/send-otp", async (req, res) => {
     }
 
     await entry.save();
-    await sendEmailOTP(cleanEmail, otp);
+
+    try {
+      await sendEmailOTP(cleanEmail, otp);
+    } catch (mailErr) {
+      console.error("⚠️ Failed to dispatch OTP email:", mailErr);
+    }
 
     const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.VERCEL_ENV;
 
     return res.status(200).json({
       message: `Verification code sent to ${cleanEmail}`,
       email: cleanEmail,
-      demoOtp: (isProduction || process.env.EMAIL_USER) ? undefined : otp
+      demoOtp: (isProduction || process.env.EMAIL_USER || process.env.RESEND_API_KEY) ? undefined : otp
     });
   } catch (error) {
     console.error("Error sending OTP:", error);
-    return res.status(500).json({ message: "Failed to send verification code. Please try again." });
+    return res.status(500).json({ message: error.message || "Failed to send verification code. Please try again." });
   }
 });
 
