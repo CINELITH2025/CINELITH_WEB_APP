@@ -5,9 +5,9 @@ import Waitlist from "../models/Waitlist.js";
 
 const router = express.Router();
 
-// Initialize Resend SDK if API key is provided
+// Initialize Resend SDK strictly from environment variables
 const getResendClient = () => {
-  const apiKey = process.env.RESEND_API_KEY || "re_S3qQ6PRA_N3pB4MexGJHNcMVuuu8NyD6J";
+  const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     return new Resend(apiKey);
   }
@@ -32,7 +32,7 @@ const sendEmailOTP = async (email, otp) => {
   if (resend) {
     try {
       await resend.emails.send({
-        from: 'CINELITH <onboarding@resend.dev>',
+        from: process.env.RESEND_FROM_EMAIL || 'CINELITH <onboarding@resend.dev>',
         to: email,
         subject: `${otp} is your CINELITH verification code`,
         html: htmlContent
