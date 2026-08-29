@@ -23,7 +23,7 @@ const Navbar = () => {
         <div className="flex items-center gap-10">
           {/* Logo with final ribbon path */}
           <Link to="/" className="flex items-center">
-            <Logo className="h-9 w-auto" />
+            <Logo className="h-11 md:h-12 w-auto" />
           </Link>
 
           {/* Nav Links */}

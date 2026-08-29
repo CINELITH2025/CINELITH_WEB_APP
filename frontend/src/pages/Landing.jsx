@@ -238,7 +238,7 @@ const Landing = () => {
         <div className="backdrop-blur-xl bg-[#111111]/70 border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-full px-6 py-3 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/images/logo_text.png" alt="CINELITH" className="h-10 md:h-11 w-auto object-contain" />
+            <img src="/images/logo_text.png" alt="CINELITH" className="h-12 md:h-14 w-auto object-contain" />
           </div>
 
           {/* Links */}
@@ -1258,7 +1258,7 @@ const Landing = () => {
                     </div>
 
                     <div className="flex items-center gap-3 mb-6">
-                      <img src="/images/logo_mark.png" alt="CINELITH" className="w-8 h-8 object-contain" />
+                      <img src="/images/logo_mark.png" alt="CINELITH" className="w-10 h-10 object-contain" />
                       <div>
                         <h4 className="text-lg font-black text-white leading-none">CINELITH</h4>
                         <span className="text-[10px] text-gray-400 font-semibold">Verified Founding Member</span>
@@ -1441,7 +1441,7 @@ const Landing = () => {
           
           {/* Brand/Copyright */}
           <div className="flex items-center gap-2">
-            <img src="/images/logo_mark.png" alt="CINELITH Logo" className="w-6 h-6 object-contain" />
+            <img src="/images/logo_mark.png" alt="CINELITH Logo" className="w-8 h-8 object-contain" />
             <span className="text-xs text-[#B5B5B5]">
               © {new Date().getFullYear()} CINELITH. Discover, Discuss, Connect.
             </span>
