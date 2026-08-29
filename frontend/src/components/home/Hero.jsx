@@ -25,20 +25,20 @@ const Hero = () => {
       <div className="relative h-full flex flex-col justify-center px-8 md:px-16 max-w-4xl">
         {/* Dynamic Personalization Tag */}
         {isAuthenticated && user ? (
-          <div className="flex items-center gap-2 bg-[#EAB513]/10 border border-[#EAB513]/30 px-4 py-2.5 rounded-full w-fit mb-5 shadow-lg animate-fade-in">
-            <Sparkles className="w-4 h-4 text-[#EAB513] fill-current" />
+          <div className="flex items-center gap-2 bg-[#F5BF26]/10 border border-[#F5BF26]/30 px-4 py-2.5 rounded-full w-fit mb-5 shadow-lg animate-fade-in">
+            <Sparkles className="w-4 h-4 text-[#F5BF26] fill-current" />
             <span className="text-[10px] md:text-xs font-black uppercase tracking-wider text-white">
-              Welcome back, <span className="text-[#EAB513]">{user.name}</span> • Score: {user.cinephileScore?.toLocaleString()} • Streak: {user.streak}d
+              Welcome back, <span className="text-[#F5BF26]">{user.name}</span> • Score: {user.cinephileScore?.toLocaleString()} • Streak: {user.streak}d
             </span>
           </div>
         ) : (
-          <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#EAB513] mb-4 block">
+          <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#F5BF26] mb-4 block">
             The Ultimate Platform for Cinephiles
           </span>
         )}
 
         <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6 tracking-tight max-w-3xl">
-          Your Gateway to <span className="text-[#EAB513]">the World of Cinema.</span>
+          Your Gateway to <span className="text-[#F5BF26]">the World of Cinema.</span>
         </h1>
         <p className="text-sm md:text-base text-gray-400 mb-8 max-w-md leading-relaxed font-medium">
           Discover, discuss, and connect with film lovers across the globe. Daily updated movie battles, trivia quizzes, and community analytics.
@@ -47,7 +47,7 @@ const Hero = () => {
         <div className="flex flex-wrap items-center gap-4">
           <Button 
             onClick={() => navigate('/movies')}
-            className="bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-sm px-6 py-5 rounded-xl transition-all shadow-lg hover:scale-105 cursor-pointer"
+            className="bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-black text-sm px-6 py-5 rounded-xl transition-all shadow-lg hover:scale-105 cursor-pointer"
           >
             Explore Movies
             <ArrowRight className="w-4 h-4 ml-2" strokeWidth={3} />

@@ -12,7 +12,7 @@ const Analytics = () => {
 
     if (isFavorite) {
       // Return a tall bar (e.g., between 80% and 100% height)
-      return "h-32 bg-[#EAB513] shadow-[0_0_10px_rgba(234,181,19,0.2)]";
+      return "h-32 bg-[#F5BF26] shadow-[0_0_10px_rgba(245,191,38,0.2)]";
     }
     // Return a short placeholder bar (e.g., between 15% and 25% height)
     return "h-10 bg-[#424131]";
@@ -55,8 +55,8 @@ const Analytics = () => {
             <svg viewBox="0 0 400 120" className="w-full h-full overflow-visible" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#EAB513" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#EAB513" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#F5BF26" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#F5BF26" stopOpacity="0" />
                 </linearGradient>
               </defs>
               <path 
@@ -66,9 +66,9 @@ const Analytics = () => {
               <path 
                 d="M 0 100 Q 20 20 40 40 T 80 80 T 120 40 T 160 90 T 200 60 T 240 110 T 280 20 T 320 90 T 360 40 T 400 30" 
                 fill="none" 
-                stroke="#EAB513" 
+                stroke="#F5BF26" 
                 strokeWidth="3" 
-                className="drop-shadow-[0_0_8px_rgba(234,181,19,0.5)]"
+                className="drop-shadow-[0_0_8px_rgba(245,191,38,0.5)]"
               />
             </svg>
             

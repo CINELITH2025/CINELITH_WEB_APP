@@ -109,7 +109,7 @@ const Messages = () => {
       
       {/* Toast Notification */}
       {showNotification && (
-        <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-[#EAB513] text-black text-xs font-black px-6 py-3 rounded-full shadow-2xl z-50 animate-bounce">
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-[#F5BF26] text-black text-xs font-black px-6 py-3 rounded-full shadow-2xl z-50 animate-bounce">
           {notificationMsg}
         </div>
       )}
@@ -128,13 +128,13 @@ const Messages = () => {
 
           {/* Search bar */}
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search chat or taste..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-xs placeholder:text-gray-600 text-white"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-xs placeholder:text-gray-600 text-white"
             />
           </div>
 
@@ -149,7 +149,7 @@ const Messages = () => {
                     onClick={() => setActiveContact(c.name)}
                     className={`flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all border group ${
                       isActive
-                        ? 'bg-[#EAB513]/10 border-[#EAB513]/30 text-white'
+                        ? 'bg-[#F5BF26]/10 border-[#F5BF26]/30 text-white'
                         : 'bg-white/[0.02] border-white/5 hover:bg-white/5 hover:border-white/10'
                     }`}
                   >
@@ -161,7 +161,7 @@ const Messages = () => {
 
                     <div className="flex-1 min-w-0 flex flex-col">
                       <div className="flex items-center justify-between mb-0.5">
-                        <span className="font-extrabold text-sm text-white group-hover:text-[#EAB513] transition-colors">{c.name}</span>
+                        <span className="font-extrabold text-sm text-white group-hover:text-[#F5BF26] transition-colors">{c.name}</span>
                         <span className="text-[10px] text-gray-500 font-bold">{c.lastTime}</span>
                       </div>
                       <p className="text-[11px] text-gray-500 font-medium truncate mb-1">{c.role}</p>
@@ -229,7 +229,7 @@ const Messages = () => {
                   {/* Message bubble */}
                   <div className={`p-4.5 rounded-2xl text-sm font-medium leading-relaxed shadow-lg ${
                     isMe 
-                      ? 'bg-[#EAB513] text-black rounded-tr-none' 
+                      ? 'bg-[#F5BF26] text-black rounded-tr-none' 
                       : 'bg-white/5 border border-white/10 text-white rounded-tl-none'
                   }`}>
                     {msg.text}
@@ -240,7 +240,7 @@ const Messages = () => {
                     <span className="text-[9px] text-gray-500 font-bold">
                       {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
-                    {isMe && <CheckCheck className="w-3.5 h-3.5 text-[#EAB513]" />}
+                    {isMe && <CheckCheck className="w-3.5 h-3.5 text-[#F5BF26]" />}
                   </div>
                 </div>
               );
@@ -267,12 +267,12 @@ const Messages = () => {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={`Send a message to ${activeContact}...`}
-              className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4.5 text-xs md:text-sm focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-white placeholder:text-gray-500 shadow-inner"
+              className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4.5 text-xs md:text-sm focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-white placeholder:text-gray-500 shadow-inner"
             />
             <button
               type="submit"
               disabled={!inputText.trim()}
-              className="p-4.5 rounded-2xl bg-[#EAB513] hover:bg-[#EAB513] disabled:bg-white/5 disabled:text-gray-600 text-black transition-all shadow-lg shrink-0 cursor-pointer disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+              className="p-4.5 rounded-2xl bg-[#F5BF26] hover:bg-[#F5BF26] disabled:bg-white/5 disabled:text-gray-600 text-black transition-all shadow-lg shrink-0 cursor-pointer disabled:cursor-not-allowed hover:scale-105 active:scale-95"
               title="Send Message"
             >
               <Send className="w-4.5 h-4.5" />

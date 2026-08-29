@@ -33,14 +33,14 @@ const Filmography = ({ movies }) => {
             className="flex flex-col group cursor-pointer"
             onClick={() => navigate(`/movie/${movie.id}`)}
           >
-            <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-lg group-hover:border-[#EAB513]/40 transition-all duration-300">
+            <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-lg group-hover:border-[#F5BF26]/40 transition-all duration-300">
               <img 
                 src={movie.image} 
                 alt={movie.title} 
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-            <h3 className="font-bold text-white text-xs leading-tight truncate group-hover:text-[#EAB513] transition-colors">{movie.title}</h3>
+            <h3 className="font-bold text-white text-xs leading-tight truncate group-hover:text-[#F5BF26] transition-colors">{movie.title}</h3>
             <p className="text-[10px] text-gray-500 mt-1">
               {movie.year} • {movie.views}
             </p>
@@ -52,8 +52,8 @@ const Filmography = ({ movies }) => {
           onClick={() => navigate('/movies')}
           className="flex flex-col group cursor-pointer"
         >
-          <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-[#131118] border border-dashed border-white/20 flex flex-col items-center justify-center p-4 transition-all duration-300 group-hover:border-[#EAB513]/40 shadow-inner">
-            <span className="text-3xl md:text-4xl font-extrabold text-[#EAB513] mb-1">6</span>
+          <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-[#131118] border border-dashed border-white/20 flex flex-col items-center justify-center p-4 transition-all duration-300 group-hover:border-[#F5BF26]/40 shadow-inner">
+            <span className="text-3xl md:text-4xl font-extrabold text-[#F5BF26] mb-1">6</span>
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider text-center">And More</span>
           </div>
         </div>

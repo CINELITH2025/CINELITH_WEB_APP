@@ -46,7 +46,7 @@ const MovieFilters = ({
           <select
             value={selectedGenre}
             onChange={(e) => setSelectedGenre(e.target.value)}
-            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#EAB513]/40 cursor-pointer"
+            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#F5BF26]/40 cursor-pointer"
           >
             <option value="All" className="bg-background text-foreground">Select Genre</option>
             {genres.map(g => (
@@ -60,7 +60,7 @@ const MovieFilters = ({
         {selectedGenre !== "All" && (
           <div 
             onClick={() => setSelectedGenre("All")}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#EAB513] text-black text-sm font-black shadow-md cursor-pointer hover:bg-[#EAB513] transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#F5BF26] text-black text-sm font-black shadow-md cursor-pointer hover:bg-[#F5BF26] transition-all"
           >
             {selectedGenre}
             <X className="w-4 h-4 text-black" strokeWidth={3} />
@@ -72,7 +72,7 @@ const MovieFilters = ({
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
-            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#EAB513]/40 cursor-pointer"
+            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#F5BF26]/40 cursor-pointer"
           >
             <option value="All" className="bg-background text-foreground">Select Year</option>
             <option value="2024" className="bg-background text-foreground">2024</option>
@@ -90,7 +90,7 @@ const MovieFilters = ({
           <select
             value={selectedDirector}
             onChange={(e) => setSelectedDirector(e.target.value)}
-            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#EAB513]/40 cursor-pointer max-w-[160px]"
+            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white px-4 py-2.5 pr-8 rounded-lg focus:outline-none focus:border-[#F5BF26]/40 cursor-pointer max-w-[160px]"
           >
             <option value="All" className="bg-background text-foreground">Select Director</option>
             {directors.map(d => (
@@ -119,11 +119,11 @@ const MovieFilters = ({
 
         {/* Sort Select */}
         <div className="relative flex items-center">
-          <ArrowUpDown className="absolute left-3.5 w-4 h-4 text-[#EAB513] pointer-events-none" />
+          <ArrowUpDown className="absolute left-3.5 w-4 h-4 text-[#F5BF26] pointer-events-none" />
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white pl-10 pr-8 py-2.5 rounded-lg focus:outline-none focus:border-[#EAB513]/40 cursor-pointer"
+            className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white pl-10 pr-8 py-2.5 rounded-lg focus:outline-none focus:border-[#F5BF26]/40 cursor-pointer"
           >
             <option value="Popular" className="bg-background text-foreground">Sort by: Popularity</option>
             <option value="Rating" className="bg-background text-foreground">Sort by: Rating</option>

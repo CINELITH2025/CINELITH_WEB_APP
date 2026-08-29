@@ -16,14 +16,14 @@ const CastAndCrew = ({ cast }) => {
               onClick={() => navigate(`/actor/${idx + 1}`)}
               className="flex flex-col items-center group cursor-pointer text-center"
             >
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#EAB513] transition-all p-1 bg-white/5 shadow-xl">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#F5BF26] transition-all p-1 bg-white/5 shadow-xl">
                 <img 
                   src={member.image} 
                   alt={member.name} 
                   className="w-full h-full object-cover rounded-full transition-transform group-hover:scale-105" 
                 />
               </div>
-              <span className="text-xs md:text-sm font-bold text-white group-hover:text-[#EAB513] transition-colors leading-tight">
+              <span className="text-xs md:text-sm font-bold text-white group-hover:text-[#F5BF26] transition-colors leading-tight">
                 {member.name}
               </span>
               <span className="text-[10px] text-gray-500 font-bold mt-0.5 leading-tight">

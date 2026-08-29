@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Logo = ({ className = "h-11 md:h-12 w-auto" }) => {
+const Logo = ({ className = "h-14 md:h-16 w-auto" }) => {
   return (
     <img 
       src="/images/logo_text.png" 

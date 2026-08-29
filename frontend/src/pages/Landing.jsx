@@ -228,9 +228,9 @@ const Landing = () => {
       
       {/* BACKGROUND EFFECTS */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-radial from-[#EAB513]/10 to-transparent blur-[120px]" />
-        <div className="absolute top-[20%] -right-[30%] w-[80%] h-[80%] rounded-full bg-radial from-[#EAB513]/8 to-transparent blur-[120px]" />
-        <div className="absolute top-[60%] -left-[30%] w-[85%] h-[85%] rounded-full bg-radial from-[#EAB513]/5 to-transparent blur-[150px]" />
+        <div className="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-radial from-[#F5BF26]/10 to-transparent blur-[120px]" />
+        <div className="absolute top-[20%] -right-[30%] w-[80%] h-[80%] rounded-full bg-radial from-[#F5BF26]/8 to-transparent blur-[120px]" />
+        <div className="absolute top-[60%] -left-[30%] w-[85%] h-[85%] rounded-full bg-radial from-[#F5BF26]/5 to-transparent blur-[150px]" />
       </div>
 
       {/* A. FLOATING NAVIGATION */}
@@ -238,7 +238,7 @@ const Landing = () => {
         <div className="backdrop-blur-xl bg-[#111111]/70 border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-full px-6 py-3 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img src="/images/logo_text.png" alt="CINELITH" className="h-12 md:h-14 w-auto object-contain" />
+            <img src="/images/logo_text.png" alt="CINELITH" className="h-14 md:h-16 w-auto object-contain" />
           </div>
 
           {/* Links */}
@@ -254,7 +254,7 @@ const Landing = () => {
           <div>
             <button 
               onClick={() => scrollToSection('signup')}
-              className="bg-gradient-to-r from-[#EAB513] to-[#EAB513] hover:from-[#F5C400] hover:to-[#E2B220] text-black font-semibold text-xs md:text-sm px-5 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(234,181,19,0.3)] hover:shadow-[0_0_25px_rgba(234,181,19,0.5)] cursor-pointer"
+              className="bg-gradient-to-r from-[#F5BF26] to-[#F5BF26] hover:from-[#F5C400] hover:to-[#E2B220] text-black font-semibold text-xs md:text-sm px-5 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(245,191,38,0.3)] hover:shadow-[0_0_25px_rgba(245,191,38,0.5)] cursor-pointer"
             >
               Join Early Access
             </button>
@@ -276,7 +276,7 @@ const Landing = () => {
             className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white"
           >
             Discover. Discuss. <br />
-            <span className="text-[#EAB513] filter drop-shadow-[0_0_30px_rgba(234,181,19,0.15)]">
+            <span className="text-[#F5BF26] filter drop-shadow-[0_0_30px_rgba(245,191,38,0.15)]">
               Connect Through Cinema.
             </span>
           </motion.h1>
@@ -300,7 +300,7 @@ const Landing = () => {
           >
             <button 
               onClick={() => scrollToSection('signup')}
-              className="bg-[#EAB513] hover:bg-[#EAB513] text-black font-bold px-10 py-4 rounded-full transition-all duration-300 shadow-[0_0_40px_rgba(234,181,19,0.35)] hover:shadow-[0_0_50px_rgba(234,181,19,0.55)] transform hover:scale-105 cursor-pointer text-sm md:text-base tracking-wide"
+              className="bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-bold px-10 py-4 rounded-full transition-all duration-300 shadow-[0_0_40px_rgba(245,191,38,0.35)] hover:shadow-[0_0_50px_rgba(245,191,38,0.55)] transform hover:scale-105 cursor-pointer text-sm md:text-base tracking-wide"
             >
               Secure Your Spot
             </button>
@@ -333,7 +333,7 @@ const Landing = () => {
             {/* User Profile */}
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
-              <div className="w-6 h-6 rounded-full bg-[#EAB513] text-black font-black text-[9px] flex items-center justify-center">VA</div>
+              <div className="w-6 h-6 rounded-full bg-[#F5BF26] text-black font-black text-[9px] flex items-center justify-center">VA</div>
             </div>
           </div>
 
@@ -374,8 +374,8 @@ const Landing = () => {
 
                     if (offset === 0) {
                       transformClass = "translate-x-0 rotate-0 z-30 opacity-100 scale-100 pointer-events-auto";
-                      borderClass = "border-[#EAB513] border-2";
-                      shadowClass = "shadow-[0_0_40px_rgba(234,181,19,0.25)]";
+                      borderClass = "border-[#F5BF26] border-2";
+                      shadowClass = "shadow-[0_0_40px_rgba(245,191,38,0.25)]";
                     } else if (offset === -1) {
                       transformClass = "-translate-x-20 md:-translate-x-28 -rotate-6 z-20 opacity-75 scale-90 pointer-events-auto";
                     } else if (offset === 1) {
@@ -401,7 +401,7 @@ const Landing = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent flex flex-col justify-end p-3 text-left">
                           {offset === 0 ? (
                             <>
-                              <span className="text-[#EAB513] text-[9px] font-black tracking-widest uppercase">NOW PREVIEWING</span>
+                              <span className="text-[#F5BF26] text-[9px] font-black tracking-widest uppercase">NOW PREVIEWING</span>
                               <h5 className="text-xs md:text-sm font-black text-white leading-tight mt-0.5 truncate">{poster.title}</h5>
                               <span className="text-[9px] text-[#B5B5B5] truncate mt-0.5">Directed by {poster.director}</span>
                             </>
@@ -434,13 +434,13 @@ const Landing = () => {
               <div className="space-y-2">
                 <span className="text-[10px] font-bold text-[#B5B5B5] uppercase tracking-wider block">Rating Frequency</span>
                 <div className="bg-[#151515] p-3 rounded-xl border border-white/[0.04]">
-                  <svg viewBox="0 0 200 80" className="w-full h-16 text-[#EAB513]">
+                  <svg viewBox="0 0 200 80" className="w-full h-16 text-[#F5BF26]">
                     <path d="M0,50 Q25,20 50,55 T100,20 T150,60 T200,30" fill="none" stroke="currentColor" strokeWidth="2.5" />
                     <path d="M0,50 Q25,20 50,55 T100,20 T150,60 T200,30 L200,80 L0,80 Z" fill="url(#wave-gradient)" opacity="0.1" />
                     <defs>
                       <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#EAB513" />
-                        <stop offset="100%" stopColor="#EAB513" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#F5BF26" />
+                        <stop offset="100%" stopColor="#F5BF26" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -451,16 +451,16 @@ const Landing = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#151515] p-3 rounded-xl border border-white/[0.04] flex flex-col items-center">
                   <span className="text-[9px] font-bold text-[#B5B5B5] uppercase tracking-wider mb-2">Taste Radar</span>
-                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#EAB513]">
+                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#F5BF26]">
                     <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" />
-                    <polygon points="50,25 80,45 65,75 35,75 22,48" fill="rgba(234,181,19, 0.2)" stroke="currentColor" strokeWidth="2" />
+                    <polygon points="50,25 80,45 65,75 35,75 22,48" fill="rgba(245,191,38, 0.2)" stroke="currentColor" strokeWidth="2" />
                   </svg>
                 </div>
                 <div className="bg-[#151515] p-3 rounded-xl border border-white/[0.04] flex flex-col items-center">
                   <span className="text-[9px] font-bold text-[#B5B5B5] uppercase tracking-wider mb-2">Era breakdown</span>
-                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#EAB513]">
+                  <svg viewBox="0 0 100 100" className="w-12 h-12 text-[#F5BF26]">
                     <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" />
-                    <polygon points="50,35 70,50 60,65 40,65 30,50" fill="rgba(244, 196, 48, 0.2)" stroke="currentColor" strokeWidth="2" />
+                    <polygon points="50,35 70,50 60,65 40,65 30,50" fill="rgba(245,191,38, 0.2)" stroke="currentColor" strokeWidth="2" />
                   </svg>
                 </div>
               </div>
@@ -479,7 +479,7 @@ const Landing = () => {
                         <span className="font-bold text-white/90">{user.name}</span>
                         <span className="text-[9px] text-[#B5B5B5] truncate max-w-[120px]">"{user.text}"</span>
                       </div>
-                      <span className="text-[8px] bg-[#EAB513]/10 text-[#EAB513] px-1.5 py-0.5 rounded font-black">{user.level}</span>
+                      <span className="text-[8px] bg-[#F5BF26]/10 text-[#F5BF26] px-1.5 py-0.5 rounded font-black">{user.level}</span>
                     </div>
                   ))}
                 </div>
@@ -497,7 +497,7 @@ const Landing = () => {
         <div className="max-w-4xl mx-auto text-center space-y-12">
           
           <div className="space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">The Problem</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">The Problem</h2>
             <h3 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Movie Discovery Shouldn't Be This Complicated
             </h3>
@@ -553,7 +553,7 @@ const Landing = () => {
           </p>
 
           <div className="pt-4">
-            <div className="inline-block bg-[#EAB513]/10 border border-[#EAB513]/20 px-6 py-3 rounded-2xl text-[#EAB513] font-bold text-sm md:text-base">
+            <div className="inline-block bg-[#F5BF26]/10 border border-[#F5BF26]/20 px-6 py-3 rounded-2xl text-[#F5BF26] font-bold text-sm md:text-base">
               ✨ CINELITH brings everything together in one seamless experience.
             </div>
           </div>
@@ -573,11 +573,11 @@ const Landing = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           
           {/* Card 1: Movie Discovery */}
-          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#EAB513]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col md:flex-row justify-between relative overflow-hidden group">
+          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#F5BF26]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col md:flex-row justify-between relative overflow-hidden group">
             
             {/* Left Content Column */}
             <div className="w-full md:w-[48%] flex flex-col justify-between relative z-20 h-full min-h-[180px] md:min-h-0">
-              <div className="w-10 h-10 rounded-full bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] flex items-center justify-center mb-6">
+              <div className="w-10 h-10 rounded-full bg-[#F5BF26]/10 border border-[#F5BF26]/30 text-[#F5BF26] flex items-center justify-center mb-6">
                 <Compass className="w-5 h-5" />
               </div>
               
@@ -594,7 +594,7 @@ const Landing = () => {
               <img 
                 src="/images/logo_mark.png" 
                 alt="CINELITH C Logo" 
-                className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-40 group-hover/bg:scale-110 transition-transform duration-700 filter drop-shadow-[0_0_25px_rgba(234,181,19,0.3)]" 
+                className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-40 group-hover/bg:scale-110 transition-transform duration-700 filter drop-shadow-[0_0_25px_rgba(245,191,38,0.3)]" 
               />
               <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#141414] via-transparent to-transparent pointer-events-none" />
             </div>
@@ -602,8 +602,8 @@ const Landing = () => {
           </div>
 
           {/* Card 2: Personal Dashboard */}
-          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#EAB513]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
-            <div className="w-10 h-10 rounded-xl bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] flex items-center justify-center mb-6">
+          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#F5BF26]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F5BF26]/10 border border-[#F5BF26]/30 text-[#F5BF26] flex items-center justify-center mb-6">
               <Activity className="w-5 h-5" />
             </div>
             <div>
@@ -615,8 +615,8 @@ const Landing = () => {
           </div>
 
           {/* Card 3: Taste Analytics */}
-          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#EAB513]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
-            <div className="w-10 h-10 rounded-xl bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] flex items-center justify-center mb-6">
+          <div className="md:col-span-4 bg-[#141414] border border-white/[0.08] hover:border-[#F5BF26]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F5BF26]/10 border border-[#F5BF26]/30 text-[#F5BF26] flex items-center justify-center mb-6">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
@@ -628,8 +628,8 @@ const Landing = () => {
           </div>
 
           {/* Card 4: Community & Discussions */}
-          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#EAB513]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
-            <div className="w-10 h-10 rounded-xl bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] flex items-center justify-center mb-6">
+          <div className="md:col-span-8 bg-[#141414] border border-white/[0.08] hover:border-[#F5BF26]/40 transition-all duration-300 rounded-3xl p-8 min-h-[300px] flex flex-col justify-between group">
+            <div className="w-10 h-10 rounded-xl bg-[#F5BF26]/10 border border-[#F5BF26]/30 text-[#F5BF26] flex items-center justify-center mb-6">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
@@ -653,7 +653,7 @@ const Landing = () => {
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">Product Preview</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">Product Preview</h2>
             <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
               A Glimpse Inside the Theatre
             </h3>
@@ -670,7 +670,7 @@ const Landing = () => {
                 onClick={() => setActivePreviewTab(tab.id)}
                 className={`px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                   activePreviewTab === tab.id 
-                    ? 'bg-[#EAB513] text-black shadow-md' 
+                    ? 'bg-[#F5BF26] text-black shadow-md' 
                     : 'text-[#B5B5B5] hover:text-white'
                 }`}
               >
@@ -711,7 +711,7 @@ const Landing = () => {
                     <div className="space-y-6">
                       <div className="flex items-center justify-between border-b border-white/[0.05] pb-4">
                         <h4 className="font-extrabold text-lg text-white flex items-center gap-2">
-                          <Compass className="w-5 h-5 text-[#EAB513]" /> Discover Cinema
+                          <Compass className="w-5 h-5 text-[#F5BF26]" /> Discover Cinema
                         </h4>
                         <span className="text-xs text-[#B5B5B5]">Showing 28,491 movies</span>
                       </div>
@@ -722,13 +722,13 @@ const Landing = () => {
                           { title: 'Pulp Fiction', year: '1994', rating: '8.9', genre: 'Crime', poster: '/images/pulpfiction.jpg' },
                           { title: 'Parasite', year: '2019', rating: '8.6', genre: 'Thriller', poster: '/images/parasite.jpg' }
                         ].map((m, idx) => (
-                          <div key={idx} className="bg-[#1A1A1A] border border-white/[0.05] rounded-xl overflow-hidden group hover:border-[#EAB513]/40 transition-all p-3">
+                          <div key={idx} className="bg-[#1A1A1A] border border-white/[0.05] rounded-xl overflow-hidden group hover:border-[#F5BF26]/40 transition-all p-3">
                             <div className="w-full aspect-[2/3] bg-neutral-900 border border-white/5 rounded-lg mb-3 overflow-hidden">
                               <img src={m.poster} alt={m.title} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex items-center justify-between text-[11px] text-[#B5B5B5] mb-1">
                               <span>{m.genre}</span>
-                              <span className="text-[#EAB513]">★ {m.rating}</span>
+                              <span className="text-[#F5BF26]">★ {m.rating}</span>
                             </div>
                             <h5 className="font-bold text-xs text-white truncate">{m.title}</h5>
                             <span className="text-[10px] text-[#B5B5B5]">{m.year}</span>
@@ -746,7 +746,7 @@ const Landing = () => {
                           </div>
                           <div className="md:col-span-8 space-y-4">
                             <div className="flex items-center gap-2">
-                              <span className="bg-[#EAB513]/10 text-[#EAB513] text-[10px] px-2 py-0.5 rounded font-bold">Sci-Fi</span>
+                              <span className="bg-[#F5BF26]/10 text-[#F5BF26] text-[10px] px-2 py-0.5 rounded font-bold">Sci-Fi</span>
                               <span className="text-xs text-[#B5B5B5]">2014 • 2h 49m</span>
                             </div>
                             <h4 className="text-2xl font-black">Interstellar</h4>
@@ -757,7 +757,7 @@ const Landing = () => {
                             <div className="border-t border-b border-white/[0.05] py-3 flex gap-6 text-center">
                               <div>
                                 <span className="text-xs text-[#B5B5B5] block">Average Rating</span>
-                                <span className="text-lg font-bold text-[#EAB513]">★ 9.2</span>
+                                <span className="text-lg font-bold text-[#F5BF26]">★ 9.2</span>
                               </div>
                               <div>
                                 <span className="text-xs text-[#B5B5B5] block">Your Rating</span>
@@ -768,7 +768,7 @@ const Landing = () => {
                             <div>
                               <h5 className="text-xs font-bold text-white mb-2">Popular Discussion Thread</h5>
                               <div className="bg-[#1A1A1A] p-3 rounded-xl border border-white/[0.04] text-xs">
-                                <span className="font-bold text-[#EAB513]">@nolan_fanatic:</span> "The library scene still brings tears. Best space odyssey ever."
+                                <span className="font-bold text-[#F5BF26]">@nolan_fanatic:</span> "The library scene still brings tears. Best space odyssey ever."
                               </div>
                             </div>
                           </div>
@@ -798,15 +798,15 @@ const Landing = () => {
                             <div className="grid grid-cols-3 gap-4">
                               <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
                                 <span className="text-xs text-[#B5B5B5] block">Dune: Part Two</span>
-                                <span className="text-sm font-bold text-[#EAB513]">★ 9.4</span>
+                                <span className="text-sm font-bold text-[#F5BF26]">★ 9.4</span>
                               </div>
                               <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
                                 <span className="text-xs text-[#B5B5B5] block">Call Me By Your Name</span>
-                                <span className="text-sm font-bold text-[#EAB513]">★ 8.8</span>
+                                <span className="text-sm font-bold text-[#F5BF26]">★ 8.8</span>
                               </div>
                               <div className="bg-[#1A1A1A] border border-white/[0.04] p-3 rounded-xl text-center">
                                 <span className="text-xs text-[#B5B5B5] block">Little Women</span>
-                                <span className="text-sm font-bold text-[#EAB513]">★ 8.4</span>
+                                <span className="text-sm font-bold text-[#F5BF26]">★ 8.4</span>
                               </div>
                             </div>
                           </div>
@@ -818,7 +818,7 @@ const Landing = () => {
                         <div className="space-y-6 text-left">
                           <div className="flex justify-between items-center">
                             <h4 className="font-bold text-sm uppercase tracking-wider text-[#B5B5B5] flex items-center gap-1.5">
-                              <Activity className="w-4 h-4 text-[#EAB513]" /> Your Cinematic Identity
+                              <Activity className="w-4 h-4 text-[#F5BF26]" /> Your Cinematic Identity
                             </h4>
                             <span className="text-xs text-green-500 font-semibold">+4 watched this week</span>
                           </div>
@@ -828,9 +828,9 @@ const Landing = () => {
                               <span className="text-xs font-semibold text-[#B5B5B5]">Director Preference</span>
                               <div className="space-y-2 text-xs">
                                 <div className="flex justify-between"><span>C. Nolan</span> <span className="font-bold">38%</span></div>
-                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#EAB513] w-[38%] h-full rounded-full" /></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F5BF26] w-[38%] h-full rounded-full" /></div>
                                 <div className="flex justify-between"><span>D. Villeneuve</span> <span className="font-bold">24%</span></div>
-                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#EAB513] w-[24%] h-full rounded-full" /></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F5BF26] w-[24%] h-full rounded-full" /></div>
                               </div>
                             </div>
 
@@ -838,16 +838,16 @@ const Landing = () => {
                               <span className="text-xs font-semibold text-[#B5B5B5]">Era Distribution</span>
                               <div className="space-y-2 text-xs">
                                 <div className="flex justify-between"><span>2010s</span> <span className="font-bold">42%</span></div>
-                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#EAB513] w-[42%] h-full rounded-full" /></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F5BF26] w-[42%] h-full rounded-full" /></div>
                                 <div className="flex justify-between"><span>1990s</span> <span className="font-bold">28%</span></div>
-                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#EAB513] w-[28%] h-full rounded-full" /></div>
+                                <div className="w-full h-1 bg-white/[0.05] rounded-full"><div className="bg-[#F5BF26] w-[28%] h-full rounded-full" /></div>
                               </div>
                             </div>
 
                             <div className="bg-[#1A1A1A] border border-white/[0.04] p-4 rounded-xl flex flex-col justify-between">
                               <div>
                                 <span className="text-xs font-semibold text-[#B5B5B5] block">Taste Alignment</span>
-                                <span className="text-2xl font-black text-[#EAB513]">Cinephile Elite</span>
+                                <span className="text-2xl font-black text-[#F5BF26]">Cinephile Elite</span>
                               </div>
                               <p className="text-[10px] text-[#B5B5B5] mt-2">Your tastes match closely with Criterion Collection curators.</p>
                             </div>
@@ -867,7 +867,7 @@ const Landing = () => {
                           
                           <div className="space-y-3 max-h-[250px] overflow-y-auto">
                             <div className="p-3 bg-[#1A1A1A] border border-white/[0.04] rounded-xl text-xs space-y-1">
-                              <div className="flex justify-between font-bold text-[#EAB513]">
+                              <div className="flex justify-between font-bold text-[#F5BF26]">
                                 <span>@tars_assistant</span>
                                 <span className="text-[#B5B5B5] font-normal text-[10px]">2h ago</span>
                               </div>
@@ -896,7 +896,7 @@ const Landing = () => {
       {/* F. CORE EXPERIENCE */}
       <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">The Journey</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">The Journey</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             How CINELITH Works
           </h3>
@@ -915,11 +915,11 @@ const Landing = () => {
             { step: '4', title: 'Connect', desc: 'Follow friends and top critics who share matching tastes and cinematic sensibilities.' },
             { step: '5', title: 'Build Identity', desc: 'Earn your cinematic level, collect badges, and display your personalized taste analytic dashboard.' }
           ].map((item, idx) => (
-            <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative group hover:border-[#EAB513]/20 transition-all duration-300">
-              <span className="absolute -top-4 -left-4 w-9 h-9 rounded-xl bg-gradient-to-tr from-[#EAB513] to-[#EAB513] flex items-center justify-center text-black font-extrabold text-sm shadow-md">
+            <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative group hover:border-[#F5BF26]/20 transition-all duration-300">
+              <span className="absolute -top-4 -left-4 w-9 h-9 rounded-xl bg-gradient-to-tr from-[#F5BF26] to-[#F5BF26] flex items-center justify-center text-black font-extrabold text-sm shadow-md">
                 {item.step}
               </span>
-              <h4 className="text-lg font-bold mt-2 mb-3 text-white group-hover:text-[#EAB513] transition-colors">{item.title}</h4>
+              <h4 className="text-lg font-bold mt-2 mb-3 text-white group-hover:text-[#F5BF26] transition-colors">{item.title}</h4>
               <p className="text-xs text-[#B5B5B5] leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -932,7 +932,7 @@ const Landing = () => {
         <div className="max-w-6xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">Comparison</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">Comparison</h2>
             <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
               Why CINELITH?
             </h3>
@@ -950,7 +950,7 @@ const Landing = () => {
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">IMDb</th>
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">Letterboxd</th>
                   <th className="p-5 text-sm font-bold uppercase tracking-wider text-[#B5B5B5] text-center">OTT Apps</th>
-                  <th className="p-5 text-sm font-bold uppercase tracking-wider text-white text-center bg-[#EAB513]/5 border-x border-[#EAB513]/10">CINELITH</th>
+                  <th className="p-5 text-sm font-bold uppercase tracking-wider text-white text-center bg-[#F5BF26]/5 border-x border-[#F5BF26]/10">CINELITH</th>
                 </tr>
               </thead>
               <tbody>
@@ -987,8 +987,8 @@ const Landing = () => {
                     </td>
 
                     {/* CINELITH */}
-                    <td className="p-5 text-center bg-[#EAB513]/5 border-x border-[#EAB513]/10 font-bold text-[#EAB513]">
-                      <Check className="w-6 h-6 text-[#EAB513] mx-auto filter drop-shadow-[0_0_8px_rgba(234,181,19,0.5)]" />
+                    <td className="p-5 text-center bg-[#F5BF26]/5 border-x border-[#F5BF26]/10 font-bold text-[#F5BF26]">
+                      <Check className="w-6 h-6 text-[#F5BF26] mx-auto filter drop-shadow-[0_0_8px_rgba(245,191,38,0.5)]" />
                     </td>
                   </tr>
                 ))}
@@ -1002,7 +1002,7 @@ const Landing = () => {
       {/* H. PRODUCT ROADMAP */}
       <section id="roadmap" className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">Vision</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">Vision</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             Product Roadmap
           </h3>
@@ -1014,7 +1014,7 @@ const Landing = () => {
         {/* Roadmap horizontal timeline */}
         <div className="relative">
           {/* Main Connector Line */}
-          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#EAB513]/10 via-[#EAB513] to-[#EAB513]/10 hidden lg:block -translate-y-1/2" />
+          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#F5BF26]/10 via-[#F5BF26] to-[#F5BF26]/10 hidden lg:block -translate-y-1/2" />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -1023,9 +1023,9 @@ const Landing = () => {
               { phase: 'Phase 3', title: 'OTT Platform', desc: 'Seamless integration with media streams, letting you play and rent movies directly on-platform.' },
               { phase: 'Phase 4', title: 'Cinema Experiences', desc: 'Booking cinema slots, local cinephile meetups, and real-life film group check-ins.' }
             ].map((step, idx) => (
-              <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative flex flex-col items-center text-center space-y-3 group hover:border-[#EAB513]/40 transition-all duration-300">
-                <span className="text-[11px] uppercase tracking-wider text-[#EAB513] font-bold">{step.phase}</span>
-                <div className="w-3 h-3 rounded-full bg-[#EAB513] group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_rgba(234,181,19,0.5)]" />
+              <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative flex flex-col items-center text-center space-y-3 group hover:border-[#F5BF26]/40 transition-all duration-300">
+                <span className="text-[11px] uppercase tracking-wider text-[#F5BF26] font-bold">{step.phase}</span>
+                <div className="w-3 h-3 rounded-full bg-[#F5BF26] group-hover:scale-150 transition-transform duration-300 shadow-[0_0_10px_rgba(245,191,38,0.5)]" />
                 <h4 className="font-extrabold text-base text-white">{step.title}</h4>
                 <p className="text-xs text-[#B5B5B5] leading-relaxed">{step.desc}</p>
               </div>
@@ -1042,7 +1042,7 @@ const Landing = () => {
           {/* Main Card matching screenshot */}
           <div 
             className="border border-white/[0.08] rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.9)] relative overflow-hidden text-center bg-[#0e0e0e]"
-            style={{ background: 'radial-gradient(circle at top, rgba(234,181,19, 0.08) 0%, transparent 70%), #0d0d0d' }}
+            style={{ background: 'radial-gradient(circle at top, rgba(245,191,38, 0.08) 0%, transparent 70%), #0d0d0d' }}
           >
             <AnimatePresence mode="wait">
               {otpStep === 'form' && (
@@ -1080,7 +1080,7 @@ const Landing = () => {
                           placeholder="Name *" 
                           disabled={loading}
                           required
-                          className="w-full bg-[#151515] border border-white/10 focus:border-[#EAB513] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#F5BF26] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
 
@@ -1093,7 +1093,7 @@ const Landing = () => {
                           placeholder="Email Address *" 
                           disabled={loading}
                           required
-                          className="w-full bg-[#151515] border border-white/10 focus:border-[#EAB513] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#F5BF26] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
 
@@ -1103,7 +1103,7 @@ const Landing = () => {
                           value={formData.country}
                           onChange={handleInputChange}
                           disabled={loading}
-                          className="w-full bg-[#151515] border border-white/10 focus:border-[#EAB513] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 appearance-none cursor-pointer pr-10"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#F5BF26] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 appearance-none cursor-pointer pr-10"
                         >
                           <option value="" disabled className="bg-[#151515] text-gray-500">Select Your Country</option>
                           {COUNTRIES.map((c) => (
@@ -1127,7 +1127,7 @@ const Landing = () => {
                           onChange={handleInputChange}
                           placeholder="Your Favorite Movie" 
                           disabled={loading}
-                          className="w-full bg-[#151515] border border-white/10 focus:border-[#EAB513] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
+                          className="w-full bg-[#151515] border border-white/10 focus:border-[#F5BF26] rounded-xl px-4 py-3.5 text-sm focus:outline-none text-white transition-all disabled:opacity-50 placeholder:text-gray-500"
                         />
                       </div>
                     </div>
@@ -1136,7 +1136,7 @@ const Landing = () => {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#EAB513] hover:bg-[#EAB513] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(234,181,19,0.3)] hover:shadow-[0_0_35px_rgba(234,181,19,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(245,191,38,0.3)] hover:shadow-[0_0_35px_rgba(245,191,38,0.5)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                       >
                         {loading ? (
                           <>
@@ -1155,9 +1155,9 @@ const Landing = () => {
                     <div className="flex -space-x-2">
                       <div className="w-6 h-6 rounded-full bg-neutral-700 border-2 border-[#090909] flex items-center justify-center text-[9px] font-bold">JD</div>
                       <div className="w-6 h-6 rounded-full bg-neutral-600 border-2 border-[#090909] flex items-center justify-center text-[9px] font-bold">AM</div>
-                      <div className="w-6 h-6 rounded-full bg-[#EAB513]/80 border-2 border-[#090909] flex items-center justify-center text-[9px] font-black text-black">CL</div>
+                      <div className="w-6 h-6 rounded-full bg-[#F5BF26]/80 border-2 border-[#090909] flex items-center justify-center text-[9px] font-black text-black">CL</div>
                     </div>
-                    <span>Join <b className="text-[#EAB513] font-extrabold">{waitlistCount}+</b> cinephiles waiting in line</span>
+                    <span>Join <b className="text-[#F5BF26] font-extrabold">{waitlistCount}+</b> cinephiles waiting in line</span>
                   </div>
                 </motion.div>
               )}
@@ -1171,7 +1171,7 @@ const Landing = () => {
                   className="space-y-6 max-w-md mx-auto"
                 >
                   <div className="space-y-2">
-                    <div className="w-12 h-12 rounded-2xl bg-[#EAB513]/10 text-[#EAB513] flex items-center justify-center mx-auto mb-2 border border-[#EAB513]/20">
+                    <div className="w-12 h-12 rounded-2xl bg-[#F5BF26]/10 text-[#F5BF26] flex items-center justify-center mx-auto mb-2 border border-[#F5BF26]/20">
                       <Mail className="w-6 h-6" />
                     </div>
                     <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
@@ -1183,7 +1183,7 @@ const Landing = () => {
                   </div>
 
                   {demoOtpHint && (
-                    <div className="bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] p-3 rounded-xl text-xs font-mono font-bold text-center">
+                    <div className="bg-[#F5BF26]/10 border border-[#F5BF26]/30 text-[#F5BF26] p-3 rounded-xl text-xs font-mono font-bold text-center">
                       🔑 Demo Verification Code: <u className="tracking-widest">{demoOtpHint}</u>
                     </div>
                   )}
@@ -1204,14 +1204,14 @@ const Landing = () => {
                         placeholder="••••••"
                         autoFocus
                         disabled={loading}
-                        className="w-full bg-[#151515] border-2 border-[#EAB513]/40 focus:border-[#EAB513] rounded-xl py-4 text-center text-3xl font-mono tracking-[0.5em] font-black text-[#EAB513] focus:outline-none transition-all disabled:opacity-50 placeholder:text-gray-600"
+                        className="w-full bg-[#151515] border-2 border-[#F5BF26]/40 focus:border-[#F5BF26] rounded-xl py-4 text-center text-3xl font-mono tracking-[0.5em] font-black text-[#F5BF26] focus:outline-none transition-all disabled:opacity-50 placeholder:text-gray-600"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={loading || otpCode.length !== 6}
-                      className="w-full bg-[#EAB513] hover:bg-[#EAB513] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(234,181,19,0.3)] hover:shadow-[0_0_35px_rgba(234,181,19,0.5)] disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-extrabold text-sm py-4 rounded-xl transition-all duration-300 shadow-[0_0_25px_rgba(245,191,38,0.3)] hover:shadow-[0_0_35px_rgba(245,191,38,0.5)] disabled:opacity-40 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {loading ? (
                         <>
@@ -1234,7 +1234,7 @@ const Landing = () => {
                       <button
                         type="button"
                         onClick={handleSendOTP}
-                        className="text-[#EAB513] hover:underline font-semibold cursor-pointer"
+                        className="text-[#F5BF26] hover:underline font-semibold cursor-pointer"
                       >
                         Resend Code
                       </button>
@@ -1251,14 +1251,14 @@ const Landing = () => {
                   className="text-center space-y-6 py-4"
                 >
                   {/* Interactive Pre-Launch Founding Member Pass Card */}
-                  <div className="bg-gradient-to-br from-[#181524] via-[#110f1c] to-[#0a0812] border-2 border-[#EAB513]/40 p-6 md:p-8 rounded-3xl max-w-md mx-auto shadow-[0_0_50px_rgba(234,181,19,0.2)] text-left relative overflow-hidden">
+                  <div className="bg-gradient-to-br from-[#181524] via-[#110f1c] to-[#0a0812] border-2 border-[#F5BF26]/40 p-6 md:p-8 rounded-3xl max-w-md mx-auto shadow-[0_0_50px_rgba(245,191,38,0.2)] text-left relative overflow-hidden">
                     {/* Glowing Pass Ribbon */}
-                    <div className="absolute top-0 right-0 bg-[#EAB513] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-bl-2xl shadow-md">
+                    <div className="absolute top-0 right-0 bg-[#F5BF26] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-bl-2xl shadow-md">
                       Verified Founding Pass
                     </div>
 
                     <div className="flex items-center gap-3 mb-6">
-                      <img src="/images/logo_mark.png" alt="CINELITH" className="w-10 h-10 object-contain" />
+                      <img src="/images/logo_mark.png" alt="CINELITH" className="w-12 h-12 object-contain" />
                       <div>
                         <h4 className="text-lg font-black text-white leading-none">CINELITH</h4>
                         <span className="text-[10px] text-gray-400 font-semibold">Verified Founding Member</span>
@@ -1283,12 +1283,12 @@ const Landing = () => {
 
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-gray-400">Favorite Film:</span>
-                        <span className="font-bold text-[#EAB513]">{formData.favoriteMovie || 'Interstellar'}</span>
+                        <span className="font-bold text-[#F5BF26]">{formData.favoriteMovie || 'Interstellar'}</span>
                       </div>
 
                       <div className="flex justify-between items-center text-xs pt-1">
                         <span className="text-gray-400">Founding ID:</span>
-                        <code className="bg-[#EAB513]/10 text-[#EAB513] px-2 py-0.5 rounded font-mono font-bold text-xs border border-[#EAB513]/20">
+                        <code className="bg-[#F5BF26]/10 text-[#F5BF26] px-2 py-0.5 rounded font-mono font-bold text-xs border border-[#F5BF26]/20">
                           {memberPassId || `CINELITH-${userQueueNum || 385}`}
                         </code>
                       </div>
@@ -1297,7 +1297,7 @@ const Landing = () => {
                     <div className="flex items-center justify-center pt-2">
                       <div className="text-center">
                         <span className="text-[9px] text-gray-400 uppercase tracking-wider block">Queue Position</span>
-                        <span className="text-3xl font-black text-[#EAB513]">#{userQueueNum || 385}</span>
+                        <span className="text-3xl font-black text-[#F5BF26]">#{userQueueNum || 385}</span>
                       </div>
                     </div>
                   </div>
@@ -1316,7 +1316,7 @@ const Landing = () => {
       {/* J. COMMUNITY SECTION */}
       <section id="community" className="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">Community</h2>
+          <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">Community</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-tight">
             Built for People Who Love Cinema
           </h3>
@@ -1328,7 +1328,7 @@ const Landing = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           
           {/* Card 1: Instagram */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#EAB513]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F5BF26]/20 transition-all duration-300">
             <div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-500/10 text-pink-400 flex items-center justify-center mb-4">
                 <Instagram className="w-5 h-5" />
@@ -1336,41 +1336,41 @@ const Landing = () => {
               <h4 className="font-bold text-base mb-1">Instagram</h4>
               <p className="text-xs text-[#B5B5B5]">Daily cinematography highlights, movie trivia, and community features.</p>
             </div>
-            <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="text-xs text-[#EAB513] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="text-xs text-[#F5BF26] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Follow @cinelithofficial <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Card 2: Official Contact */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#EAB513]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F5BF26]/20 transition-all duration-300">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-yellow-500/10 text-[#EAB513] flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-xl bg-yellow-500/10 text-[#F5BF26] flex items-center justify-center mb-4">
                 <Mail className="w-5 h-5" />
               </div>
               <h4 className="font-bold text-base mb-1">Official Support</h4>
               <p className="text-xs text-[#B5B5B5]">Inquiries, founding member support, and partnership requests.</p>
             </div>
-            <a href="mailto:team@cinelith.com" className="text-xs text-[#EAB513] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <a href="mailto:team@cinelith.com" className="text-xs text-[#F5BF26] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Email team@cinelith.com <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
           {/* Card 3: Community Updates */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#EAB513]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F5BF26]/20 transition-all duration-300">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-[#EAB513]/10 text-[#EAB513] flex items-center justify-center mb-4">
+              <div className="w-10 h-10 rounded-xl bg-[#F5BF26]/10 text-[#F5BF26] flex items-center justify-center mb-4">
                 <Star className="w-5 h-5" />
               </div>
               <h4 className="font-bold text-base mb-1">Community Updates</h4>
               <p className="text-xs text-[#B5B5B5]">Read about our upcoming meetups and platform guidelines drafts.</p>
             </div>
-            <button onClick={() => scrollToSection('signup')} className="text-left text-xs text-[#EAB513] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
+            <button onClick={() => scrollToSection('signup')} className="text-left text-xs text-[#F5BF26] hover:underline font-semibold mt-6 flex items-center gap-1.5 cursor-pointer">
               Get Notified <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
 
           {/* Card 4: Development Progress */}
-          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#EAB513]/20 transition-all duration-300">
+          <div className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 flex flex-col justify-between group hover:border-[#F5BF26]/20 transition-all duration-300">
             <div>
               <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center mb-4">
                 <ShieldCheck className="w-5 h-5" />
@@ -1391,7 +1391,7 @@ const Landing = () => {
         <div className="max-w-3xl mx-auto space-y-12">
           
           <div className="text-center space-y-4">
-            <h2 className="text-xs uppercase tracking-widest text-[#EAB513] font-bold">Answers</h2>
+            <h2 className="text-xs uppercase tracking-widest text-[#F5BF26] font-bold">Answers</h2>
             <h3 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Frequently Asked Questions
             </h3>
@@ -1413,11 +1413,11 @@ const Landing = () => {
               >
                 <button
                   onClick={() => toggleFaq(idx)}
-                  className="w-full text-left p-5 flex items-center justify-between font-bold text-sm md:text-base text-white hover:text-[#EAB513] transition-colors cursor-pointer select-none"
+                  className="w-full text-left p-5 flex items-center justify-between font-bold text-sm md:text-base text-white hover:text-[#F5BF26] transition-colors cursor-pointer select-none"
                 >
                   <span>{faq.q}</span>
                   {openFaq === idx ? (
-                    <ChevronUp className="w-5 h-5 text-[#EAB513] flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-[#F5BF26] flex-shrink-0" />
                   ) : (
                     <ChevronDown className="w-5 h-5 text-[#B5B5B5] flex-shrink-0" />
                   )}
@@ -1441,7 +1441,7 @@ const Landing = () => {
           
           {/* Brand/Copyright */}
           <div className="flex items-center gap-2">
-            <img src="/images/logo_mark.png" alt="CINELITH Logo" className="w-8 h-8 object-contain" />
+            <img src="/images/logo_mark.png" alt="CINELITH Logo" className="w-10 h-10 object-contain" />
             <span className="text-xs text-[#B5B5B5]">
               © {new Date().getFullYear()} CINELITH. Discover, Discuss, Connect.
             </span>
@@ -1476,7 +1476,7 @@ const Landing = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#121018] border border-[#EAB513]/30 rounded-3xl p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl relative text-left"
+              className="bg-[#121018] border border-[#F5BF26]/30 rounded-3xl p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl relative text-left"
             >
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <h3 className="text-xl font-black text-white">
@@ -1498,7 +1498,7 @@ const Landing = () => {
                   <h4 className="font-bold text-white text-sm pt-2">2. Data Security & Sharing</h4>
                   <p>We never sell, rent, or trade your personal information with third parties. All stored data is encrypted in cloud databases.</p>
                   <h4 className="font-bold text-white text-sm pt-2">3. Contact</h4>
-                  <p>If you have any questions regarding your data or wish to remove your waitlist spot, please contact <a href="mailto:team@cinelith.com" className="text-[#EAB513] underline">team@cinelith.com</a>.</p>
+                  <p>If you have any questions regarding your data or wish to remove your waitlist spot, please contact <a href="mailto:team@cinelith.com" className="text-[#F5BF26] underline">team@cinelith.com</a>.</p>
                 </div>
               ) : (
                 <div className="space-y-3 text-xs md:text-sm text-gray-300 leading-relaxed font-medium">

@@ -25,9 +25,9 @@ const sendEmailOTP = async (email, otp) => {
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; background-color: #090909; color: #ffffff; padding: 30px; border-radius: 16px; max-width: 500px; margin: 0 auto; border: 1px solid #333333;">
-      <h2 style="color: #EAB513; font-size: 24px; margin-bottom: 8px;">CINELITH Pre-Launch</h2>
+      <h2 style="color: #F5BF26; font-size: 24px; margin-bottom: 8px;">CINELITH Pre-Launch</h2>
       <p style="color: #cccccc; font-size: 14px;">Your 6-digit email verification code is:</p>
-      <div style="background-color: #151515; border: 1px solid #EAB513; color: #EAB513; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 16px; text-align: center; border-radius: 12px; margin: 24px 0;">
+      <div style="background-color: #151515; border: 1px solid #F5BF26; color: #F5BF26; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 16px; text-align: center; border-radius: 12px; margin: 24px 0;">
         ${otp}
       </div>
       <p style="color: #888888; font-size: 12px; leading-relaxed: 1.5;">This code will expire in 10 minutes. If you did not request early access to CINELITH, please ignore this email.</p>

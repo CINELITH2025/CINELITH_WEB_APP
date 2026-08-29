@@ -29,21 +29,21 @@ const MobileNav = () => {
               to={item.path}
               className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all relative ${
                 isActive
-                  ? 'text-[#EAB513]'
+                  ? 'text-[#F5BF26]'
                   : 'text-gray-400 hover:text-white'
               }`}
             >
               <div className="relative">
                 <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-2'}`} />
                 {isLocked && (
-                  <span className="absolute -top-1 -right-2 bg-[#EAB513] text-black text-[9px] p-0.5 rounded-full font-bold shadow-md">
+                  <span className="absolute -top-1 -right-2 bg-[#F5BF26] text-black text-[9px] p-0.5 rounded-full font-bold shadow-md">
                     <Lock className="w-2.5 h-2.5" />
                   </span>
                 )}
               </div>
               <span className="text-[10px] font-medium tracking-tight">{item.label}</span>
               {isActive && (
-                <span className="w-1 h-1 rounded-full bg-[#EAB513] absolute -bottom-0.5" />
+                <span className="w-1 h-1 rounded-full bg-[#F5BF26] absolute -bottom-0.5" />
               )}
             </Link>
           );

@@ -10,11 +10,11 @@ const AwardsSection = ({ awards }) => {
         {awards.map((award, index) => (
           <div 
             key={index} 
-            className="flex items-center justify-between bg-white/5 border border-white/10 p-5 rounded-2xl hover:border-[#EAB513]/30 hover:bg-white/10 transition-all duration-300 shadow-lg group"
+            className="flex items-center justify-between bg-white/5 border border-white/10 p-5 rounded-2xl hover:border-[#F5BF26]/30 hover:bg-white/10 transition-all duration-300 shadow-lg group"
           >
             {/* Left Side: Icon & Details */}
             <div className="flex items-center gap-5">
-              <div className="p-3.5 bg-white/5 rounded-xl border border-white/5 shadow-inner text-[#EAB513] group-hover:scale-105 transition-transform duration-300">
+              <div className="p-3.5 bg-white/5 rounded-xl border border-white/5 shadow-inner text-[#F5BF26] group-hover:scale-105 transition-transform duration-300">
                 <Trophy className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
@@ -28,7 +28,7 @@ const AwardsSection = ({ awards }) => {
             </div>
 
             {/* Right Side: Year */}
-            <span className="text-sm font-black text-[#EAB513] shrink-0 ml-4">
+            <span className="text-sm font-black text-[#F5BF26] shrink-0 ml-4">
               {award.year}
             </span>
           </div>

@@ -82,7 +82,7 @@ const Auth = () => {
       <div className="hidden md:flex md:w-1/2 bg-cover bg-center relative items-center justify-center p-12 overflow-hidden"
            style={{ backgroundImage: 'url("/images/hero_bg.png")' }}>
         {/* Dark gold overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#08060d] via-black/80 to-[#EAB513]/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#08060d] via-black/80 to-[#F5BF26]/10"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#08060d] via-transparent to-transparent"></div>
 
         {/* Content Box */}
@@ -93,15 +93,15 @@ const Auth = () => {
 
           <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
             Your Cinema Identity <br/>
-            Starts <span className="text-[#EAB513] bg-clip-text">Here.</span>
+            Starts <span className="text-[#F5BF26] bg-clip-text">Here.</span>
           </h1>
 
           <p className="text-gray-400 text-sm lg:text-base leading-relaxed font-medium">
             Join the community to unlock dynamic taste metrics, rate and review your favorite films, and match with other cinema lovers who share your screen preferences.
           </p>
 
-          <div className="flex flex-col gap-4 mt-4 border-l-2 border-[#EAB513] pl-6 py-2 bg-white/5 backdrop-blur-md rounded-r-xl border-white/5 pr-4">
-            <p className="text-xs font-semibold uppercase text-[#EAB513] tracking-widest flex items-center gap-1.5">
+          <div className="flex flex-col gap-4 mt-4 border-l-2 border-[#F5BF26] pl-6 py-2 bg-white/5 backdrop-blur-md rounded-r-xl border-white/5 pr-4">
+            <p className="text-xs font-semibold uppercase text-[#F5BF26] tracking-widest flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Featured Quote
             </p>
             <p className="text-sm font-medium italic text-gray-300">
@@ -114,11 +114,11 @@ const Auth = () => {
 
       {/* Right side: Login / Signup Card */}
       <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 z-10 relative">
-        <div className="absolute inset-0 bg-radial-gradient from-[#EAB513]/5 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-radial-gradient from-[#F5BF26]/5 to-transparent pointer-events-none"></div>
 
         <Link 
           to="/" 
-          className="absolute top-8 left-8 md:left-12 flex items-center gap-2 text-xs font-black text-white hover:text-black hover:bg-[#EAB513] bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl transition-all uppercase tracking-widest cursor-pointer backdrop-blur-md shadow-lg"
+          className="absolute top-8 left-8 md:left-12 flex items-center gap-2 text-xs font-black text-white hover:text-black hover:bg-[#F5BF26] bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl transition-all uppercase tracking-widest cursor-pointer backdrop-blur-md shadow-lg"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -127,7 +127,7 @@ const Auth = () => {
         <div className="w-full max-w-md bg-white/[0.03] border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl backdrop-blur-lg flex flex-col relative overflow-hidden">
           
           {/* Decorative Corner Glow */}
-          <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#EAB513]/10 rounded-full blur-2xl"></div>
+          <div className="absolute -top-12 -right-12 w-24 h-24 bg-[#F5BF26]/10 rounded-full blur-2xl"></div>
 
           {/* Form Header */}
           <div className="mb-8 text-center md:text-left">
@@ -152,13 +152,13 @@ const Auth = () => {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Full Name</label>
                   <div className="relative flex items-center group">
-                    <User className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
+                    <User className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="John Doe"
-                      className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
+                      className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
                     />
                   </div>
                 </div>
@@ -166,7 +166,7 @@ const Auth = () => {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Username</label>
                   <div className="relative flex items-center group">
-                    <span className="absolute left-4 text-sm font-bold text-gray-500 group-focus-within:text-[#EAB513] transition-colors">@</span>
+                    <span className="absolute left-4 text-sm font-bold text-gray-500 group-focus-within:text-[#F5BF26] transition-colors">@</span>
                     <input
                       type="text"
                       value={username}
@@ -177,14 +177,14 @@ const Auth = () => {
                           ? 'border-emerald-500/50 focus:border-emerald-500' 
                           : usernameStatus === 'taken' 
                             ? 'border-red-500/50 focus:border-red-500' 
-                            : 'border-white/10 focus:border-[#EAB513]/40 focus:bg-white/10'
+                            : 'border-white/10 focus:border-[#F5BF26]/40 focus:bg-white/10'
                       }`}
                     />
                     
                     {/* Status icons inside the input on the right */}
                     <div className="absolute right-4 flex items-center justify-center">
                       {usernameStatus === 'checking' && (
-                        <svg className="animate-spin h-4 w-4 text-[#EAB513]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-4 w-4 text-[#F5BF26]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -202,7 +202,7 @@ const Auth = () => {
                     </div>
                   </div>
                   {usernameStatus === 'checking' && (
-                    <span className="text-[10px] text-[#EAB513]/80 font-bold px-1 flex items-center gap-1">
+                    <span className="text-[10px] text-[#F5BF26]/80 font-bold px-1 flex items-center gap-1">
                       Checking availability...
                     </span>
                   )}
@@ -224,7 +224,7 @@ const Auth = () => {
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     placeholder="Tell us about your movie taste..."
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600 resize-none min-h-[60px]"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600 resize-none min-h-[60px]"
                   />
                 </div>
               </>
@@ -233,13 +233,13 @@ const Auth = () => {
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Email Address</label>
               <div className="relative flex items-center group">
-                <Mail className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
+                <Mail className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
                 />
               </div>
             </div>
@@ -247,13 +247,13 @@ const Auth = () => {
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Password</label>
               <div className="relative flex items-center group">
-                <Lock className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
+                <Lock className="absolute left-4 w-4 h-4 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
                 />
               </div>
             </div>
@@ -261,7 +261,7 @@ const Auth = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 mt-2 rounded-xl bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer group"
+              className="w-full py-4 mt-2 rounded-xl bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer group"
             >
               <span>{isLogin ? 'Sign In' : 'Sign Up'}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -275,7 +275,7 @@ const Auth = () => {
             </span>
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-[#EAB513] hover:underline font-black cursor-pointer bg-transparent border-none"
+              className="text-[#F5BF26] hover:underline font-black cursor-pointer bg-transparent border-none"
             >
               {isLogin ? 'Create one' : 'Sign in here'}
             </button>

@@ -35,7 +35,7 @@ const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
         className="flex items-center justify-between gap-2.5 bg-white/5 border border-white/10 hover:border-white/20 text-xs md:text-sm font-bold text-white px-4 py-2.5 rounded-xl transition-all cursor-pointer min-w-[150px] shadow-md"
       >
         <span className="truncate">{value === "All" ? `Select ${label}` : value}</span>
-        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#EAB513]' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#F5BF26]' : ''}`} />
       </button>
 
       {isOpen && (
@@ -45,14 +45,14 @@ const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={placeholder}
-            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white focus:outline-none focus:border-[#EAB513]/40 mb-2 placeholder:text-gray-600"
+            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white focus:outline-none focus:border-[#F5BF26]/40 mb-2 placeholder:text-gray-600"
             autoFocus
           />
           <div className="max-h-48 overflow-y-auto custom-scrollbar flex flex-col gap-1">
             <button
               type="button"
               onClick={() => { onChange("All"); setIsOpen(false); }}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all ${value === "All" ? 'bg-[#EAB513] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all ${value === "All" ? 'bg-[#F5BF26] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
             >
               All {label}s
             </button>
@@ -61,7 +61,7 @@ const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
                 key={opt}
                 type="button"
                 onClick={() => { onChange(opt); setIsOpen(false); }}
-                className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all ${value === opt ? 'bg-[#EAB513] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
+                className={`text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all ${value === opt ? 'bg-[#F5BF26] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
               >
                 {opt}
               </button>
@@ -189,13 +189,13 @@ const Explore = () => {
           <div className="bg-white/5 border border-white/10 p-1 rounded-2xl flex gap-1 mb-6 shadow-inner">
             <button
               onClick={() => handleTabChange("movie")}
-              className={`px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === "movie" ? 'bg-[#EAB513] text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+              className={`px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === "movie" ? 'bg-[#F5BF26] text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
             >
               Movies
             </button>
             <button
               onClick={() => handleTabChange("tv")}
-              className={`px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === "tv" ? 'bg-[#EAB513] text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+              className={`px-8 py-3 rounded-xl text-xs md:text-sm font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === "tv" ? 'bg-[#F5BF26] text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
             >
               TV Shows
             </button>
@@ -210,13 +210,13 @@ const Explore = () => {
 
         {/* Global Search Box */}
         <div className="relative w-full group mb-8">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Search ${activeTab === "movie" ? "movies" : "TV shows"} by title, director, or tags...`}
-            className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-600 text-white shadow-2xl"
+            className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-600 text-white shadow-2xl"
           />
         </div>
 
@@ -289,11 +289,11 @@ const Explore = () => {
             </span>
 
             <div className="relative flex items-center">
-              <ArrowUpDown className="absolute left-3.5 w-4 h-4 text-[#EAB513] pointer-events-none" />
+              <ArrowUpDown className="absolute left-3.5 w-4 h-4 text-[#F5BF26] pointer-events-none" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white pl-10 pr-8 py-2.5 rounded-lg focus:outline-none focus:border-[#EAB513]/40 cursor-pointer shadow-md"
+                className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white pl-10 pr-8 py-2.5 rounded-lg focus:outline-none focus:border-[#F5BF26]/40 cursor-pointer shadow-md"
               >
                 <option value="Popular" className="bg-[#121016] text-white">Sort by: Popularity</option>
                 <option value="Rating" className="bg-[#121016] text-white">Sort by: Rating</option>
@@ -314,7 +314,7 @@ const Explore = () => {
                 className="flex flex-col group cursor-pointer"
                 onClick={() => navigate(`/movie/${item.id}`)}
               >
-                <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#EAB513]/40 transition-all duration-300">
+                <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#F5BF26]/40 transition-all duration-300">
                   <img 
                     src={item.image} 
                     alt={item.title} 
@@ -328,11 +328,11 @@ const Explore = () => {
                 </div>
 
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h3 className="font-bold text-white text-sm md:text-[15px] group-hover:text-[#EAB513] transition-colors leading-tight truncate flex-1">
+                  <h3 className="font-bold text-white text-sm md:text-[15px] group-hover:text-[#F5BF26] transition-colors leading-tight truncate flex-1">
                     {item.title}
                   </h3>
                   <div className="flex items-center gap-1 shrink-0">
-                    <Star className="w-3.5 h-3.5 fill-[#EAB513] text-[#EAB513]" />
+                    <Star className="w-3.5 h-3.5 fill-[#F5BF26] text-[#F5BF26]" />
                     <span className="text-xs font-black text-gray-200">{item.rating.toFixed(1)}</span>
                   </div>
                 </div>
@@ -346,7 +346,7 @@ const Explore = () => {
         ) : (
           <div className="w-full flex flex-col items-center justify-center p-16 rounded-3xl bg-white/5 border border-white/10 text-center max-w-lg mx-auto shadow-2xl">
             <div className="p-5 bg-white/5 rounded-2xl mb-6 border border-white/5 shadow-inner">
-              <Clapperboard className="w-12 h-12 text-[#EAB513]" strokeWidth={1.5} />
+              <Clapperboard className="w-12 h-12 text-[#F5BF26]" strokeWidth={1.5} />
             </div>
             <h3 className="text-lg font-black text-white mb-2">No results found</h3>
             <p className="text-xs md:text-sm text-gray-400 leading-relaxed max-w-xs font-medium">
