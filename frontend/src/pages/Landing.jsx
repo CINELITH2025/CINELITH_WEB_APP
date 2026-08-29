@@ -589,14 +589,14 @@ const Landing = () => {
               </div>
             </div>
 
-            {/* Right Cinematic Background Column */}
-            <div className="w-full md:w-[52%] h-[220px] md:h-full md:absolute md:right-0 md:top-0 z-10 border-t md:border-t-0 md:border-l border-white/[0.06] relative overflow-hidden group/bg mt-6 md:mt-0">
+            {/* Right Cinematic Background Column with C Logo */}
+            <div className="w-full md:w-[52%] h-[220px] md:h-full md:absolute md:right-0 md:top-0 z-10 border-t md:border-t-0 md:border-l border-white/[0.06] relative overflow-hidden group/bg mt-6 md:mt-0 flex items-center justify-center bg-[#0d0d0d]">
               <img 
-                src="/images/hero_bg.png" 
-                alt="Movie Discovery" 
-                className="w-full h-full object-cover opacity-60 scale-105 group-hover/bg:scale-110 transition-transform duration-700 filter brightness-90" 
+                src="/images/logo_mark.png" 
+                alt="CINELITH C Logo" 
+                className="w-32 h-32 md:w-40 md:h-40 object-contain opacity-40 group-hover/bg:scale-110 transition-transform duration-700 filter drop-shadow-[0_0_25px_rgba(234,181,19,0.3)]" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#141414] via-[#141414]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#141414] via-transparent to-transparent pointer-events-none" />
             </div>
 
           </div>
@@ -1016,13 +1016,12 @@ const Landing = () => {
           {/* Main Connector Line */}
           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-[#EAB513]/10 via-[#EAB513] to-[#EAB513]/10 hidden lg:block -translate-y-1/2" />
           
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { phase: 'Phase 1', title: 'Movie Discovery', desc: 'Complete catalog search, filter lists, rating index integration, and custom collections creation.' },
               { phase: 'Phase 2', title: 'Community & Social', desc: 'Direct message channels, user follows, group discussion threads, and film quizzes.' },
               { phase: 'Phase 3', title: 'OTT Platform', desc: 'Seamless integration with media streams, letting you play and rent movies directly on-platform.' },
-              { phase: 'Phase 4', title: 'Cinema Experiences', desc: 'Booking cinema slots, local cinephile meetups, and real-life film group check-ins.' },
-              { phase: 'Phase 5', title: 'AI Movie Studio', desc: 'Predictive analytics, movie casting analytics, script prediction tools, and creative studio modules.' }
+              { phase: 'Phase 4', title: 'Cinema Experiences', desc: 'Booking cinema slots, local cinephile meetups, and real-life film group check-ins.' }
             ].map((step, idx) => (
               <div key={idx} className="bg-[#1A1A1A] border border-white/[0.06] rounded-2xl p-6 relative flex flex-col items-center text-center space-y-3 group hover:border-[#EAB513]/40 transition-all duration-300">
                 <span className="text-[11px] uppercase tracking-wider text-[#EAB513] font-bold">{step.phase}</span>
