@@ -56,7 +56,7 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-white/5">
             <div className="flex items-center gap-4.5">
-              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#FACC15]/20 p-0.5 bg-white/5 shrink-0 shadow-lg">
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#EAB513]/20 p-0.5 bg-white/5 shrink-0 shadow-lg">
                 <img src={user.avatar} className="w-full h-full object-cover rounded-full" alt={user.name} />
               </div>
               <div>
@@ -67,7 +67,7 @@ const Dashboard = () => {
             <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl shadow-xl">
               <div className="flex flex-col items-center">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Cinephile Score</span>
-                <span className="text-xl font-black text-[#FACC15]">{user.cinephileScore || 88}</span>
+                <span className="text-xl font-black text-[#EAB513]">{user.cinephileScore || 88}</span>
               </div>
               <div className="w-px h-8 bg-white/10" />
               <div className="flex flex-col items-center">
@@ -81,13 +81,13 @@ const Dashboard = () => {
           <section className="space-y-4 mb-10">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#FACC15]" /> Cinematic Persona & Highlights
+                <Sparkles className="w-4 h-4 text-[#EAB513]" /> Cinematic Persona & Highlights
               </h2>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* Top Actor */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#FACC15]/30 transition-colors shadow-lg flex flex-col justify-between">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#EAB513]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Top Actor</span>
                 <div>
                   <span className="text-base font-extrabold text-white block truncate">{persona.topActor}</span>
@@ -96,7 +96,7 @@ const Dashboard = () => {
               </div>
 
               {/* Top Director */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#FACC15]/30 transition-colors shadow-lg flex flex-col justify-between">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#EAB513]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Top Director</span>
                 <div>
                   <span className="text-base font-extrabold text-white block truncate">{persona.topDirector}</span>
@@ -105,16 +105,16 @@ const Dashboard = () => {
               </div>
 
               {/* Movies Watched */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#FACC15]/30 transition-colors shadow-lg flex flex-col justify-between">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#EAB513]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Media Logged</span>
                 <div>
-                  <span className="text-2xl font-black text-[#FACC15] block">{user.watchedMovies?.length || 12}</span>
+                  <span className="text-2xl font-black text-[#EAB513] block">{user.watchedMovies?.length || 12}</span>
                   <span className="text-[10px] text-gray-500 mt-0.5 block">Watched count</span>
                 </div>
               </div>
 
               {/* Active Streak */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#FACC15]/30 transition-colors shadow-lg flex flex-col justify-between">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#EAB513]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Login Streak</span>
                 <div>
                   <span className="text-2xl font-black text-white block">{user.streak || 14}d</span>

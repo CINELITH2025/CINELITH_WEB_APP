@@ -14,7 +14,7 @@ const MovieGrid = ({ movies, filterQuery, setFilterQuery }) => {
           value={filterQuery}
           onChange={(e) => setFilterQuery(e.target.value)}
           placeholder="Search within these results..."
-          className="w-full pl-6 pr-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-500 shadow-xl"
+          className="w-full pl-6 pr-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-500 shadow-xl"
         />
       </div>
 
@@ -26,7 +26,7 @@ const MovieGrid = ({ movies, filterQuery, setFilterQuery }) => {
               className="flex flex-col group cursor-pointer"
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
-              <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#FACC15]/40 transition-all duration-300">
+              <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#EAB513]/40 transition-all duration-300">
                 <img 
                   src={movie.image} 
                   alt={movie.title} 
@@ -42,11 +42,11 @@ const MovieGrid = ({ movies, filterQuery, setFilterQuery }) => {
 
               {/* Title & Star Rating Row */}
               <div className="flex items-start justify-between gap-2 mb-1">
-                <h3 className="font-bold text-white text-sm md:text-[15px] group-hover:text-[#FACC15] transition-colors leading-tight truncate flex-1">
+                <h3 className="font-bold text-white text-sm md:text-[15px] group-hover:text-[#EAB513] transition-colors leading-tight truncate flex-1">
                   {movie.title}
                 </h3>
                 <div className="flex items-center gap-1 shrink-0">
-                  <Star className="w-3.5 h-3.5 fill-[#FACC15] text-[#FACC15]" />
+                  <Star className="w-3.5 h-3.5 fill-[#EAB513] text-[#EAB513]" />
                   <span className="text-xs font-black text-gray-200">{movie.rating.toFixed(1)}</span>
                 </div>
               </div>
@@ -62,7 +62,7 @@ const MovieGrid = ({ movies, filterQuery, setFilterQuery }) => {
         /* Empty State Illustration */
         <div className="w-full flex flex-col items-center justify-center p-16 rounded-3xl bg-white/5 border border-white/10 text-center max-w-lg mx-auto shadow-2xl">
           <div className="p-5 bg-white/5 rounded-2xl mb-6 border border-white/5 shadow-inner">
-            <Clapperboard className="w-12 h-12 text-[#FACC15]" strokeWidth={1.5} />
+            <Clapperboard className="w-12 h-12 text-[#EAB513]" strokeWidth={1.5} />
           </div>
           <h3 className="text-lg font-black text-white mb-2">No movies found</h3>
           <p className="text-xs md:text-sm text-gray-400 leading-relaxed max-w-xs font-medium">

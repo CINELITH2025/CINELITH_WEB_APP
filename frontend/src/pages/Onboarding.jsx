@@ -145,9 +145,9 @@ const Onboarding = () => {
                   key={step}
                   className={`w-8 h-2 rounded-full transition-all duration-300 ${
                     currentStep === step 
-                      ? 'bg-[#FACC15] w-12' 
+                      ? 'bg-[#EAB513] w-12' 
                       : currentStep > step 
-                        ? 'bg-[#FACC15]/40' 
+                        ? 'bg-[#EAB513]/40' 
                         : 'bg-white/10'
                   }`}
                 />
@@ -164,19 +164,19 @@ const Onboarding = () => {
         {currentStep === 1 && (
           <div className="flex flex-col gap-6">
             <div className="text-center md:text-left">
-              <span className="text-[#FACC15] text-xs font-black uppercase tracking-widest">Step 1 of 4</span>
+              <span className="text-[#EAB513] text-xs font-black uppercase tracking-widest">Step 1 of 4</span>
               <h1 className="text-3xl md:text-4xl font-black text-white mt-1">What are your top 5 favorite movies?</h1>
               <p className="text-sm text-gray-400 mt-2">Selecting exactly 5 helps us match you with similar cinephiles.</p>
             </div>
 
             <div className="relative group w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#FACC15] transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search movies by title or director..."
-                className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
+                className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
               />
             </div>
 
@@ -189,7 +189,7 @@ const Onboarding = () => {
                     onClick={() => toggleFavoriteMovie(movie)}
                     className={`flex flex-col group cursor-pointer border rounded-2xl p-2 bg-white/[0.02] transition-all duration-300 ${
                       isSelected 
-                        ? 'border-[#FACC15] bg-[#FACC15]/5' 
+                        ? 'border-[#EAB513] bg-[#EAB513]/5' 
                         : 'border-white/10 hover:border-white/20'
                     }`}
                   >
@@ -197,7 +197,7 @@ const Onboarding = () => {
                       <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
                       {isSelected && (
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center">
-                          <div className="w-10 h-10 rounded-full bg-[#FACC15] flex items-center justify-center text-black">
+                          <div className="w-10 h-10 rounded-full bg-[#EAB513] flex items-center justify-center text-black">
                             <Check className="w-5 h-5" strokeWidth={3} />
                           </div>
                         </div>
@@ -217,7 +217,7 @@ const Onboarding = () => {
               <button
                 disabled={favoriteMovies.length !== 5}
                 onClick={handleNext}
-                className="px-8 py-3.5 rounded-xl bg-[#FACC15] hover:bg-[#E2B710] disabled:bg-white/5 text-black disabled:text-gray-500 font-black text-sm transition-all cursor-pointer shadow-lg"
+                className="px-8 py-3.5 rounded-xl bg-[#EAB513] hover:bg-[#EAB513] disabled:bg-white/5 text-black disabled:text-gray-500 font-black text-sm transition-all cursor-pointer shadow-lg"
               >
                 Next Step
               </button>
@@ -229,7 +229,7 @@ const Onboarding = () => {
         {currentStep === 2 && (
           <div className="flex flex-col gap-6">
             <div className="text-center md:text-left">
-              <span className="text-[#FACC15] text-xs font-black uppercase tracking-widest">Step 2 of 4</span>
+              <span className="text-[#EAB513] text-xs font-black uppercase tracking-widest">Step 2 of 4</span>
               <h1 className="text-3xl md:text-4xl font-black text-white mt-1">Which of these have you watched?</h1>
               <p className="text-sm text-gray-400 mt-2">Mark movies as Watched or Add to Watchlist to start tracking stats.</p>
             </div>
@@ -245,7 +245,7 @@ const Onboarding = () => {
                       isWatched 
                         ? 'border-emerald-500/50 bg-emerald-500/5' 
                         : isWatchlist 
-                          ? 'border-[#FACC15]/50 bg-[#FACC15]/5' 
+                          ? 'border-[#EAB513]/50 bg-[#EAB513]/5' 
                           : 'border-white/10'
                     }`}
                   >
@@ -258,7 +258,7 @@ const Onboarding = () => {
                       )}
                       {isWatchlist && (
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center">
-                          <span className="text-xs font-black tracking-widest text-[#FACC15] border border-[#FACC15]/40 bg-[#FACC15]/10 px-3 py-1.5 rounded-full uppercase">Watchlist</span>
+                          <span className="text-xs font-black tracking-widest text-[#EAB513] border border-[#EAB513]/40 bg-[#EAB513]/10 px-3 py-1.5 rounded-full uppercase">Watchlist</span>
                         </div>
                       )}
                     </div>
@@ -280,7 +280,7 @@ const Onboarding = () => {
                         onClick={() => toggleWatchlist(movie)}
                         className={`py-2 px-2.5 rounded-lg transition-all cursor-pointer ${
                           isWatchlist 
-                            ? 'bg-[#FACC15] text-black' 
+                            ? 'bg-[#EAB513] text-black' 
                             : 'bg-white/5 text-gray-300 hover:bg-white/10'
                         }`}
                         title="Add to Watchlist"
@@ -308,7 +308,7 @@ const Onboarding = () => {
 
               <button
                 onClick={handleNext}
-                className="px-8 py-3.5 rounded-xl bg-[#FACC15] hover:bg-[#E2B710] text-black font-black text-sm transition-all cursor-pointer shadow-lg"
+                className="px-8 py-3.5 rounded-xl bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-sm transition-all cursor-pointer shadow-lg"
               >
                 Next Step
               </button>
@@ -320,19 +320,19 @@ const Onboarding = () => {
         {currentStep === 3 && (
           <div className="flex flex-col gap-6">
             <div className="text-center md:text-left">
-              <span className="text-[#FACC15] text-xs font-black uppercase tracking-widest">Step 3 of 4</span>
+              <span className="text-[#EAB513] text-xs font-black uppercase tracking-widest">Step 3 of 4</span>
               <h1 className="text-3xl md:text-4xl font-black text-white mt-1">Select your top 5 favorite actors</h1>
               <p className="text-sm text-gray-400 mt-2">Choose exactly 5 stars who always make a movie worth watching.</p>
             </div>
 
             <div className="relative group w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#FACC15] transition-colors" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search actors..."
-                className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
+                className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm text-white placeholder:text-gray-600"
               />
             </div>
 
@@ -345,17 +345,17 @@ const Onboarding = () => {
                     onClick={() => toggleFavoriteActor(actor.name)}
                     className={`flex flex-col items-center p-4 rounded-2xl cursor-pointer bg-white/[0.01] border transition-all duration-300 ${
                       isSelected 
-                        ? 'border-[#FACC15] bg-[#FACC15]/5' 
+                        ? 'border-[#EAB513] bg-[#EAB513]/5' 
                         : 'border-white/5 hover:border-white/10'
                     }`}
                   >
                     <div className={`w-20 h-20 rounded-full overflow-hidden mb-3 border-2 transition-all p-1 bg-white/5 relative ${
-                      isSelected ? 'border-[#FACC15]' : 'border-transparent'
+                      isSelected ? 'border-[#EAB513]' : 'border-transparent'
                     }`}>
                       <img src={actor.image} alt={actor.name} className="w-full h-full object-cover rounded-full" />
                       {isSelected && (
-                        <div className="absolute inset-0 bg-[#FACC15]/20 rounded-full flex items-center justify-center">
-                          <div className="w-6 h-6 rounded-full bg-[#FACC15] flex items-center justify-center text-black shadow-lg">
+                        <div className="absolute inset-0 bg-[#EAB513]/20 rounded-full flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-[#EAB513] flex items-center justify-center text-black shadow-lg">
                             <Check className="w-3.5 h-3.5" strokeWidth={3} />
                           </div>
                         </div>
@@ -383,7 +383,7 @@ const Onboarding = () => {
               <button
                 disabled={favoriteActors.length !== 5}
                 onClick={handleNext}
-                className="px-8 py-3.5 rounded-xl bg-[#FACC15] hover:bg-[#E2B710] disabled:bg-white/5 text-black disabled:text-gray-500 font-black text-sm transition-all cursor-pointer shadow-lg"
+                className="px-8 py-3.5 rounded-xl bg-[#EAB513] hover:bg-[#EAB513] disabled:bg-white/5 text-black disabled:text-gray-500 font-black text-sm transition-all cursor-pointer shadow-lg"
               >
                 Next Step
               </button>
@@ -395,7 +395,7 @@ const Onboarding = () => {
         {currentStep === 4 && (
           <div className="flex flex-col gap-6">
             <div className="text-center md:text-left">
-              <span className="text-[#FACC15] text-xs font-black uppercase tracking-widest">Step 4 of 4</span>
+              <span className="text-[#EAB513] text-xs font-black uppercase tracking-widest">Step 4 of 4</span>
               <h1 className="text-3xl md:text-4xl font-black text-white mt-1">Select your top 5 favorite genres</h1>
               <p className="text-sm text-gray-400 mt-2">Which categories define your ideal movie night? Choose up to 5.</p>
             </div>
@@ -409,13 +409,13 @@ const Onboarding = () => {
                     onClick={() => toggleGenre(genre)}
                     className={`py-4 px-6 rounded-2xl font-black text-xs md:text-sm tracking-wider uppercase border transition-all duration-300 flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'border-[#FACC15] bg-[#FACC15]/5 text-[#FACC15] shadow-[0_0_15px_rgba(250,204,21,0.05)]'
+                        ? 'border-[#EAB513] bg-[#EAB513]/5 text-[#EAB513] shadow-[0_0_15px_rgba(234,181,19,0.05)]'
                         : 'border-white/10 hover:border-white/20 text-gray-300 hover:text-white'
                     }`}
                   >
                     <span>{genre}</span>
                     {isSelected ? (
-                      <Check className="w-4 h-4 text-[#FACC15]" strokeWidth={3} />
+                      <Check className="w-4 h-4 text-[#EAB513]" strokeWidth={3} />
                     ) : (
                       <span className="w-2 h-2 rounded-full bg-white/20"></span>
                     )}
@@ -439,7 +439,7 @@ const Onboarding = () => {
               <button
                 disabled={favoriteGenres.length === 0}
                 onClick={handleNext}
-                className="px-8 py-3.5 rounded-xl bg-[#FACC15] hover:bg-[#E2B710] text-black font-black text-sm transition-all cursor-pointer shadow-lg"
+                className="px-8 py-3.5 rounded-xl bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-sm transition-all cursor-pointer shadow-lg"
               >
                 Finalize Profile
               </button>
@@ -450,16 +450,16 @@ const Onboarding = () => {
         {/* STEP 5: LOADER TRANSITION */}
         {currentStep === 5 && (
           <div className="flex flex-col items-center justify-center py-20 text-center relative">
-            <div className="absolute inset-0 bg-radial-gradient from-[#FACC15]/5 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 bg-radial-gradient from-[#EAB513]/5 to-transparent pointer-events-none"></div>
 
             {/* Pulsing logo box */}
             <div className="relative mb-10 w-24 h-24 flex items-center justify-center">
-              <div className="absolute inset-0 bg-[#FACC15]/20 rounded-full blur-xl animate-pulse"></div>
+              <div className="absolute inset-0 bg-[#EAB513]/20 rounded-full blur-xl animate-pulse"></div>
               <Logo className="h-10 w-auto relative z-10 animate-bounce" />
             </div>
 
             <h2 className="text-2xl font-black tracking-tight text-white mb-2">Creating Your Cinephile Identity</h2>
-            <p className="text-sm font-semibold text-[#FACC15] tracking-widest uppercase h-6 transition-all duration-300">
+            <p className="text-sm font-semibold text-[#EAB513] tracking-widest uppercase h-6 transition-all duration-300">
               {loaderMessages[loaderMessageIndex]}
             </p>
           </div>

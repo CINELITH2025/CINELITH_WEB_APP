@@ -87,7 +87,7 @@ const InteractiveActivities = () => {
     <section className="mb-12 relative">
       {/* Toast HUD */}
       {toastMessage && (
-        <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-[#FACC15] text-black text-xs font-black px-6 py-3.5 rounded-full shadow-2xl z-50 animate-bounce flex items-center gap-2">
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-[#EAB513] text-black text-xs font-black px-6 py-3.5 rounded-full shadow-2xl z-50 animate-bounce flex items-center gap-2">
           <Sparkles className="w-4 h-4 fill-current" />
           {toastMessage}
         </div>
@@ -99,11 +99,11 @@ const InteractiveActivities = () => {
         
         {/* === BATTLE OF THE DAY === */}
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#FACC15]/5 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#EAB513]/5 rounded-full blur-2xl pointer-events-none"></div>
 
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <Swords className="w-5 h-5 text-[#FACC15]" />
+              <Swords className="w-5 h-5 text-[#EAB513]" />
               <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Movie Battle of the Day</span>
             </div>
             
@@ -116,10 +116,10 @@ const InteractiveActivities = () => {
                 onClick={() => handleBattleVote('dune')}
                 className={`w-[130px] rounded-2xl overflow-hidden border cursor-pointer relative shadow-lg group/poster transition-all duration-300 ${
                   battleVote === 'dune' 
-                    ? 'border-[#FACC15] scale-105 shadow-[#FACC15]/10' 
+                    ? 'border-[#EAB513] scale-105 shadow-[#EAB513]/10' 
                     : battleVote 
                       ? 'border-white/5 opacity-50 cursor-default' 
-                      : 'border-white/10 hover:border-[#FACC15]/50 hover:scale-102'
+                      : 'border-white/10 hover:border-[#EAB513]/50 hover:scale-102'
                 }`}
               >
                 <img src="/images/poster_1.png" alt="Dune: Part Two" className="w-full h-full object-cover aspect-[2/3]" />
@@ -129,7 +129,7 @@ const InteractiveActivities = () => {
               </div>
 
               {/* VS separator */}
-              <div className="w-10 h-10 rounded-full bg-[#121016] border border-white/15 shadow-xl flex items-center justify-center text-xs font-black text-[#FACC15] shrink-0 z-10">
+              <div className="w-10 h-10 rounded-full bg-[#121016] border border-white/15 shadow-xl flex items-center justify-center text-xs font-black text-[#EAB513] shrink-0 z-10">
                 VS
               </div>
 
@@ -138,10 +138,10 @@ const InteractiveActivities = () => {
                 onClick={() => handleBattleVote('oppenheimer')}
                 className={`w-[130px] rounded-2xl overflow-hidden border cursor-pointer relative shadow-lg group/poster transition-all duration-300 ${
                   battleVote === 'oppenheimer' 
-                    ? 'border-[#FACC15] scale-105 shadow-[#FACC15]/10' 
+                    ? 'border-[#EAB513] scale-105 shadow-[#EAB513]/10' 
                     : battleVote 
                       ? 'border-white/5 opacity-50 cursor-default' 
-                      : 'border-white/10 hover:border-[#FACC15]/50 hover:scale-102'
+                      : 'border-white/10 hover:border-[#EAB513]/50 hover:scale-102'
                 }`}
               >
                 <img src="/images/poster_2.png" alt="Oppenheimer" className="w-full h-full object-cover aspect-[2/3]" />
@@ -160,7 +160,7 @@ const InteractiveActivities = () => {
                 <span>Oppenheimer: {battlePercentages.oppenheimer}%</span>
               </div>
               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden flex">
-                <div className="h-full bg-[#FACC15]" style={{ width: `${battlePercentages.dune}%` }}></div>
+                <div className="h-full bg-[#EAB513]" style={{ width: `${battlePercentages.dune}%` }}></div>
                 <div className="h-full bg-amber-600" style={{ width: `${battlePercentages.oppenheimer}%` }}></div>
               </div>
               <p className="text-[10px] text-gray-500 font-bold text-center mt-3 uppercase tracking-wider">
@@ -177,11 +177,11 @@ const InteractiveActivities = () => {
 
         {/* === FILM QUIZ OF THE WEEK === */}
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#FACC15]/5 rounded-full blur-2xl pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#EAB513]/5 rounded-full blur-2xl pointer-events-none"></div>
 
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <HelpCircle className="w-5 h-5 text-[#FACC15]" />
+              <HelpCircle className="w-5 h-5 text-[#EAB513]" />
               <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Weekly Trivia Quiz</span>
             </div>
 

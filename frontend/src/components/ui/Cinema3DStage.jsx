@@ -64,7 +64,7 @@ const Cinema3DStage = () => {
     >
       {/* Dynamic 3D Header */}
       <div className="text-center space-y-3 mb-10 relative z-20">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FACC15]/10 border border-[#FACC15]/30 text-[#FACC15] text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EAB513]/10 border border-[#EAB513]/30 text-[#EAB513] text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(234,181,19,0.2)]">
           <Sparkles className="w-3.5 h-3.5" /> Interactive 3D Cinema Stage
         </div>
         <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight">
@@ -82,10 +82,10 @@ const Cinema3DStage = () => {
       >
         {/* Glowing 3D Base Platform Grid */}
         <div 
-          className="absolute w-[450px] md:w-[600px] h-[450px] md:h-[600px] rounded-full border border-[#FACC15]/20 bg-radial from-[#FACC15]/10 via-transparent to-transparent pointer-events-none transition-transform duration-300"
+          className="absolute w-[450px] md:w-[600px] h-[450px] md:h-[600px] rounded-full border border-[#EAB513]/20 bg-radial from-[#EAB513]/10 via-transparent to-transparent pointer-events-none transition-transform duration-300"
           style={{
             transform: `rotateX(75deg) rotateZ(${rotationY * 0.2}deg) translateZ(-180px)`,
-            boxShadow: '0 0 80px rgba(250, 204, 21, 0.15)'
+            boxShadow: '0 0 80px rgba(234,181,19, 0.15)'
           }}
         />
 
@@ -104,7 +104,7 @@ const Cinema3DStage = () => {
             return (
               <div
                 key={movie.id}
-                className="absolute w-48 md:w-56 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 bg-[#121019] shadow-[0_20px_40px_rgba(0,0,0,0.9)] hover:border-[#FACC15] transition-all duration-300 group"
+                className="absolute w-48 md:w-56 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 bg-[#121019] shadow-[0_20px_40px_rgba(0,0,0,0.9)] hover:border-[#EAB513] transition-all duration-300 group"
                 style={{
                   transformStyle: 'preserve-3d',
                   transform: `rotateY(${angle}deg) translateZ(${radius}px)`
@@ -120,15 +120,15 @@ const Cinema3DStage = () => {
                 {/* Dark Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-4 flex flex-col justify-end text-left">
                   {/* Taste Match Pill */}
-                  <div className="absolute top-3 right-3 bg-[#FACC15] text-black text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1">
+                  <div className="absolute top-3 right-3 bg-[#EAB513] text-black text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1">
                     <Sparkles className="w-3 h-3 fill-black" />
                     {movie.match}
                   </div>
 
-                  <span className="text-[9px] text-[#FACC15] font-extrabold uppercase tracking-widest mb-0.5">
+                  <span className="text-[9px] text-[#EAB513] font-extrabold uppercase tracking-widest mb-0.5">
                     {movie.genre}
                   </span>
-                  <h4 className="text-sm md:text-base font-black text-white leading-tight group-hover:text-[#FACC15] transition-colors truncate">
+                  <h4 className="text-sm md:text-base font-black text-white leading-tight group-hover:text-[#EAB513] transition-colors truncate">
                     {movie.title}
                   </h4>
                   <p className="text-[11px] text-gray-400 font-medium truncate mt-0.5">
@@ -137,7 +137,7 @@ const Cinema3DStage = () => {
 
                   {/* Rating */}
                   <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/10 text-xs">
-                    <span className="text-[#FACC15] font-bold">★ {movie.rating} Rating</span>
+                    <span className="text-[#EAB513] font-bold">★ {movie.rating} Rating</span>
                     <span className="text-[10px] text-gray-400 font-semibold">Cinelith Curator</span>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ const Cinema3DStage = () => {
               }}
               className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all ${
                 activeCardIndex === idx
-                  ? 'bg-[#FACC15] w-6'
+                  ? 'bg-[#EAB513] w-6'
                   : 'bg-white/20 hover:bg-white/40'
               }`}
             />

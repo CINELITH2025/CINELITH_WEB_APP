@@ -23,8 +23,8 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[#090909] text-white flex flex-col items-center justify-center p-6 text-center">
-          <div className="bg-[#121018] border border-[#FACC15]/30 rounded-3xl p-8 max-w-md w-full space-y-6 shadow-2xl relative overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-[#FACC15]/10 text-[#FACC15] flex items-center justify-center mx-auto border border-[#FACC15]/20">
+          <div className="bg-[#121018] border border-[#EAB513]/30 rounded-3xl p-8 max-w-md w-full space-y-6 shadow-2xl relative overflow-hidden">
+            <div className="w-16 h-16 rounded-2xl bg-[#EAB513]/10 text-[#EAB513] flex items-center justify-center mx-auto border border-[#EAB513]/20">
               <Film className="w-8 h-8" />
             </div>
 
@@ -37,7 +37,7 @@ class ErrorBoundary extends React.Component {
 
             <button
               onClick={this.handleReload}
-              className="w-full bg-[#FACC15] hover:bg-yellow-400 text-black font-extrabold text-sm py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-[#EAB513] hover:bg-yellow-400 text-black font-extrabold text-sm py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
             >
               <RefreshCw className="w-4 h-4 animate-spin-slow" /> Refresh CINELITH Pre-Launch
             </button>

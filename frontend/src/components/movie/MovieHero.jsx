@@ -58,11 +58,11 @@ const MovieHero = ({ movie }) => {
         <div className="flex items-center gap-4 mb-8">
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">CL Score</span>
-            <span className="text-2xl font-black text-[#FACC15]">{movie.clScore}</span>
+            <span className="text-2xl font-black text-[#EAB513]">{movie.clScore}</span>
           </div>
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">User Score</span>
-            <span className="text-2xl font-black text-[#FACC15]">{movie.userScore}</span>
+            <span className="text-2xl font-black text-[#EAB513]">{movie.userScore}</span>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ const MovieHero = ({ movie }) => {
             </p>
             <button 
               onClick={() => setShowFullOverview(!showFullOverview)}
-              className="text-[#FACC15] hover:underline font-bold text-xs w-fit cursor-pointer"
+              className="text-[#EAB513] hover:underline font-bold text-xs w-fit cursor-pointer"
             >
               {showFullOverview ? 'Read Less' : 'Read More'}
             </button>
@@ -118,7 +118,7 @@ const MovieHero = ({ movie }) => {
             <div className="flex flex-col gap-3">
               <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Awards & Recognition</span>
               <div className="flex items-center gap-2">
-                <div title="Academy Award" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-[#FACC15] hover:bg-white/10 transition-colors">
+                <div title="Academy Award" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-[#EAB513] hover:bg-white/10 transition-colors">
                   <Award className="w-5 h-5" />
                 </div>
                 <div title="Golden Globe" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-emerald-400 hover:bg-white/10 transition-colors">
@@ -139,11 +139,11 @@ const MovieHero = ({ movie }) => {
             onClick={handleWatchlistToggle}
             className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
               inWatchlist 
-                ? 'bg-white/10 border border-[#FACC15]/40 text-[#FACC15]' 
-                : 'bg-[#FACC15] text-black hover:bg-[#E2B710]'
+                ? 'bg-white/10 border border-[#EAB513]/40 text-[#EAB513]' 
+                : 'bg-[#EAB513] text-black hover:bg-[#EAB513]'
             }`}
           >
-            <Bookmark className={`w-4 h-4 mr-2 ${inWatchlist ? 'fill-[#FACC15]' : 'fill-current'}`} />
+            <Bookmark className={`w-4 h-4 mr-2 ${inWatchlist ? 'fill-[#EAB513]' : 'fill-current'}`} />
             {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
           </Button>
 
@@ -181,7 +181,7 @@ const MovieHero = ({ movie }) => {
                     <Star 
                       className={`w-5 h-5 transition-colors ${
                         isFilled 
-                          ? 'fill-[#FACC15] text-[#FACC15]' 
+                          ? 'fill-[#EAB513] text-[#EAB513]' 
                           : 'text-gray-600 hover:text-gray-400'
                       }`} 
                     />
@@ -189,7 +189,7 @@ const MovieHero = ({ movie }) => {
                 );
               })}
               {existingRating && (
-                <span className="text-sm font-black text-[#FACC15] ml-3">{existingRating.rating}/10</span>
+                <span className="text-sm font-black text-[#EAB513] ml-3">{existingRating.rating}/10</span>
               )}
             </div>
           </div>

@@ -38,11 +38,11 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           {/* Search */}
           <div className="relative hidden md:flex items-center group">
-            <Search className="absolute left-3 w-4 h-4 text-gray-500 group-focus-within:text-[#FACC15] transition-colors" />
+            <Search className="absolute left-3 w-4 h-4 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
             <input
               type="text"
               placeholder="Search..."
-              className="pl-9 pr-4 py-2 w-48 lg:w-64 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-sm placeholder:text-gray-600 text-white"
+              className="pl-9 pr-4 py-2 w-48 lg:w-64 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-sm placeholder:text-gray-600 text-white"
             />
           </div>
 
@@ -65,7 +65,7 @@ const Navbar = () => {
               {/* User Profile Avatar Link */}
               <Link 
                 to="/profile" 
-                className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/20 cursor-pointer hover:border-[#FACC15] transition-colors shrink-0"
+                className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/20 cursor-pointer hover:border-[#EAB513] transition-colors shrink-0"
                 title={`${user?.name}'s Profile`}
               >
                 <img src={user?.avatar || "/images/actor_1.png"} alt="Profile" className="w-full h-full object-cover" />

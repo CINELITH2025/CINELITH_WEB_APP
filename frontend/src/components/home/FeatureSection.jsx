@@ -9,13 +9,13 @@ const FeatureSection = ({ title, features }) => {
   const getIcon = (index) => {
     switch (index) {
       case 0:
-        return <Users className="w-8 h-8 text-[#FACC15]" />;
+        return <Users className="w-8 h-8 text-[#EAB513]" />;
       case 1:
-        return <HelpCircle className="w-8 h-8 text-[#FACC15]" />;
+        return <HelpCircle className="w-8 h-8 text-[#EAB513]" />;
       case 2:
-        return <Swords className="w-8 h-8 text-[#FACC15]" />;
+        return <Swords className="w-8 h-8 text-[#EAB513]" />;
       default:
-        return <Users className="w-8 h-8 text-[#FACC15]" />;
+        return <Users className="w-8 h-8 text-[#EAB513]" />;
     }
   };
 
@@ -35,7 +35,7 @@ const FeatureSection = ({ title, features }) => {
     <section className="py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl md:text-2xl font-bold text-[#E2B710] tracking-wide">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-[#EAB513] tracking-wide">{title}</h2>
       </div>
 
       {/* Feature Grid - 3 columns */}
@@ -44,7 +44,7 @@ const FeatureSection = ({ title, features }) => {
           <div 
             key={idx} 
             onClick={() => navigate(getRoute(idx))}
-            className="flex flex-col items-center text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-[#FACC15]/30 cursor-pointer group hover:bg-white/10 transition-all duration-300 shadow-xl"
+            className="flex flex-col items-center text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-[#EAB513]/30 cursor-pointer group hover:bg-white/10 transition-all duration-300 shadow-xl"
           >
             {/* Icon Box */}
             <div className="p-4 bg-white/5 rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 border border-white/5 shadow-inner">
@@ -52,7 +52,7 @@ const FeatureSection = ({ title, features }) => {
             </div>
 
             {/* Title */}
-            <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#FACC15] transition-colors">
+            <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#EAB513] transition-colors">
               {feature.title}
             </h3>
 

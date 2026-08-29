@@ -24,7 +24,7 @@ const Rankings = () => {
             </Link>
           </div>
           
-          <div className="w-full md:w-[400px] h-[160px] rounded-2xl overflow-hidden bg-white/5 border border-white/10 group-hover:border-[#FACC15]/30 transition-all duration-300">
+          <div className="w-full md:w-[400px] h-[160px] rounded-2xl overflow-hidden bg-white/5 border border-white/10 group-hover:border-[#EAB513]/30 transition-all duration-300">
             <img 
               src="/images/actor_hero_bg.png" 
               alt={topActorName} 
@@ -43,7 +43,7 @@ const Rankings = () => {
             </Link>
           </div>
           
-          <div className="w-full md:w-[400px] h-[160px] rounded-2xl overflow-hidden bg-white/5 border border-white/10 group-hover:border-[#FACC15]/30 transition-all duration-300">
+          <div className="w-full md:w-[400px] h-[160px] rounded-2xl overflow-hidden bg-white/5 border border-white/10 group-hover:border-[#EAB513]/30 transition-all duration-300">
             <img 
               src={topMovie.image} 
               alt={topMovie.title} 

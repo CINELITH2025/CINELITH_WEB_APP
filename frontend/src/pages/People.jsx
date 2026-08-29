@@ -60,7 +60,7 @@ const PeopleFilterDropdown = ({ label, value, onChange, options, placeholder }) 
         className="flex items-center justify-between gap-2 bg-white/5 border border-white/10 hover:border-white/20 text-xs md:text-sm font-bold text-white px-4 py-2.5 rounded-xl cursor-pointer min-w-[160px]"
       >
         <span className="truncate">{value === "All" ? `Filter by ${label}` : value}</span>
-        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180 text-[#FACC15]' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180 text-[#EAB513]' : ''}`} />
       </button>
 
       {isOpen && (
@@ -70,14 +70,14 @@ const PeopleFilterDropdown = ({ label, value, onChange, options, placeholder }) 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={placeholder}
-            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white focus:outline-none focus:border-[#FACC15]/40 mb-2 placeholder:text-gray-600"
+            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-xs text-white focus:outline-none focus:border-[#EAB513]/40 mb-2 placeholder:text-gray-600"
             autoFocus
           />
           <div className="max-h-48 overflow-y-auto custom-scrollbar flex flex-col gap-1">
             <button
               type="button"
               onClick={() => { onChange("All"); setIsOpen(false); }}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${value === "All" ? 'bg-[#FACC15] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${value === "All" ? 'bg-[#EAB513] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
             >
               All {label}s
             </button>
@@ -86,7 +86,7 @@ const PeopleFilterDropdown = ({ label, value, onChange, options, placeholder }) 
                 key={opt}
                 type="button"
                 onClick={() => { onChange(opt); setIsOpen(false); }}
-                className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${value === opt ? 'bg-[#FACC15] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
+                className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${value === opt ? 'bg-[#EAB513] text-black font-black' : 'text-gray-300 hover:bg-white/5'}`}
               >
                 {opt}
               </button>
@@ -218,13 +218,13 @@ const People = () => {
         {/* Global User Search Bar */}
         <div className="mb-8 flex flex-col gap-6">
           <div className="relative w-full group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#FACC15] transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#EAB513] transition-colors" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users by name, handle, or bio..."
-              className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-600 text-white shadow-xl"
+              className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-600 text-white shadow-xl"
             />
           </div>
 
@@ -268,7 +268,7 @@ const People = () => {
               onClick={() => setSortByMatch(!sortByMatch)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs md:text-sm font-black transition-all cursor-pointer ${
                 sortByMatch 
-                  ? 'bg-[#FACC15] text-black border-[#FACC15]' 
+                  ? 'bg-[#EAB513] text-black border-[#EAB513]' 
                   : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
               }`}
             >
@@ -280,7 +280,7 @@ const People = () => {
 
         {/* Similar Movie Taste Grid */}
         <h2 className="text-xl md:text-2xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[#FACC15] fill-[#FACC15]" />
+          <Sparkles className="w-5 h-5 text-[#EAB513] fill-[#EAB513]" />
           Users with Similar Taste
         </h2>
         
@@ -294,16 +294,16 @@ const People = () => {
                 <div 
                   key={idx}
                   onClick={() => setSelectedProfileUser(member)}
-                  className="flex flex-col group cursor-pointer bg-white/5 border border-white/10 hover:border-[#FACC15]/30 p-5 rounded-2xl transition-all duration-300 shadow-xl relative overflow-hidden"
+                  className="flex flex-col group cursor-pointer bg-white/5 border border-white/10 hover:border-[#EAB513]/30 p-5 rounded-2xl transition-all duration-300 shadow-xl relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#FACC15]/5 rounded-bl-full blur-xl pointer-events-none group-hover:bg-[#FACC15]/10 transition-all"></div>
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#EAB513]/5 rounded-bl-full blur-xl pointer-events-none group-hover:bg-[#EAB513]/10 transition-all"></div>
                   
                   {/* Photo frame */}
                   <div className="relative aspect-square rounded-xl overflow-hidden mb-4 bg-white/5 border border-white/5 shrink-0">
                     <img src={member.avatar} alt={member.name} className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" />
                     
                     {/* Dynamic Match Score Tag */}
-                    <div className="absolute bottom-2.5 right-2.5 bg-[#FACC15] text-black text-[10px] font-black px-2 py-1 rounded-md shadow-lg flex items-center gap-1">
+                    <div className="absolute bottom-2.5 right-2.5 bg-[#EAB513] text-black text-[10px] font-black px-2 py-1 rounded-md shadow-lg flex items-center gap-1">
                       <Sparkles className="w-3 h-3 fill-current" />
                       {member.matchScore}% Match
                     </div>
@@ -311,7 +311,7 @@ const People = () => {
 
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="font-extrabold text-white text-base leading-tight group-hover:text-[#FACC15] transition-colors mb-0.5">
+                      <h3 className="font-extrabold text-white text-base leading-tight group-hover:text-[#EAB513] transition-colors mb-0.5">
                         {member.name}
                       </h3>
                       <span className="text-[10px] text-gray-500 font-bold tracking-wider mb-2 block">{member.handle}</span>
@@ -325,11 +325,11 @@ const People = () => {
                           <Check className="w-3.5 h-3.5" strokeWidth={3} /> Following
                         </span>
                       ) : isRequested ? (
-                        <span className="text-[10px] font-black text-[#FACC15] uppercase tracking-wider flex items-center gap-0.5">
+                        <span className="text-[10px] font-black text-[#EAB513] uppercase tracking-wider flex items-center gap-0.5">
                           <Hourglass className="w-3.5 h-3.5 animate-pulse" /> Requested
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#FACC15] font-black uppercase tracking-wider hover:underline">
+                        <span className="text-[10px] text-[#EAB513] font-black uppercase tracking-wider hover:underline">
                           View profile
                         </span>
                       )}
@@ -364,15 +364,15 @@ const People = () => {
                   onClick={() => setSelectedProfileUser(sUser)}
                   className="flex flex-col items-center p-4 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-2xl cursor-pointer group transition-all"
                 >
-                  <div className="w-16 h-16 rounded-full overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#FACC15] transition-all p-0.5 bg-white/5 shrink-0 relative">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-3 border-2 border-transparent group-hover:border-[#EAB513] transition-all p-0.5 bg-white/5 shrink-0 relative">
                     <img src={sUser.avatar} alt={sUser.name} className="w-full h-full object-cover rounded-full" />
                     {(isFollowing || isRequested) && (
-                      <div className="absolute -bottom-1 -right-1 bg-[#FACC15] text-black w-5 h-5 rounded-full flex items-center justify-center border border-background">
+                      <div className="absolute -bottom-1 -right-1 bg-[#EAB513] text-black w-5 h-5 rounded-full flex items-center justify-center border border-background">
                         {isFollowing ? <UserCheck className="w-3.5 h-3.5" /> : <Hourglass className="w-3.5 h-3.5" />}
                       </div>
                     )}
                   </div>
-                  <span className="text-xs font-bold text-white group-hover:text-[#FACC15] transition-colors text-center truncate w-full">
+                  <span className="text-xs font-bold text-white group-hover:text-[#EAB513] transition-colors text-center truncate w-full">
                     {sUser.name}
                   </span>
                   <span className="text-[9px] text-gray-500 font-medium tracking-wide mt-0.5">{sUser.handle}</span>
@@ -403,7 +403,7 @@ const People = () => {
               </div>
               <div className="flex flex-col pt-1">
                 <h3 className="text-xl font-black text-white leading-tight tracking-tight">{selectedProfileUser.name}</h3>
-                <span className="text-xs text-[#FACC15] font-extrabold tracking-wide mt-0.5">{selectedProfileUser.handle}</span>
+                <span className="text-xs text-[#EAB513] font-extrabold tracking-wide mt-0.5">{selectedProfileUser.handle}</span>
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-2.5">{selectedProfileUser.role}</span>
               </div>
             </div>
@@ -412,14 +412,14 @@ const People = () => {
             <div className="bg-white/5 rounded-2xl p-4.5 border border-white/5 mb-6 shadow-inner">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-400 font-bold flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-[#FACC15] fill-current" />
+                  <Sparkles className="w-4 h-4 text-[#EAB513] fill-current" />
                   Taste Compatibility
                 </span>
-                <span className="text-sm font-black text-[#FACC15]">{selectedProfileUser.matchScore || calculateMatchScore(selectedProfileUser)}%</span>
+                <span className="text-sm font-black text-[#EAB513]">{selectedProfileUser.matchScore || calculateMatchScore(selectedProfileUser)}%</span>
               </div>
               <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-amber-500 to-[#FACC15]" 
+                  className="h-full bg-gradient-to-r from-amber-500 to-[#EAB513]" 
                   style={{ width: `${selectedProfileUser.matchScore || calculateMatchScore(selectedProfileUser)}%` }}
                 ></div>
               </div>
@@ -445,7 +445,7 @@ const People = () => {
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Favorite Actors</span>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedProfileUser.actors.map(a => (
-                    <span key={a} className="text-[10px] font-extrabold bg-[#FACC15]/10 border border-[#FACC15]/20 px-2.5 py-1 rounded text-[#FACC15]">{a}</span>
+                    <span key={a} className="text-[10px] font-extrabold bg-[#EAB513]/10 border border-[#EAB513]/20 px-2.5 py-1 rounded text-[#EAB513]">{a}</span>
                   ))}
                 </div>
               </div>
@@ -466,7 +466,7 @@ const People = () => {
                 onClick={() => toggleFollowUser(selectedProfileUser.handle)}
                 className={`flex-1 font-black text-xs py-4.5 rounded-xl cursor-pointer transition-all border ${
                   following.includes(selectedProfileUser.handle)
-                    ? 'bg-[#FACC15]/10 border-[#FACC15]/40 text-[#FACC15]'
+                    ? 'bg-[#EAB513]/10 border-[#EAB513]/40 text-[#EAB513]'
                     : followRequests.includes(selectedProfileUser.handle)
                       ? 'bg-yellow-500/5 border-yellow-500/30 text-yellow-500/80'
                       : 'bg-white text-black hover:bg-gray-200 border-white'

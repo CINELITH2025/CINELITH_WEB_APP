@@ -44,11 +44,11 @@ const Discussion = ({ comments: initialComments, movieId }) => {
             value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}
             placeholder="Add a comment..."
-            className="w-full min-h-[80px] bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#FACC15]/50 focus:bg-white/10 transition-all text-white placeholder:text-gray-500"
+            className="w-full min-h-[80px] bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#EAB513]/50 focus:bg-white/10 transition-all text-white placeholder:text-gray-500"
           />
           <Button 
             onClick={handlePostComment}
-            className="w-fit bg-[#E2B710] hover:bg-[#C59E0C] text-black font-extrabold text-xs px-6 py-3 rounded-lg shadow-md cursor-pointer ml-auto"
+            className="w-fit bg-[#EAB513] hover:bg-[#C59E0C] text-black font-extrabold text-xs px-6 py-3 rounded-lg shadow-md cursor-pointer ml-auto"
           >
             Post
           </Button>
@@ -67,7 +67,7 @@ const Discussion = ({ comments: initialComments, movieId }) => {
           >
             {tab}
             {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FACC15]"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#EAB513]"></div>
             )}
           </button>
         ))}
@@ -83,7 +83,7 @@ const Discussion = ({ comments: initialComments, movieId }) => {
             <div 
               key={idx} 
               className={`flex gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 transition-colors shadow-md ${
-                isNested ? 'ml-12 border-l-2 border-l-[#FACC15]' : ''
+                isNested ? 'ml-12 border-l-2 border-l-[#EAB513]' : ''
               }`}
             >
               <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-white/20">

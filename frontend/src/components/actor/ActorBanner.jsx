@@ -19,7 +19,7 @@ const ActorBanner = ({ name, stats, image }) => {
         
         {/* Text Details Overlay */}
         <div className="absolute bottom-0 left-0 p-8 md:p-12">
-          <span className="text-xs font-black uppercase tracking-widest text-[#FACC15] mb-2 block">
+          <span className="text-xs font-black uppercase tracking-widest text-[#EAB513] mb-2 block">
             The Chameleon of a Generation
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg">
@@ -51,7 +51,7 @@ const ActorBanner = ({ name, stats, image }) => {
             className={`font-black text-sm px-8 py-6 rounded-xl transition-all shadow-lg ${
               following 
                 ? 'bg-white/10 border border-white/20 text-white hover:bg-white/20' 
-                : 'bg-[#FACC15] text-black hover:bg-[#E2B710]'
+                : 'bg-[#EAB513] text-black hover:bg-[#EAB513]'
             }`}
           >
             {following ? 'Following' : '+ Follow'}

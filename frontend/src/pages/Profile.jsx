@@ -84,7 +84,7 @@ const Profile = () => {
         <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 mb-10 shadow-2xl relative overflow-hidden group">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
             {/* Avatar circle */}
-            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-[#FACC15]/20 p-1 bg-white/5 shrink-0 shadow-lg">
+            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-[#EAB513]/20 p-1 bg-white/5 shrink-0 shadow-lg">
               <img src={user.avatar} alt={user.name} className="w-full h-full object-cover rounded-full" />
             </div>
 
@@ -105,7 +105,7 @@ const Profile = () => {
                       setEditAvatar(user.avatar);
                       setIsEditModalOpen(true);
                     }}
-                    className="bg-[#FACC15] hover:bg-[#E2B710] text-black font-black text-xs px-6 py-4.5 rounded-lg shadow-md cursor-pointer flex items-center gap-1.5"
+                    className="bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-xs px-6 py-4.5 rounded-lg shadow-md cursor-pointer flex items-center gap-1.5"
                   >
                     <Edit3 className="w-4 h-4" />
                     Edit Profile
@@ -146,7 +146,7 @@ const Profile = () => {
           {/* Left / Middle: Collections Sections */}
           <div className="lg:col-span-2 flex flex-col">
             <h2 className="text-xl md:text-2xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
-              <Film className="w-5.5 h-5.5 text-[#FACC15]" />
+              <Film className="w-5.5 h-5.5 text-[#EAB513]" />
               Movie Collections
             </h2>
 
@@ -162,7 +162,7 @@ const Profile = () => {
                 >
                   {tab}
                   {activeTab === tab && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FACC15]"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#EAB513]"></div>
                   )}
                 </button>
               ))}
@@ -176,7 +176,7 @@ const Profile = () => {
                     <div 
                       key={idx} 
                       onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#FACC15]/40 transition-all duration-300 relative"
+                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#EAB513]/40 transition-all duration-300 relative"
                     >
                       <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -188,7 +188,7 @@ const Profile = () => {
               ) : (
                 <div className="text-center py-16 bg-white/[0.02] border border-white/5 rounded-3xl mb-12">
                   <p className="text-gray-500 text-sm font-medium">No liked movies yet.</p>
-                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#FACC15] hover:bg-[#E2B710] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse Cinema</Button>
+                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#EAB513] hover:bg-[#EAB513] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse Cinema</Button>
                 </div>
               )
             )}
@@ -200,11 +200,11 @@ const Profile = () => {
                     <div 
                       key={idx} 
                       onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#FACC15]/40 transition-all duration-300 relative"
+                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#EAB513]/40 transition-all duration-300 relative"
                     >
                       <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Bookmark className="w-4 h-4 text-[#FACC15] fill-current" />
+                        <Bookmark className="w-4 h-4 text-[#EAB513] fill-current" />
                       </div>
                     </div>
                   ))}
@@ -212,7 +212,7 @@ const Profile = () => {
               ) : (
                 <div className="text-center py-16 bg-white/[0.02] border border-white/5 rounded-3xl mb-12">
                   <p className="text-gray-500 text-sm font-medium">No movies in your wishlist.</p>
-                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#FACC15] hover:bg-[#E2B710] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse Cinema</Button>
+                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#EAB513] hover:bg-[#EAB513] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse Cinema</Button>
                 </div>
               )
             )}
@@ -236,11 +236,11 @@ const Profile = () => {
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2">
-                              <h4 className="font-extrabold text-white text-base hover:text-[#FACC15] transition-colors cursor-pointer" onClick={() => navigate(`/movie/${rev.movieId}`)}>
+                              <h4 className="font-extrabold text-white text-base hover:text-[#EAB513] transition-colors cursor-pointer" onClick={() => navigate(`/movie/${rev.movieId}`)}>
                                 {media ? media.title : `Movie #${rev.movieId}`}
                               </h4>
                               {userRating && (
-                                <div className="flex items-center gap-1 bg-[#FACC15]/10 border border-[#FACC15]/20 px-2 py-0.5 rounded text-xs font-black text-[#FACC15]">
+                                <div className="flex items-center gap-1 bg-[#EAB513]/10 border border-[#EAB513]/20 px-2 py-0.5 rounded text-xs font-black text-[#EAB513]">
                                   <Star className="w-3.5 h-3.5 fill-current" />
                                   {userRating}/10
                                 </div>
@@ -257,7 +257,7 @@ const Profile = () => {
               ) : (
                 <div className="text-center py-16 bg-white/[0.02] border border-white/5 rounded-3xl mb-12">
                   <p className="text-gray-500 text-sm font-medium">You haven't written any reviews yet.</p>
-                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#FACC15] hover:bg-[#E2B710] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse & Review</Button>
+                  <Button onClick={() => navigate('/explore')} className="mt-4 bg-[#EAB513] hover:bg-[#EAB513] text-black font-bold text-xs px-4 py-2 rounded-lg">Browse & Review</Button>
                 </div>
               )
             )}
@@ -267,7 +267,7 @@ const Profile = () => {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                   <h2 className="text-xl md:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                    <PlusCircle className="w-5.5 h-5.5 text-[#FACC15]" />
+                    <PlusCircle className="w-5.5 h-5.5 text-[#EAB513]" />
                     Your Lists
                   </h2>
                   <p className="text-xs text-gray-500 mt-1">Create customized movie lists to share and track.</p>
@@ -280,11 +280,11 @@ const Profile = () => {
                     value={newListName}
                     onChange={(e) => setNewListName(e.target.value)}
                     placeholder="e.g. Nolan Collection..."
-                    className="flex-1 md:w-60 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 text-xs text-white placeholder:text-gray-600"
+                    className="flex-1 md:w-60 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 text-xs text-white placeholder:text-gray-600"
                   />
                   <button
                     type="submit"
-                    className="bg-[#FACC15] hover:bg-[#E2B710] text-black px-4 py-2.5 rounded-xl text-xs font-black cursor-pointer transition-all shadow-md shrink-0"
+                    className="bg-[#EAB513] hover:bg-[#EAB513] text-black px-4 py-2.5 rounded-xl text-xs font-black cursor-pointer transition-all shadow-md shrink-0"
                   >
                     Create List
                   </button>
@@ -357,7 +357,7 @@ const Profile = () => {
                                     setAddingMovieToListId(null);
                                     setMovieSearchQuery("");
                                   }}
-                                  className="flex items-center gap-2.5 text-left px-2.5 py-2 rounded-lg hover:bg-[#FACC15] hover:text-black text-xs font-bold text-gray-300 transition-colors cursor-pointer group"
+                                  className="flex items-center gap-2.5 text-left px-2.5 py-2 rounded-lg hover:bg-[#EAB513] hover:text-black text-xs font-bold text-gray-300 transition-colors cursor-pointer group"
                                 >
                                   <div className="w-6 h-9 rounded bg-white/5 overflow-hidden shrink-0 border border-white/10">
                                     <img src={m.image} alt={m.title} className="w-full h-full object-cover" />
@@ -377,7 +377,7 @@ const Profile = () => {
                           onClick={() => setAddingMovieToListId(list.id)}
                           className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white transition-all cursor-pointer shadow-md"
                         >
-                          <Plus className="w-4 h-4 text-[#FACC15]" />
+                          <Plus className="w-4 h-4 text-[#EAB513]" />
                           Add Movie to List
                         </button>
                       </div>
@@ -407,12 +407,12 @@ const Profile = () => {
 
               <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Favorite Genre</span>
-                <span className="text-2xl font-black text-[#FACC15]">{user.favoriteGenres?.[0] || "None"}</span>
+                <span className="text-2xl font-black text-[#EAB513]">{user.favoriteGenres?.[0] || "None"}</span>
               </div>
 
               <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cinephile Score</span>
-                <span className="text-2xl font-black text-[#FACC15]">{user.cinephileScore?.toLocaleString() || "0"}</span>
+                <span className="text-2xl font-black text-[#EAB513]">{user.cinephileScore?.toLocaleString() || "0"}</span>
               </div>
             </div>
           </div>
@@ -433,7 +433,7 @@ const Profile = () => {
             </button>
 
             <h3 className="text-xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
-              <Edit3 className="w-5.5 h-5.5 text-[#FACC15]" />
+              <Edit3 className="w-5.5 h-5.5 text-[#EAB513]" />
               Edit Profile
             </h3>
 
@@ -447,13 +447,13 @@ const Profile = () => {
                       key={i}
                       onClick={() => setEditAvatar(opt)}
                       className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all p-0.5 bg-white/5 relative ${
-                        editAvatar === opt ? 'border-[#FACC15] scale-105' : 'border-transparent'
+                        editAvatar === opt ? 'border-[#EAB513] scale-105' : 'border-transparent'
                       }`}
                     >
                       <img src={opt} className="w-full h-full object-cover rounded-full" />
                       {editAvatar === opt && (
-                        <div className="absolute inset-0 bg-[#FACC15]/20 rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-black bg-[#FACC15] rounded-full p-0.5" strokeWidth={3} />
+                        <div className="absolute inset-0 bg-[#EAB513]/20 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-black bg-[#EAB513] rounded-full p-0.5" strokeWidth={3} />
                         </div>
                       )}
                     </button>
@@ -469,7 +469,7 @@ const Profile = () => {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 text-sm text-white placeholder:text-gray-600"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 text-sm text-white placeholder:text-gray-600"
                 />
               </div>
 
@@ -480,7 +480,7 @@ const Profile = () => {
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
                   placeholder="Your cinema motto..."
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#FACC15]/40 text-sm text-white placeholder:text-gray-600 resize-none min-h-[80px]"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#EAB513]/40 text-sm text-white placeholder:text-gray-600 resize-none min-h-[80px]"
                 />
               </div>
 
@@ -488,18 +488,18 @@ const Profile = () => {
               <div className="flex flex-col gap-2 bg-white/5 border border-white/5 p-4 rounded-xl text-xs text-gray-500">
                 <div className="flex justify-between items-center">
                   <span>Favourite Genres</span>
-                  <span className="text-[9px] font-black text-[#FACC15] bg-[#FACC15]/10 px-2 py-0.5 rounded uppercase tracking-wider">Future</span>
+                  <span className="text-[9px] font-black text-[#EAB513] bg-[#EAB513]/10 px-2 py-0.5 rounded uppercase tracking-wider">Future</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Favourite Actors</span>
-                  <span className="text-[9px] font-black text-[#FACC15] bg-[#FACC15]/10 px-2 py-0.5 rounded uppercase tracking-wider">Future</span>
+                  <span className="text-[9px] font-black text-[#EAB513] bg-[#EAB513]/10 px-2 py-0.5 rounded uppercase tracking-wider">Future</span>
                 </div>
               </div>
 
               {/* Actions */}
               <Button 
                 onClick={handleSaveProfile}
-                className="w-full bg-[#FACC15] hover:bg-[#E2B710] text-black font-black text-sm py-4 mt-2 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-[#EAB513] hover:bg-[#EAB513] text-black font-black text-sm py-4 mt-2 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Save className="w-4 h-4" />
                 Save Changes
