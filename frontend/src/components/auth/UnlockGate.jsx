@@ -9,8 +9,7 @@ const UnlockGate = ({ title, subtitle, features = [], children }) => {
   const login = useUserStore((state) => state.login);
 
   const handleQuickDemoLogin = () => {
-    // Demo login as Alex Mercer
-    login("alex@cinelith.com", "password");
+    navigate('/auth');
   };
 
   if (isAuthenticated) {

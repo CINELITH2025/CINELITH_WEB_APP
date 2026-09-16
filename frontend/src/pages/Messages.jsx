@@ -5,16 +5,6 @@ import Footer from '../components/layout/Footer';
 import { Search, Send, Film, MessageCircle, Phone, Video, Info, User, CheckCheck } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 
-// Preset avatar and details for community contacts to ensure high visual quality
-const CONTACT_METADATA = {
-  "Liam": { avatar: "/images/actor_1.png", role: "Nolan Fanatic", match: "94%" },
-  "Sophia": { avatar: "/images/actor_1.png", role: "Indie Film Critic", match: "89%" },
-  "Ethan": { avatar: "/images/actor_1.png", role: "Sci-Fi Geek", match: "82%" },
-  "Olivia": { avatar: "/images/actor_1.png", role: "Classic Noir Lover", match: "78%" },
-  "Caleb": { avatar: "/images/actor_1.png", role: "Tarantino Scholar", match: "85%" },
-  "Emma": { avatar: "/images/actor_1.png", role: "Horror Buff", match: "73%" }
-};
-
 const Messages = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -24,50 +14,69 @@ const Messages = () => {
   const currentUser = useUserStore((state) => state.user);
   const chats = useUserStore((state) => state.chats) || {};
   const sendMessage = useUserStore((state) => state.sendMessage);
+  const loadChat = useUserStore((state) => state.loadChat);
+  const friends = currentUser?.friends || [];
 
-  // Default fallback if a contact is not in pre-seeded logs
-  const [activeContact, setActiveContact] = useState("Liam");
+  const [activeContactId, setActiveContactId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState("");
 
   const messageEndRef = useRef(null);
 
-  // Redirect if anonymous
   useEffect(() => {
     if (!isAuthenticated || !currentUser) {
       navigate('/auth');
     }
   }, [isAuthenticated, currentUser, navigate]);
 
-  // Set active contact from URL parameter if passed
   useEffect(() => {
-    if (userParam && CONTACT_METADATA[userParam]) {
-      setActiveContact(userParam);
+    if (userParam) {
+      setActiveContactId(userParam);
+    } else if (friends[0]) {
+      setActiveContactId(String(friends[0]._id || friends[0]));
     }
-  }, [userParam]);
+  }, [userParam, currentUser?.friends]);
 
-  // Scroll to bottom of message list on updates
+  useEffect(() => {
+    if (activeContactId) {
+      useUserStore.getState().loadChat(activeContactId).catch(() => null);
+    }
+  }, [activeContactId]);
+
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chats, activeContact, isTyping]);
+  }, [chats, activeContactId]);
 
-  // Handle typing indicator simulation
   const handleSend = (e) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
-
-    sendMessage(activeContact, inputText.trim());
+    if (!inputText.trim() || !activeContactId) return;
+    sendMessage(activeContactId, inputText.trim());
     setInputText("");
-    setIsTyping(true);
-
-    // Turn off typing indicator after simulated reply time
-    setTimeout(() => {
-      setIsTyping(false);
-    }, 1500);
   };
+
+  const contactsList = friends.map((friend) => {
+    const id = String(friend._id || friend);
+    const log = chats[id] || [];
+    const lastMsg = log[log.length - 1];
+    return {
+      id,
+      name: friend.name || "Cinephile",
+      avatar: friend.avatar || "/images/actor_1.png",
+      role: friend.bio || "Connected cinephile",
+      lastText: lastMsg ? lastMsg.text : "No messages yet",
+      lastTime: lastMsg ? new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""
+    };
+  });
+
+  const filteredContacts = contactsList.filter((c) =>
+    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const activeContact = contactsList.find((c) => c.id === activeContactId) || contactsList[0];
+  const activeLog = chats[activeContactId] || [];
+  const activeName = activeContact?.name || "Select a connection";
 
   const showFeatureNotice = (featureName) => {
     setNotificationMsg(`${featureName} calls are coming in a post-MVP update!`);
@@ -78,30 +87,6 @@ const Messages = () => {
   if (!isAuthenticated || !currentUser) {
     return null;
   }
-
-  // Combine pre-defined contacts with metadata
-  const contactsList = Object.keys(CONTACT_METADATA).map(name => {
-    const meta = CONTACT_METADATA[name];
-    const log = chats[name] || [];
-    const lastMsg = log[log.length - 1];
-    return {
-      name,
-      avatar: meta.avatar,
-      role: meta.role,
-      match: meta.match,
-      lastText: lastMsg ? lastMsg.text : "No messages yet",
-      lastTime: lastMsg ? new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""
-    };
-  });
-
-  // Filter contacts list by search query
-  const filteredContacts = contactsList.filter(c =>
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.role.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const activeLog = chats[activeContact] || [];
-  const activeMeta = CONTACT_METADATA[activeContact] || { avatar: "/images/actor_1.png", role: "Cinephile", match: "80%" };
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
@@ -142,11 +127,11 @@ const Messages = () => {
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5 scrollbar-thin scrollbar-thumb-white/10">
             {filteredContacts.length > 0 ? (
               filteredContacts.map((c) => {
-                const isActive = activeContact === c.name;
+                const isActive = activeContactId === c.id;
                 return (
                   <div
-                    key={c.name}
-                    onClick={() => setActiveContact(c.name)}
+                    key={c.id}
+                    onClick={() => setActiveContactId(c.id)}
                     className={`flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all border group ${
                       isActive
                         ? 'bg-[#F5BF26]/10 border-[#F5BF26]/30 text-white'
@@ -172,7 +157,7 @@ const Messages = () => {
 
                     {/* Compatibility Match overlay */}
                     <div className="text-[9px] font-black bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-gray-400 shrink-0">
-                      {c.match} Match
+                      Chat
                     </div>
                   </div>
                 );
@@ -192,12 +177,12 @@ const Messages = () => {
           <div className="flex items-center justify-between px-6 py-4.5 border-b border-white/10 bg-black/20 backdrop-blur-md">
             <div className="flex items-center gap-3.5">
               <div className="relative w-11 h-11 rounded-full overflow-hidden border border-white/10">
-                <img src={activeMeta.avatar} alt={activeContact} className="w-full h-full object-cover" />
+                <img src={activeContact?.avatar || "/images/actor_1.png"} alt={activeName} className="w-full h-full object-cover" />
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-background shadow-md"></div>
               </div>
               <div className="flex flex-col">
-                <h3 className="font-black text-sm text-white leading-tight tracking-tight">{activeContact}</h3>
-                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Online • Taste Match: {activeMeta.match}</span>
+                <h3 className="font-black text-sm text-white leading-tight tracking-tight">{activeName}</h3>
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{activeContact ? "Connected" : "No conversation selected"}</span>
               </div>
             </div>
 
@@ -223,7 +208,7 @@ const Messages = () => {
           {/* Messages scroll pane */}
           <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 scrollbar-thin scrollbar-thumb-white/10">
             {activeLog.map((msg, index) => {
-              const isMe = msg.sender === "You";
+              const isMe = msg.sender === "You" || String(msg.senderId) === String(currentUser._id);
               return (
                 <div key={index} className={`flex flex-col max-w-[70%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`}>
                   {/* Message bubble */}
@@ -246,14 +231,9 @@ const Messages = () => {
               );
             })}
 
-            {/* Typing Indicator Bubble */}
-            {isTyping && (
-              <div className="flex flex-col items-start max-w-[70%] self-start">
-                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-gray-400 rounded-tl-none flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                </div>
+            {!activeContact && (
+              <div className="text-center text-gray-500 text-sm font-semibold py-20">
+                Connect with someone on People to start chatting.
               </div>
             )}
 
@@ -266,12 +246,12 @@ const Messages = () => {
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`Send a message to ${activeContact}...`}
+              placeholder={`Send a message to ${activeName}...`}
               className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4.5 text-xs md:text-sm focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-white placeholder:text-gray-500 shadow-inner"
             />
             <button
               type="submit"
-              disabled={!inputText.trim()}
+              disabled={!inputText.trim() || !activeContactId}
               className="p-4.5 rounded-2xl bg-[#F5BF26] hover:bg-[#F5BF26] disabled:bg-white/5 disabled:text-gray-600 text-black transition-all shadow-lg shrink-0 cursor-pointer disabled:cursor-not-allowed hover:scale-105 active:scale-95"
               title="Send Message"
             >

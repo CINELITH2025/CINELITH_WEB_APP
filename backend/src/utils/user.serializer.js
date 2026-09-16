@@ -6,7 +6,9 @@ const serializeRef = (value) => {
     return {
       _id: String(value._id),
       name: value.name,
-      email: value.email
+      email: value.email,
+      avatar: value.avatar || null,
+      bio: value.bio || ""
     };
   }
   return String(value);

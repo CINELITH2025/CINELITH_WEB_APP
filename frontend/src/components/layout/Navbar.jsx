@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Bell, LogOut } from 'lucide-react';
+import { Search, Bell, LogOut, MessageCircle } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 import Logo from '../ui/Logo';
 import MobileNav from './MobileNav';
@@ -31,6 +31,9 @@ const Navbar = () => {
             <Link to="/" className="hover:text-white transition-colors">Home</Link>
             <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
             <Link to="/people" className="hover:text-white transition-colors">People</Link>
+            {isAuthenticated && (
+              <Link to="/messages" className="hover:text-white transition-colors">Messages</Link>
+            )}
           </div>
         </div>
 
@@ -50,6 +53,11 @@ const Navbar = () => {
           <Link to="/notifications" className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
             <Bell className="w-5 h-5" />
           </Link>
+          {isAuthenticated && (
+            <Link to="/messages" className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+              <MessageCircle className="w-5 h-5" />
+            </Link>
+          )}
 
           {/* Dynamic Auth Actions */}
           {isAuthenticated ? (

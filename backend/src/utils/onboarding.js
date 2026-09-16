@@ -23,14 +23,19 @@ export const normalizeStringList = (items = []) =>
     .map((item) => String(item).trim())
     .filter(Boolean);
 
-export const buildOnboardingFields = (body = {}) => ({
-  bio: body.bio || "",
-  location: body.location || "",
-  avatar: body.avatar || null,
-  topGenres: normalizeStringList(body.topGenres),
-  topMovies: normalizeMovies(body.topMovies),
-  topActors: normalizeActors(body.topActors),
-  preferredLanguages: normalizeStringList(body.preferredLanguages),
-  preferredPlatforms: normalizeStringList(body.preferredPlatforms),
-  onboardingCompleted: true
-});
+export const buildOnboardingFields = (body = {}) => {
+  const fields = {
+    topGenres: normalizeStringList(body.topGenres),
+    topMovies: normalizeMovies(body.topMovies),
+    topActors: normalizeActors(body.topActors),
+    preferredLanguages: normalizeStringList(body.preferredLanguages),
+    preferredPlatforms: normalizeStringList(body.preferredPlatforms),
+    onboardingCompleted: body.onboardingCompleted === true
+  };
+
+  if (body.bio !== undefined) fields.bio = body.bio;
+  if (body.location !== undefined) fields.location = body.location;
+  if (body.avatar !== undefined) fields.avatar = body.avatar || null;
+
+  return fields;
+};

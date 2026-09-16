@@ -51,9 +51,13 @@ const Profile = () => {
   }
 
   // Handle Profile Save
-  const handleSaveProfile = () => {
-    updateProfile(editName, editBio, editAvatar);
-    setIsEditModalOpen(false);
+  const handleSaveProfile = async () => {
+    try {
+      await updateProfile(editName, editBio, editAvatar);
+      setIsEditModalOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Handle Custom List Creation

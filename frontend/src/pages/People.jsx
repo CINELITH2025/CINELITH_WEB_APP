@@ -4,6 +4,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Search, ChevronDown, Check, UserPlus, MessageCircle, X, Sparkles, Hourglass, UserCheck } from 'lucide-react';
 import useUserStore, { MOVIE_CATALOG, ACTOR_CATALOG } from '../store/useUserStore';
+import { mapPerson } from '../lib/mapUser';
 import UnlockGate from '../components/auth/UnlockGate';
 import { Button } from '@/components/ui/button';
 
@@ -101,36 +102,38 @@ const PeopleFilterDropdown = ({ label, value, onChange, options, placeholder }) 
 const People = () => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
-  const following = useUserStore((state) => state.following) || [];
-  const followRequests = useUserStore((state) => state.followRequests) || [];
-  const toggleFollowUser = useUserStore((state) => state.toggleFollowUser);
+  const connectUser = useUserStore((state) => state.connectUser);
+  const followUser = useUserStore((state) => state.followUser);
+  const friendIds = (user?.friends || []).map((friend) => String(friend._id || friend));
+  const followingIds = user?.following || [];
 
-  // Search & Filters State
+  const [people, setPeople] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedActor, setSelectedActor] = useState("All");
   const [selectedMovie, setSelectedMovie] = useState("All");
   const [sortByMatch, setSortByMatch] = useState(true);
   const [selectedProfileUser, setSelectedProfileUser] = useState(null);
+  const [isLoadingPeople, setIsLoadingPeople] = useState(false);
 
   // Dynamic values extraction
   const availableGenres = useMemo(() => {
     const genres = new Set();
-    COMMUNITY_USERS.forEach(u => u.genres.forEach(g => genres.add(g)));
+    people.forEach(u => (u.genres || []).forEach(g => genres.add(g)));
     return Array.from(genres).sort();
-  }, []);
+  }, [people]);
 
   const availableActors = useMemo(() => {
     const actors = new Set();
-    COMMUNITY_USERS.forEach(u => u.actors.forEach(a => actors.add(a)));
+    people.forEach(u => (u.actors || []).forEach(a => actors.add(a)));
     return Array.from(actors).sort();
-  }, []);
+  }, [people]);
 
   const availableMovies = useMemo(() => {
     const movies = new Set();
-    COMMUNITY_USERS.forEach(u => u.movies.forEach(m => movies.add(m)));
+    people.forEach(u => (u.movies || []).forEach(m => movies.add(m)));
     return Array.from(movies).sort();
-  }, []);
+  }, [people]);
 
   // Compute taste score based on: Genres (10% each), Actors (12% each), Movies (15% each)
   const calculateMatchScore = (member) => {
@@ -141,18 +144,18 @@ const People = () => {
     const userMovies = user.favoriteMovies || [];
 
     let genreMatches = 0;
-    member.genres.forEach(g => {
+    (member.genres || []).forEach(g => {
       if (userGenres.some(ug => ug.toLowerCase() === g.toLowerCase())) genreMatches++;
     });
 
     let actorMatches = 0;
-    member.actors.forEach(a => {
+    (member.actors || []).forEach(a => {
       if (userActors.some(ua => ua.toLowerCase() === a.toLowerCase())) actorMatches++;
     });
 
     let movieMatches = 0;
-    member.movies.forEach(m => {
-      if (userMovies.some(um => um.title.toLowerCase() === m.toLowerCase())) movieMatches++;
+    (member.movies || []).forEach(m => {
+      if (userMovies.some(um => um.title?.toLowerCase() === String(m).toLowerCase())) movieMatches++;
     });
 
     const calculated = 55 + (genreMatches * 10) + (actorMatches * 12) + (movieMatches * 15);
@@ -160,12 +163,33 @@ const People = () => {
   };
 
   // Build members list with dynamic match scores
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      setIsLoadingPeople(true);
+      try {
+        const results = await useUserStore.getState().searchPeople(searchQuery);
+        if (!cancelled) setPeople((results || []).map(mapPerson));
+      } catch (err) {
+        console.error(err);
+        if (!cancelled) setPeople([]);
+      } finally {
+        if (!cancelled) setIsLoadingPeople(false);
+      }
+    };
+    const timer = setTimeout(load, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
   const processedMembers = useMemo(() => {
-    return COMMUNITY_USERS.map(m => ({
+    return people.map(m => ({
       ...m,
       matchScore: calculateMatchScore(m)
     }));
-  }, [user]);
+  }, [user, people]);
 
   // Filter & sort members
   const filteredMembers = useMemo(() => {
@@ -188,9 +212,9 @@ const People = () => {
     return result;
   }, [processedMembers, searchQuery, selectedGenre, selectedActor, selectedMovie, sortByMatch]);
 
-  const handleMessageRedirect = (name) => {
+  const handleMessageRedirect = (member) => {
     setSelectedProfileUser(null);
-    navigate(`/messages?user=${name}`);
+    navigate(`/messages?user=${member._id}`);
   };
 
   return (
@@ -287,8 +311,8 @@ const People = () => {
         {filteredMembers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-16">
             {filteredMembers.map((member, idx) => {
-              const isFollowing = following.includes(member.handle);
-              const isRequested = followRequests.includes(member.handle);
+              const isFollowing = followingIds.includes(String(member._id));
+              const isRequested = friendIds.includes(String(member._id));
 
               return (
                 <div 
@@ -325,8 +349,8 @@ const People = () => {
                           <Check className="w-3.5 h-3.5" strokeWidth={3} /> Following
                         </span>
                       ) : isRequested ? (
-                        <span className="text-[10px] font-black text-[#F5BF26] uppercase tracking-wider flex items-center gap-0.5">
-                          <Hourglass className="w-3.5 h-3.5 animate-pulse" /> Requested
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider flex items-center gap-0.5">
+                          <Check className="w-3.5 h-3.5" strokeWidth={3} /> Connected
                         </span>
                       ) : (
                         <span className="text-[10px] text-[#F5BF26] font-black uppercase tracking-wider hover:underline">
@@ -354,9 +378,9 @@ const People = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
-            {SUGGESTED_USERS.map((sUser, idx) => {
-              const isFollowing = following.includes(sUser.handle);
-              const isRequested = followRequests.includes(sUser.handle);
+            {SUGGESTED_USERS.slice(0, 0).concat(people.slice(0, 6)).map((sUser, idx) => {
+              const isFollowing = followingIds.includes(String(sUser._id));
+              const isRequested = friendIds.includes(String(sUser._id));
 
               return (
                 <div 
@@ -435,7 +459,7 @@ const People = () => {
               <div className="flex flex-col gap-1.5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Favorite Genres</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {selectedProfileUser.genres.map(g => (
+                  {(selectedProfileUser.genres || []).map(g => (
                     <span key={g} className="text-[10px] font-extrabold bg-white/5 border border-white/5 px-2.5 py-1 rounded text-white">{g}</span>
                   ))}
                 </div>
@@ -444,7 +468,7 @@ const People = () => {
               <div className="flex flex-col gap-1.5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Favorite Actors</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {selectedProfileUser.actors.map(a => (
+                  {(selectedProfileUser.actors || []).map(a => (
                     <span key={a} className="text-[10px] font-extrabold bg-[#F5BF26]/10 border border-[#F5BF26]/20 px-2.5 py-1 rounded text-[#F5BF26]">{a}</span>
                   ))}
                 </div>
@@ -453,7 +477,7 @@ const People = () => {
               <div className="flex flex-col gap-1.5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Favorite Movies</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {selectedProfileUser.movies.map(m => (
+                  {(selectedProfileUser.movies || []).map(m => (
                     <span key={m} className="text-[10px] font-extrabold bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded text-blue-400">{m}</span>
                   ))}
                 </div>
@@ -463,35 +487,37 @@ const People = () => {
             {/* Actions */}
             <div className="flex items-center gap-3">
               <Button
-                onClick={() => toggleFollowUser(selectedProfileUser.handle)}
+                onClick={() => (friendIds.includes(String(selectedProfileUser._id))
+                  ? followUser(selectedProfileUser._id)
+                  : connectUser(selectedProfileUser._id))}
                 className={`flex-1 font-black text-xs py-4.5 rounded-xl cursor-pointer transition-all border ${
-                  following.includes(selectedProfileUser.handle)
+                  friendIds.includes(String(selectedProfileUser._id))
                     ? 'bg-[#F5BF26]/10 border-[#F5BF26]/40 text-[#F5BF26]'
-                    : followRequests.includes(selectedProfileUser.handle)
+                    : followingIds.includes(String(selectedProfileUser._id))
                       ? 'bg-yellow-500/5 border-yellow-500/30 text-yellow-500/80'
                       : 'bg-white text-black hover:bg-gray-200 border-white'
                 }`}
               >
-                {following.includes(selectedProfileUser.handle) ? (
+                {friendIds.includes(String(selectedProfileUser._id)) ? (
                   <>
                     <Check className="w-4 h-4 mr-2" strokeWidth={3} />
-                    Following
+                    Connected
                   </>
-                ) : followRequests.includes(selectedProfileUser.handle) ? (
+                ) : followingIds.includes(String(selectedProfileUser._id)) ? (
                   <>
-                    <Hourglass className="w-4 h-4 mr-2 animate-pulse" />
-                    Requested
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    Following
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-4 h-4 mr-2" />
-                    {selectedProfileUser.isPrivate ? "Request to Follow" : "Follow"}
+                    Connect
                   </>
                 )}
               </Button>
 
               <Button
-                onClick={() => handleMessageRedirect(selectedProfileUser.name)}
+                onClick={() => handleMessageRedirect(selectedProfileUser)}
                 className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black text-xs py-4.5 rounded-xl cursor-pointer transition-all"
               >
                 <MessageCircle className="w-4 h-4 mr-2" />

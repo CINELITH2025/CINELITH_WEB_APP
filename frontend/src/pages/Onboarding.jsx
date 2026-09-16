@@ -55,8 +55,16 @@ const Onboarding = () => {
   // Once loading completes, save to Zustand and redirect to dashboard
   useEffect(() => {
     if (loadingComplete) {
-      saveOnboarding(favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres);
-      navigate('/dashboard');
+      const persist = async () => {
+        try {
+          await saveOnboarding(favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres);
+          navigate('/dashboard');
+        } catch (err) {
+          console.error(err);
+          navigate('/dashboard');
+        }
+      };
+      persist();
     }
   }, [loadingComplete, navigate]);
 

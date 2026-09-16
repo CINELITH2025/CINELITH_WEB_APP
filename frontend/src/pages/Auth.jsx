@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Sparkles, User, Mail, Lock, ArrowLeft, ArrowRight } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
-import { Mail, Lock, User, Film, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { apiErrorMessage } from '../lib/api';
 import Logo from '../components/ui/Logo';
 
 const Auth = () => {
@@ -11,34 +12,16 @@ const Auth = () => {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
-  const [usernameStatus, setUsernameStatus] = useState(''); // '', 'checking', 'available', 'taken'
+  const [usernameStatus, setUsernameStatus] = useState(''); // '', 'available'
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const signupAction = useUserStore((state) => state.signup);
   const loginAction = useUserStore((state) => state.login);
 
   const checkUsernameUniqueness = (val) => {
-    if (!val) {
-      setUsernameStatus('');
-      return;
-    }
-    setUsernameStatus('checking');
-    
-    setTimeout(() => {
-      const cleanVal = val.startsWith('@') ? val.toLowerCase() : `@${val.toLowerCase()}`;
-      const taken = [
-        "@sophia_b", "@ethan_c", "@olivia_d", "@liam_f", "@ava_g", "@noah_h",
-        "@isabella_j", "@jackson_k", "@mia_l", "@lucas_m", "@chloe_n", "@owen_p",
-        "@caleb_r", "@emma_t", "@daniel_w", "@grace_y", "@henry_a", "@isabelle_b",
-        "@alex_cinephile"
-      ];
-      if (taken.includes(cleanVal)) {
-        setUsernameStatus('taken');
-      } else {
-        setUsernameStatus('available');
-      }
-    }, 400);
+    setUsernameStatus(val ? 'available' : '');
   };
 
   const handleUsernameChange = (e) => {
@@ -47,7 +30,7 @@ const Auth = () => {
     checkUsernameUniqueness(val);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -56,22 +39,19 @@ const Auth = () => {
       return;
     }
 
-    if (!isLogin && usernameStatus === 'taken') {
-      setError('Username is already taken. Please choose another.');
-      return;
-    }
-
+    setIsSubmitting(true);
     try {
       if (isLogin) {
-        loginAction(email, password);
-        navigate('/profile');
+        const user = await loginAction(email, password);
+        navigate(user?.onboardingCompleted ? '/dashboard' : '/onboarding');
       } else {
-        signupAction(name, email, password, username, bio);
-        // New users always start with onboarding questionnaire!
+        await signupAction(name, email, password, username, bio);
         navigate('/onboarding');
       }
     } catch (err) {
-      setError('Authentication failed. Please try again.');
+      setError(apiErrorMessage(err, 'Authentication failed. Please try again.'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -261,9 +241,10 @@ const Auth = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 mt-2 rounded-xl bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer group"
+              disabled={isSubmitting}
+              className="w-full py-4 mt-2 rounded-xl bg-[#F5BF26] hover:bg-[#F5BF26] text-black font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer group disabled:opacity-60"
             >
-              <span>{isLogin ? 'Sign In' : 'Sign Up'}</span>
+              <span>{isSubmitting ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>

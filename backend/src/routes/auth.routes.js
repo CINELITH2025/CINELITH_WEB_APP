@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { serializeUser } from "../utils/user.serializer.js";
-import { buildOnboardingFields } from "../utils/onboarding.js";
 
 const router = express.Router();
 
@@ -15,31 +14,23 @@ const signToken = (userId) =>
 ===================== */
 router.post("/register", async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, bio, username, avatar } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "name, email, password required" });
     }
 
-    const onboarding = buildOnboardingFields(req.body);
     const existing = await User.findOne({ email });
 
     if (existing) {
-      const ok = await bcrypt.compare(password, existing.password);
-      if (!ok) {
-        return res.status(409).json({ message: "Email already registered" });
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    if (username) {
+      const taken = await User.findOne({ username });
+      if (taken) {
+        return res.status(409).json({ message: "Username already taken" });
       }
-
-      existing.name = name;
-      Object.assign(existing, onboarding);
-      await existing.save();
-
-      const safeExisting = await User.findById(existing._id).select("-password").lean();
-      return res.status(200).json({
-        message: "Onboarding saved for existing account",
-        token: signToken(existing._id),
-        user: serializeUser(safeExisting)
-      });
     }
 
     const hashed = await bcrypt.hash(password, 10);
@@ -48,10 +39,11 @@ router.post("/register", async (req, res, next) => {
       name,
       email,
       password: hashed,
-      ...onboarding
+      bio: bio || "",
+      username: username || undefined,
+      avatar: avatar || null,
+      onboardingCompleted: false
     });
-
-    await User.updateOne({ _id: user._id }, { $set: onboarding });
 
     const safeUser = await User.findById(user._id).select("-password").lean();
 
@@ -82,7 +74,15 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.json({ token: signToken(user._id) });
+    const safeUser = await User.findById(user._id)
+      .select("-password")
+      .populate("friends", "name email avatar bio")
+      .lean();
+
+    res.json({
+      token: signToken(user._id),
+      user: serializeUser(safeUser)
+    });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });

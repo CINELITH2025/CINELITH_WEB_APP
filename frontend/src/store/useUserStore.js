@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { api, apiErrorMessage, getToken, setToken } from '../lib/api';
+import { mapUser, mapChatMessage, toBackendMovie, toBackendActor } from '../lib/mapUser';
+import { connectSocket, disconnectSocket, sendChatMessage } from '../lib/socket';
 
 // Curated movie & TV show data helper to populate onboarding and explore
 export const MOVIE_CATALOG = [
@@ -47,131 +50,212 @@ export const GENRE_CATALOG = [
 
 const useUserStore = create(
   persist(
-    (set, get) => ({
+    (set, get) => {
+      const applyUser = (raw) => {
+        const user = mapUser(raw);
+        set({
+          user,
+          isAuthenticated: Boolean(user),
+          error: null
+        });
+        if (user?._id) {
+          connectSocket(user._id, (msg) => get().receiveMessage(msg));
+        }
+        return user;
+      };
+
+      return {
       user: null,
       isAuthenticated: false,
-      chats: {
-        "Liam": [
-          { sender: "Liam", text: "Hey there! Did you catch Oppenheimer yet? Nolan's cinematography is out of this world.", timestamp: new Date(Date.now() - 3600000 * 2).toISOString() },
-          { sender: "You", text: "Yes! The Trinity test scene was absolutely breathtaking.", timestamp: new Date(Date.now() - 3600000 * 1.5).toISOString() },
-          { sender: "Liam", text: "Agreed. The sound design in that sequence was pure genius. What did you think of the score?", timestamp: new Date(Date.now() - 3600000).toISOString() }
-        ],
-        "Sophia": [
-          { sender: "Sophia", text: "Have you seen Dune: Part Two? Villeneuve is a master of scale.", timestamp: new Date(Date.now() - 3600000 * 5).toISOString() },
-          { sender: "You", text: "Not yet, is it as good as the first one?", timestamp: new Date(Date.now() - 3600000 * 4.5).toISOString() },
-          { sender: "Sophia", text: "It's even better. The arena scene in black and white is a masterpiece. You have to watch it ASAP!", timestamp: new Date(Date.now() - 3600000 * 4).toISOString() }
-        ]
-      },
+      isReady: false,
+      error: null,
+      chats: {},
       following: [],
       followRequests: [],
 
-      signup: (name, email, password, username, bio) => {
-        const finalUsername = username ? (username.startsWith('@') ? username : `@${username}`) : `@${name.toLowerCase().replace(/\s+/g, '_')}`;
-        const finalBio = bio || "Cinephile exploring the world of cinema.";
-        const newUser = {
-          name,
-          username: finalUsername,
-          email,
-          bio: finalBio,
-          avatar: "/images/actor_1.png",
-          favoriteMovies: [],
-          watchlist: [],
-          watchedMovies: [],
-          favoriteActors: [],
-          favoriteGenres: [],
-          ratings: [],
-          reviews: [],
-          customLists: [],
-          cinephileScore: 100, // base signup score
-          streak: 1
-        };
-
-        set({
-          user: newUser,
-          isAuthenticated: true
-        });
+      bootstrap: async () => {
+        const token = getToken();
+        if (!token) {
+          set({ isReady: true, isAuthenticated: false, user: null });
+          return;
+        }
+        try {
+          const { data } = await api.get("/users/me");
+          applyUser(data);
+        } catch {
+          setToken(null);
+          disconnectSocket();
+          set({ user: null, isAuthenticated: false });
+        } finally {
+          set({ isReady: true });
+        }
       },
 
-      login: (email, password) => {
-        const name = "Alex Mercer";
-        const username = "@alex_cinephile";
-        const mockUser = {
+      signup: async (name, email, password, username, bio) => {
+        const { data } = await api.post("/auth/register", {
           name,
-          username,
           email,
-          bio: "Exploring the world one frame at a time. Lover of classic noir and sci-fi epics.",
-          avatar: "/images/actor_1.png",
-          favoriteMovies: MOVIE_CATALOG.slice(0, 3),
-          watchlist: MOVIE_CATALOG.slice(3, 8),
-          watchedMovies: MOVIE_CATALOG.slice(0, 5),
-          favoriteActors: ACTOR_CATALOG.slice(0, 3).map(a => a.name),
-          favoriteGenres: ["Sci-Fi", "Drama", "Thriller"],
-          ratings: [
-            { id: 1, title: "Dune: Part Two", rating: 9 },
-            { id: 2, title: "Oppenheimer", rating: 10 }
-          ],
-          reviews: [
-            { id: 1, movieId: 2, text: "Oppenheimer is a landmark achievement in modern cinema. Nolan orchestrates sound and light like a maestro.", date: new Date(Date.now() - 86400000).toISOString() }
-          ],
-          customLists: [
-            { id: 101, name: "Nolan Collection", movies: [MOVIE_CATALOG[1], MOVIE_CATALOG[11], MOVIE_CATALOG[14]] },
-            { id: 102, name: "Sci-Fi Favorites", movies: [MOVIE_CATALOG[0], MOVIE_CATALOG[8]] }
-          ],
-          cinephileScore: 8950,
-          streak: 14
-        };
-
-        set({
-          user: mockUser,
-          isAuthenticated: true
+          password,
+          username: username ? username.replace(/^@/, "") : undefined,
+          bio
         });
+        setToken(data.token);
+        return applyUser(data.user);
+      },
+
+      login: async (email, password) => {
+        const { data } = await api.post("/auth/login", { email, password });
+        setToken(data.token);
+        if (data.user) return applyUser(data.user);
+        const me = await api.get("/users/me");
+        return applyUser(me.data);
       },
 
       logout: () => {
+        setToken(null);
+        disconnectSocket();
         set({
           user: null,
-          isAuthenticated: false
+          isAuthenticated: false,
+          chats: {},
+          following: [],
+          followRequests: [],
+          error: null
         });
       },
 
-      updateProfile: (name, bio, avatar) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
+      fetchMe: async () => {
+        const { data } = await api.get("/users/me");
+        return applyUser(data);
+      },
+
+      updateProfile: async (name, bio, avatar) => {
+        const { data } = await api.patch("/users/me", { name, bio, avatar });
+        return applyUser(data);
+      },
+
+      saveOnboarding: async (favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres) => {
+        const { data } = await api.put("/users/onboarding", {
+          topMovies: favoriteMovies.map(toBackendMovie),
+          topActors: favoriteActors.map(toBackendActor),
+          topGenres: favoriteGenres,
+          onboardingCompleted: true
+        });
+
+        await Promise.all(
+          (watchlist || []).map((movie) =>
+            api.post("/users/watchlist", toBackendMovie(movie)).catch(() => null)
+          )
+        );
+
+        await Promise.all(
+          (watchedMovies || []).map((movie) =>
+            api.post("/users/recently-viewed", toBackendMovie(movie)).catch(() => null)
+          )
+        );
+
+        await Promise.all(
+          (favoriteMovies || []).map((movie) =>
+            api.post("/users/like", toBackendMovie(movie)).catch(() => null)
+          )
+        );
+
+        const me = await api.get("/users/me");
+        return applyUser(me.data || data);
+      },
+
+      searchPeople: async (query = "") => {
+        const { data } = await api.get("/search", { params: { q: query } });
+        return data.people || [];
+      },
+
+      connectUser: async (userId) => {
+        await api.post(`/users/connect/${userId}`);
+        await get().fetchMe();
+      },
+
+      followUser: async (userId) => {
+        await api.post(`/users/follow/${userId}`);
+        await get().fetchMe();
+      },
+
+      toggleFollowUser: async (person) => {
+        const id = person._id || person;
+        if (!id) return;
+        await get().followUser(id);
+      },
+
+      loadChat: async (friendId) => {
+        const { data } = await api.get(`/chats/${friendId}`);
+        const myId = get().user?._id;
+        const messages = (data.messages || []).map((msg) => mapChatMessage(msg, myId));
         set({
-          user: {
-            ...currentUser,
-            name: name || currentUser.name,
-            bio: bio || currentUser.bio,
-            avatar: avatar || currentUser.avatar
+          chats: {
+            ...get().chats,
+            [String(friendId)]: messages
+          }
+        });
+        return messages;
+      },
+
+      sendMessage: (friendId, text) => {
+        const user = get().user;
+        if (!user) return;
+        sendChatMessage({
+          senderId: user._id,
+          senderName: user.name,
+          receiverId: String(friendId),
+          text
+        });
+        const current = get().chats[String(friendId)] || [];
+        set({
+          chats: {
+            ...get().chats,
+            [String(friendId)]: [
+              ...current,
+              {
+                sender: "You",
+                senderId: user._id,
+                senderName: user.name,
+                text,
+                timestamp: new Date().toISOString()
+              }
+            ]
           }
         });
       },
 
-      createCustomList: (name) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-        const currentLists = currentUser.customLists || [];
-        const newList = {
-          id: Date.now(),
-          name,
-          movies: []
-        };
+      receiveMessage: (msg) => {
+        const user = get().user;
+        if (!user) return;
+        const myId = String(user._id);
+        const friendId = String(msg.senderId) === myId ? String(msg.receiverId) : String(msg.senderId);
+        const mapped = mapChatMessage(msg, myId);
+        const current = get().chats[friendId] || [];
+        const duplicate = current.some(
+          (item) => item.text === mapped.text && item.timestamp === mapped.timestamp && item.senderId === mapped.senderId
+        );
+        if (duplicate) return;
         set({
-          user: {
-            ...currentUser,
-            customLists: [...currentLists, newList]
+          chats: {
+            ...get().chats,
+            [friendId]: [...current, mapped]
           }
         });
+      },
+
+      createCustomList: async (name) => {
+        await api.post("/users/collections", { name, movies: [] });
+        await get().fetchMe();
       },
 
       deleteCustomList: (id) => {
         const currentUser = get().user;
         if (!currentUser) return;
-        const currentLists = currentUser.customLists || [];
         set({
           user: {
             ...currentUser,
-            customLists: currentLists.filter(l => l.id !== id)
+            customLists: (currentUser.customLists || []).filter((list) => list.id !== id)
           }
         });
       },
@@ -180,21 +264,14 @@ const useUserStore = create(
         const currentUser = get().user;
         if (!currentUser) return;
         const currentLists = currentUser.customLists || [];
-        const updatedLists = currentLists.map(list => {
-          if (list.id === listId) {
-            const exists = list.movies.some(m => m.id === movie.id);
-            if (exists) return list;
-            return {
-              ...list,
-              movies: [...list.movies, movie]
-            };
-          }
-          return list;
-        });
         set({
           user: {
             ...currentUser,
-            customLists: updatedLists
+            customLists: currentLists.map((list) => {
+              if (list.id !== listId) return list;
+              if (list.movies.some((item) => item.id === movie.id)) return list;
+              return { ...list, movies: [...list.movies, movie] };
+            })
           }
         });
       },
@@ -202,224 +279,54 @@ const useUserStore = create(
       removeMovieFromCustomList: (listId, movieId) => {
         const currentUser = get().user;
         if (!currentUser) return;
-        const currentLists = currentUser.customLists || [];
-        const updatedLists = currentLists.map(list => {
-          if (list.id === listId) {
-            return {
-              ...list,
-              movies: list.movies.filter(m => m.id !== movieId)
-            };
-          }
-          return list;
-        });
         set({
           user: {
             ...currentUser,
-            customLists: updatedLists
+            customLists: (currentUser.customLists || []).map((list) =>
+              list.id === listId
+                ? { ...list, movies: list.movies.filter((movie) => movie.id !== movieId) }
+                : list
+            )
           }
         });
       },
 
-      saveOnboarding: (favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-
-        // Calculate a personalized Cinephile Score based on selections
-        const score = 100 + (watchedMovies.length * 50) + (watchlist.length * 20);
-
-        const updatedUser = {
-          ...currentUser,
-          favoriteMovies,
-          watchlist,
-          watchedMovies,
-          favoriteActors,
-          favoriteGenres,
-          cinephileScore: score
-        };
-
-        set({ user: updatedUser });
+      toggleMovieWatchlist: async (movie) => {
+        await api.post("/users/watchlist", toBackendMovie(movie));
+        await get().fetchMe();
       },
 
-      toggleMovieWatchlist: (movie) => {
+      toggleMovieLiked: async (movie) => {
+        await api.post("/users/like", toBackendMovie(movie));
+        await get().fetchMe();
+      },
+
+      toggleMovieWatched: async (movie) => {
+        await api.post("/users/recently-viewed", toBackendMovie(movie));
+        await get().fetchMe();
+      },
+
+      addMovieRating: async (movie, ratingValue) => {
+        await api.post("/users/rate", { ...toBackendMovie(movie), rating: ratingValue });
+        await get().fetchMe();
+      },
+
+      addReviewPoints: async (movieId, commentText) => {
         const currentUser = get().user;
         if (!currentUser) return;
-
-        const exists = currentUser.watchlist.some(m => m.id === movie.id);
-        const updatedWatchlist = exists
-          ? currentUser.watchlist.filter(m => m.id !== movie.id)
-          : [...currentUser.watchlist, movie];
-
-        // Recalculate score slightly on watchlist action
-        const scoreDiff = exists ? -20 : 20;
-
+        await api.post("/users/review", {
+          tvdbId: Number(movieId) || 0,
+          title: String(movieId),
+          type: "movie",
+          content: commentText
+        }).catch(() => null);
         set({
           user: {
             ...currentUser,
-            watchlist: updatedWatchlist,
-            cinephileScore: currentUser.cinephileScore + scoreDiff
-          }
-        });
-      },
-
-      toggleMovieLiked: (movie) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-
-        const exists = currentUser.favoriteMovies.some(m => m.id === movie.id);
-        const updatedLikes = exists
-          ? currentUser.favoriteMovies.filter(m => m.id !== movie.id)
-          : [...currentUser.favoriteMovies, movie];
-
-        set({
-          user: {
-            ...currentUser,
-            favoriteMovies: updatedLikes
-          }
-        });
-      },
-
-      toggleMovieWatched: (movie) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-
-        const exists = currentUser.watchedMovies.some(m => m.id === movie.id);
-        const updatedWatched = exists
-          ? currentUser.watchedMovies.filter(m => m.id !== movie.id)
-          : [...currentUser.watchedMovies, movie];
-
-        const scoreDiff = exists ? -50 : 50;
-
-        set({
-          user: {
-            ...currentUser,
-            watchedMovies: updatedWatched,
-            cinephileScore: currentUser.cinephileScore + scoreDiff
-          }
-        });
-      },
-
-      addMovieRating: (movie, ratingValue) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-
-        const alreadyRated = currentUser.ratings.some(r => r.id === movie.id);
-        const otherRatings = currentUser.ratings.filter(r => r.id !== movie.id);
-        const updatedRatings = [...otherRatings, { id: movie.id, title: movie.title, rating: ratingValue }];
-
-        // Award +15 points only on first rating of this movie
-        const scoreDiff = alreadyRated ? 0 : 15;
-
-        set({
-          user: {
-            ...currentUser,
-            ratings: updatedRatings,
-            cinephileScore: currentUser.cinephileScore + scoreDiff
-          }
-        });
-      },
-
-      addReviewPoints: (movieId, commentText) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-
-        const reviews = currentUser.reviews || [];
-        const updatedReviews = [...reviews, { id: Date.now(), movieId, text: commentText, date: new Date().toISOString() }];
-
-        set({
-          user: {
-            ...currentUser,
-            reviews: updatedReviews,
+            reviews: [...(currentUser.reviews || []), { id: Date.now(), movieId, text: commentText, date: new Date().toISOString() }],
             cinephileScore: currentUser.cinephileScore + 30
           }
         });
-      },
-
-      sendMessage: (contactName, text) => {
-        const chats = get().chats || {};
-        const conversation = chats[contactName] || [];
-        const updatedConversation = [
-          ...conversation,
-          { sender: "You", text, timestamp: new Date().toISOString() }
-        ];
-        
-        set({
-          chats: {
-            ...chats,
-            [contactName]: updatedConversation
-          }
-        });
-
-        // Trigger simulated response
-        setTimeout(() => {
-          const currentChats = get().chats || {};
-          const currentConversation = currentChats[contactName] || [];
-          
-          const liamReplies = [
-            "I totally get that. Christopher Nolan really knows how to build suspense.",
-            "Have you seen his other film, Inception? It's one of my absolute favorites.",
-            "I love how he uses practical effects instead of relying solely on CGI.",
-            "What's your favorite sci-fi movie of all time?"
-          ];
-          const sophiaReplies = [
-            "Definitely! Hans Zimmer's soundtrack also adds so much depth to the experience.",
-            "I can't wait for Denis Villeneuve's next project.",
-            "Poor Things was another visually stunning movie from Yorgos Lanthimos. Did you watch it?",
-            "Honestly, that performance was Oscar-worthy."
-          ];
-          const defaultReplies = [
-            "Hey! That's really interesting. What other movies are you planning to watch this weekend?",
-            "Thanks for sharing! We should discuss more about this on the community page.",
-            "Oh, I completely agree with your take!",
-            "Fascinating perspective! What did you think about the cinematography?"
-          ];
-
-          let replies = defaultReplies;
-          if (contactName.toLowerCase().includes("liam")) replies = liamReplies;
-          else if (contactName.toLowerCase().includes("sophia")) replies = sophiaReplies;
-
-          const randomReply = replies[Math.floor(Math.random() * replies.length)];
-          const replyMsg = { sender: contactName, text: randomReply, timestamp: new Date().toISOString() };
-
-          set({
-            chats: {
-              ...currentChats,
-              [contactName]: [...currentConversation, replyMsg]
-            }
-          });
-        }, 1500);
-      },
-
-      toggleFollowUser: (username) => {
-        const following = get().following || [];
-        const followRequests = get().followRequests || [];
-        
-        // Simulating private accounts
-        const privateHandles = ["@sophia_b", "@ava_g", "@caleb_r", "@grace_y"];
-        const isPrivate = privateHandles.includes(username);
-        
-        if (following.includes(username)) {
-          // Unfollow
-          set({
-            following: following.filter(u => u !== username)
-          });
-        } else if (followRequests.includes(username)) {
-          // Cancel follow request
-          set({
-            followRequests: followRequests.filter(u => u !== username)
-          });
-        } else {
-          if (isPrivate) {
-            // Send request
-            set({
-              followRequests: [...followRequests, username]
-            });
-          } else {
-            // Follow immediately
-            set({
-              following: [...following, username]
-            });
-          }
-        }
       },
 
       awardPoints: (amount) => {
@@ -432,9 +339,14 @@ const useUserStore = create(
           }
         });
       }
-    }),
+    };
+    },
     {
-      name: 'cinelith-user-storage'
+      name: "cinelith-user-storage",
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated
+      })
     }
   )
 );

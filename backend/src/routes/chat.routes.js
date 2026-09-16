@@ -10,7 +10,7 @@ router.get("/:friendId", protect, async (req, res, next) => {
     const me = String(req.user.id);
     const friendId = String(req.params.friendId);
 
-    const friend = await User.findById(friendId).select("name");
+    const friend = await User.findById(friendId).select("name avatar");
     if (!friend) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -28,7 +28,11 @@ router.get("/:friendId", protect, async (req, res, next) => {
     );
 
     res.json({
-      friend: { _id: String(friend._id), name: friend.name },
+      friend: {
+        _id: String(friend._id),
+        name: friend.name,
+        avatar: friend.avatar || null
+      },
       messages: messages.map(serializeMessage)
     });
   } catch (err) {

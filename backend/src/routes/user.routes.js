@@ -6,6 +6,15 @@ import { buildOnboardingFields } from "../utils/onboarding.js";
 
 const router = express.Router();
 
+const loadSafeUser = (id) =>
+  User.findById(id)
+    .select("-password")
+    .populate("friends", "name email avatar bio")
+    .populate("followers", "name email avatar bio")
+    .populate("following", "name email avatar bio")
+    .populate("pendingRequests", "name email avatar bio")
+    .lean();
+
 const getUserOr404 = async (id, res) => {
   const user = await User.findById(id);
   if (!user) {
@@ -20,13 +29,7 @@ const getUserOr404 = async (id, res) => {
  */
 router.get("/me", protect, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id)
-      .select("-password")
-      .populate("friends", "name email")
-      .populate("followers", "name email")
-      .populate("following", "name email")
-      .populate("pendingRequests", "name email")
-      .lean();
+    const user = await loadSafeUser(req.user.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -52,7 +55,7 @@ router.patch("/me", protect, async (req, res, next) => {
 
     await user.save();
 
-    const updated = await User.findById(req.user.id).select("-password").lean();
+    const updated = await loadSafeUser(req.user.id);
     res.json(serializeUser(updated));
   } catch (err) {
     next(err);
@@ -70,7 +73,7 @@ router.put("/onboarding", protect, async (req, res, next) => {
     Object.assign(user, buildOnboardingFields(req.body));
     await user.save();
 
-    const updated = await User.findById(req.user.id).select("-password").lean();
+    const updated = await loadSafeUser(req.user.id);
     res.json(serializeUser(updated));
   } catch (err) {
     next(err);
@@ -360,7 +363,7 @@ router.patch("/notifications", protect, async (req, res, next) => {
 
     await user.save();
 
-    const updated = await User.findById(req.user.id).select("-password").lean();
+    const updated = await loadSafeUser(req.user.id);
     res.json(serializeUser(updated));
   } catch (err) {
     next(err);

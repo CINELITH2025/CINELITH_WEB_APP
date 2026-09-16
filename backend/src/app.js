@@ -19,7 +19,7 @@ app.use(helmet({
 
 // CORS Configuration
 app.use(cors());
-app.use(express.json({ limit: '10kb' })); // Prevents Payload Denial of Service attacks
+app.use(express.json({ limit: "1mb" }));
 
 // Rate Limiter to prevent API Abuse / DDoS
 const globalLimiter = rateLimit({
