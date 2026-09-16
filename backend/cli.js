@@ -10,7 +10,13 @@ axios.defaults.httpAgent = new http.Agent({ keepAlive: false });
 let token = null;
 let myProfile = null;
 let socket = null;
-let inChat = false;
+let chatRl = null;
+
+const friendId = (friend) =>
+  String(friend?._id || friend);
+
+const friendName = (friend) =>
+  friend?.name || String(friend?._id || friend);
 
 const authHeader = () => ({
   headers: { Authorization: `Bearer ${token}` }
@@ -24,22 +30,50 @@ const requireAuth = () => {
   return true;
 };
 
-async function establishSession(email, password) {
-  const res = await axios.post(`${API}/api/auth/login`, { email, password });
-  token = res.data.token;
+async function establishSession(email, password, existingToken) {
+  if (existingToken) {
+    token = existingToken;
+  } else {
+    const res = await axios.post(`${API}/api/auth/login`, { email, password });
+    token = res.data.token;
+  }
 
   const me = await axios.get(`${API}/api/users/me`, authHeader());
   myProfile = me.data;
 
   if (socket) {
+    socket.removeAllListeners();
     socket.disconnect();
   }
 
-  socket = io(API);
-  socket.emit("join", String(myProfile._id));
+  socket = io(API, {
+    auth: { token },
+    transports: ["websocket", "polling"]
+  });
+
+  const joinChat = () => {
+    if (myProfile?._id) {
+      socket.emit("join", String(myProfile._id));
+    }
+  };
+
+  socket.on("connect", joinChat);
+  socket.on("reconnect", joinChat);
 
   socket.on("receive_message", (msg) => {
-    console.log(`📩 ${msg.senderName}: ${msg.text}`);
+    const line = `📩 ${msg.senderName}: ${msg.text}`;
+    if (chatRl) {
+      process.stdout.write(`\n${line}\n`);
+      chatRl.prompt(true);
+    } else {
+      console.log(`\n${line}`);
+    }
+  });
+
+  await new Promise((resolve) => {
+    if (socket.connected) return resolve();
+    socket.once("connect", resolve);
+    setTimeout(resolve, 3000);
   });
 
   return myProfile;
@@ -111,15 +145,33 @@ async function signup() {
 
   const onboarding = await collectOnboardingPreferences();
 
-  await axios.post(`${API}/api/auth/register`, {
-    name,
-    email,
-    password,
-    ...onboarding
-  });
+  let registerRes;
+  try {
+    registerRes = await axios.post(`${API}/api/auth/register`, {
+      name,
+      email,
+      password,
+      ...onboarding
+    });
+  } catch (err) {
+    if (err.response?.status !== 409) throw err;
+    console.log("ℹ️  Email already exists — logging in and saving onboarding...");
+    registerRes = { data: {} };
+  }
 
-  const profile = await establishSession(email, password);
-  console.log(`✅ Signup complete — logged in as ${profile.name}`);
+  await establishSession(email, password, registerRes.data.token);
+
+  const saved = await axios.put(
+    `${API}/api/users/onboarding`,
+    { ...onboarding, onboardingCompleted: true },
+    authHeader()
+  );
+  myProfile = saved.data;
+
+  console.log(`✅ Signup complete — logged in as ${myProfile.name}`);
+  console.log(
+    `🎯 Onboarding saved: ${myProfile.onboardingCompleted ? "Yes" : "No"} | genres: ${(myProfile.topGenres || []).join(", ") || "(none)"}`
+  );
 }
 
 async function login() {
@@ -177,13 +229,13 @@ async function viewProfile() {
 
   console.log("\n🤝 Social");
   console.log(`  Friends:          ${myProfile.friends?.length || 0}`);
-  formatList(myProfile.friends, (id) => id, "    (none)");
+  formatList(myProfile.friends, (f) => `${friendName(f)} (${friendId(f)})`, "    (none)");
   console.log(`  Followers:        ${myProfile.followers?.length || 0}`);
-  formatList(myProfile.followers, (id) => id, "    (none)");
+  formatList(myProfile.followers, (f) => `${friendName(f)} (${friendId(f)})`, "    (none)");
   console.log(`  Following:        ${myProfile.following?.length || 0}`);
-  formatList(myProfile.following, (id) => id, "    (none)");
+  formatList(myProfile.following, (f) => `${friendName(f)} (${friendId(f)})`, "    (none)");
   console.log(`  Pending Requests: ${myProfile.pendingRequests?.length || 0}`);
-  formatList(myProfile.pendingRequests, (id) => id, "    (none)");
+  formatList(myProfile.pendingRequests, (f) => `${friendName(f)} (${friendId(f)})`, "    (none)");
 
   console.log("\n🎬 Activity");
   console.log("  ❤️  Liked:");
@@ -301,36 +353,94 @@ async function searchPeopleAndConnect() {
 
 /* ================= CHAT ================= */
 
-function startChat(friendId) {
-  return new Promise((resolve) => {
-    inChat = true;
-    console.log("🟢 Chat started (type 'exit' to leave)");
+function formatChatTime(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleString();
+}
 
-    const rl = readline.createInterface({
+async function loadChatHistory(friend) {
+  const res = await axios.get(
+    `${API}/api/chats/${friendId(friend)}`,
+    authHeader()
+  );
+  const messages = res.data.messages || [];
+
+  console.log(`🟢 Chat with ${friendName(friend)} (type 'exit' to leave)`);
+  console.log("-".repeat(40));
+
+  if (!messages.length) {
+    console.log("(no previous messages)");
+  } else {
+    for (const msg of messages) {
+      const mine = String(msg.senderId) === String(myProfile._id);
+      const who = mine ? "you" : msg.senderName;
+      const time = formatChatTime(msg.createdAt);
+      console.log(`${time ? `[${time}] ` : ""}${who}: ${msg.text}`);
+    }
+  }
+
+  console.log("-".repeat(40));
+}
+
+function startChat(friend) {
+  return new Promise(async (resolve) => {
+    try {
+      await loadChatHistory(friend);
+    } catch (err) {
+      console.log("❌ Could not load chat history:", err.response?.data || err.message);
+    }
+
+    const receiverId = friendId(friend);
+
+    chatRl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
     });
+    chatRl.setPrompt("you> ");
+    chatRl.prompt();
 
-    rl.on("line", (text) => {
-      if (text === "exit") {
-        rl.close();
-        inChat = false;
+    chatRl.on("line", (text) => {
+      const trimmed = text.trim();
+      if (trimmed === "exit") {
+        chatRl.close();
+        chatRl = null;
         resolve();
+        return;
+      }
+
+      if (!trimmed) {
+        chatRl.prompt();
+        return;
+      }
+
+      if (!socket || !socket.connected) {
+        console.log("❌ Chat disconnected. Leave with 'exit' and log in again.");
+        chatRl.prompt();
         return;
       }
 
       socket.emit("send_message", {
         senderId: String(myProfile._id),
         senderName: myProfile.name,
-        receiverId: String(friendId),
-        text
+        receiverId,
+        text: trimmed
       });
+      chatRl.prompt();
     });
   });
 }
 
 async function chatWithConnections() {
   if (!requireAuth()) return;
+
+  if (!socket || !socket.connected) {
+    console.log("❌ Chat socket not connected. Log in again.");
+    return;
+  }
+
+  socket.emit("join", String(myProfile._id));
 
   const res = await axios.get(`${API}/api/users/me`, authHeader());
   myProfile = res.data;
@@ -342,7 +452,7 @@ async function chatWithConnections() {
 
   console.log("\n💬 Your Connections:");
   myProfile.friends.forEach((f, i) => {
-    console.log(`${i + 1}. ${f}`);
+    console.log(`${i + 1}. ${friendName(f)} | ID: ${friendId(f)}`);
   });
 
   const choice = readlineSync.questionInt(
@@ -409,8 +519,6 @@ async function rateMovie() {
 
 async function mainMenu() {
   while (true) {
-    if (inChat) continue;
-
     console.log(`
 ============================
  CINELITH TERMINAL CLIENT

@@ -8,6 +8,7 @@ import userRoutes from "./routes/user.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import movieRoutes from "./routes/movie.routes.js";
 import waitlistRoutes from "./routes/waitlist.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/movies", movieRoutes);
 app.use("/api/waitlist", waitlistRoutes);
+app.use("/api/chats", chatRoutes);
 
 app.use((err, req, res, next) => {
   console.error("GLOBAL ERROR:", err);

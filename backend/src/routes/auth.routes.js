@@ -2,55 +2,64 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { serializeUser } from "../utils/user.serializer.js";
+import { buildOnboardingFields } from "../utils/onboarding.js";
 
 const router = express.Router();
 
+const signToken = (userId) =>
+  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
 /* =====================
-   REGISTER
+   REGISTER (includes onboarding)
 ===================== */
 router.post("/register", async (req, res, next) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      avatar,
-      bio,
-      location,
-      topGenres,
-      topMovies,
-      topActors,
-      preferredLanguages,
-      preferredPlatforms
-    } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "name, email, password required" });
     }
 
+    const onboarding = buildOnboardingFields(req.body);
     const existing = await User.findOne({ email });
+
     if (existing) {
-      return res.status(409).json({ message: "Email already registered" });
+      const ok = await bcrypt.compare(password, existing.password);
+      if (!ok) {
+        return res.status(409).json({ message: "Email already registered" });
+      }
+
+      existing.name = name;
+      Object.assign(existing, onboarding);
+      await existing.save();
+
+      const safeExisting = await User.findById(existing._id).select("-password").lean();
+      return res.status(200).json({
+        message: "Onboarding saved for existing account",
+        token: signToken(existing._id),
+        user: serializeUser(safeExisting)
+      });
     }
 
     const hashed = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashed,
-      avatar: avatar || null,
-      bio: bio || "",
-      location: location || "",
-      topGenres: topGenres || [],
-      topMovies: topMovies || [],
-      topActors: topActors || [],
-      preferredLanguages: preferredLanguages || [],
-      preferredPlatforms: preferredPlatforms || [],
-      onboardingCompleted: true
+      ...onboarding
     });
 
-    res.status(201).json({ message: "User registered" });
+    await User.updateOne({ _id: user._id }, { $set: onboarding });
+
+    const safeUser = await User.findById(user._id).select("-password").lean();
+
+    res.status(201).json({
+      message: "User registered",
+      token: signToken(user._id),
+      user: serializeUser(safeUser)
+    });
   } catch (err) {
     next(err);
   }
@@ -73,13 +82,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    res.json({ token });
+    res.json({ token: signToken(user._id) });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });

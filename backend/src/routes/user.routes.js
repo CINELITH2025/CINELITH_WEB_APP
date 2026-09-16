@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { serializeUser } from "../utils/user.serializer.js";
+import { buildOnboardingFields } from "../utils/onboarding.js";
 
 const router = express.Router();
 
@@ -19,7 +20,16 @@ const getUserOr404 = async (id, res) => {
  */
 router.get("/me", protect, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select("-password").lean();
+    const user = await User.findById(req.user.id)
+      .select("-password")
+      .populate("friends", "name email")
+      .populate("followers", "name email")
+      .populate("following", "name email")
+      .populate("pendingRequests", "name email")
+      .lean();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json(serializeUser(user));
   } catch (err) {
     next(err);
@@ -54,27 +64,10 @@ router.patch("/me", protect, async (req, res, next) => {
  */
 router.put("/onboarding", protect, async (req, res, next) => {
   try {
-    const {
-      topGenres,
-      topMovies,
-      topActors,
-      preferredLanguages,
-      preferredPlatforms,
-      onboardingCompleted
-    } = req.body;
-
     const user = await getUserOr404(req.user.id, res);
     if (!user) return;
 
-    if (topGenres !== undefined) user.topGenres = topGenres;
-    if (topMovies !== undefined) user.topMovies = topMovies;
-    if (topActors !== undefined) user.topActors = topActors;
-    if (preferredLanguages !== undefined) user.preferredLanguages = preferredLanguages;
-    if (preferredPlatforms !== undefined) user.preferredPlatforms = preferredPlatforms;
-    if (onboardingCompleted !== undefined) {
-      user.onboardingCompleted = onboardingCompleted;
-    }
-
+    Object.assign(user, buildOnboardingFields(req.body));
     await user.save();
 
     const updated = await User.findById(req.user.id).select("-password").lean();
