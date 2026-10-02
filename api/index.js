@@ -1,7 +1,11 @@
 import app from "../backend/src/app.js";
 import { connectDB } from "../backend/src/config/db.js";
 
-// Ensure MongoDB Atlas connection for serverless execution with resilient error handling
-connectDB();
-
-export default app;
+export default async function handler(req, res) {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error("Vercel handler DB connection error:", err.message);
+  }
+  return app(req, res);
+}
