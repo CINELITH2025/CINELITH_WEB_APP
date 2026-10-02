@@ -7,7 +7,7 @@ const Rankings = () => {
 
   // Fallbacks if onboarding is retaken or custom selections are empty
   const topActorName = user?.favoriteActors?.[0] || "Timothée Chalamet";
-  const topMovie = user?.favoriteMovies?.[0] || { title: "Dune: Part Two", image: "/images/poster_1.png" };
+  const topMovie = user?.favoriteMovies?.[0] || { title: "Dune: Part Two", image: "/images/poster_4.jpg" };
 
   return (
     <section className="mb-12">

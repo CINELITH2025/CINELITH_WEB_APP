@@ -122,7 +122,7 @@ const InteractiveActivities = () => {
                       : 'border-white/10 hover:border-[#F5BF26]/50 hover:scale-102'
                 }`}
               >
-                <img src="/images/poster_1.png" alt="Dune: Part Two" className="w-full h-full object-cover aspect-[2/3]" />
+                <img src="/images/poster_4.jpg" alt="Dune: Part Two" className="w-full h-full object-cover aspect-[2/3]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-3 flex flex-col justify-end">
                   <span className="text-[10px] font-black text-white leading-tight">Dune: Part Two</span>
                 </div>
@@ -144,7 +144,7 @@ const InteractiveActivities = () => {
                       : 'border-white/10 hover:border-[#F5BF26]/50 hover:scale-102'
                 }`}
               >
-                <img src="/images/poster_2.png" alt="Oppenheimer" className="w-full h-full object-cover aspect-[2/3]" />
+                <img src="/images/poster_5.jpg" alt="Oppenheimer" className="w-full h-full object-cover aspect-[2/3]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-3 flex flex-col justify-end">
                   <span className="text-[10px] font-black text-white leading-tight">Oppenheimer</span>
                 </div>

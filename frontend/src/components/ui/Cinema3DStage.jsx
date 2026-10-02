@@ -4,8 +4,8 @@ import { Sparkles, Film, Star, Play, Layers, Compass, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CAROUSEL_MOVIES = [
-  { id: 1, title: "Dune: Part Two", director: "Denis Villeneuve", rating: "8.8", match: "98%", genre: "Sci-Fi / Epic", image: "/images/poster_1.jpg" },
-  { id: 2, title: "Oppenheimer", director: "Christopher Nolan", rating: "8.9", match: "95%", genre: "Drama / History", image: "/images/poster_2.jpg" },
+  { id: 1, title: "Dune: Part Two", director: "Denis Villeneuve", rating: "8.8", match: "98%", genre: "Sci-Fi / Epic", image: "/images/poster_4.jpg" },
+  { id: 2, title: "Oppenheimer", director: "Christopher Nolan", rating: "8.9", match: "95%", genre: "Drama / History", image: "/images/poster_5.jpg" },
   { id: 13, title: "Blade Runner 2049", director: "Denis Villeneuve", rating: "8.0", match: "94%", genre: "Sci-Fi / Cyberpunk", image: "/images/poster_14.jpg" },
   { id: 14, title: "Inception", director: "Christopher Nolan", rating: "8.8", match: "92%", genre: "Sci-Fi / Action", image: "/images/poster_2.jpg" },
   { id: 15, title: "Interstellar", director: "Christopher Nolan", rating: "8.7", match: "96%", genre: "Sci-Fi / Adventure", image: "/images/poster_1.jpg" },

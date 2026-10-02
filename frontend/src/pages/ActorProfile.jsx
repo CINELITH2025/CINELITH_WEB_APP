@@ -44,7 +44,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "2009" },
       { label: "Active Years", value: "2009 - Present" }
     ],
-    filmIds: [1, 13, 14, 15],
+    filmIds: [1, 18, 19],
     awards: [
       { title: "Outstanding Lead Actress - Emmy Awards", details: "For her portrayal in 'Euphoria'", year: "2020, 2022" },
       { title: "Best Actress - Golden Globe Awards", details: "For Drama Series 'Euphoria'", year: "2023" }
@@ -63,7 +63,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "2005" },
       { label: "Active Years", value: "2005 - Present" }
     ],
-    filmIds: [1, 12],
+    filmIds: [1, 12, 18],
     awards: [
       { title: "Best Actor - Golden Globe Awards", details: "For portraying Elvis Presley in 'Elvis'", year: "2023" },
       { title: "Best Actor - BAFTA Awards", details: "For portraying Elvis Presley in 'Elvis'", year: "2023" }
@@ -102,7 +102,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "2004" },
       { label: "Active Years", value: "2004 - Present" }
     ],
-    filmIds: [3, 14, 16],
+    filmIds: [3, 10, 18],
     awards: [
       { title: "Best Actress - Academy Awards", details: "Winner for 'La La Land' & 'Poor Things'", year: "2017, 2024" },
       { title: "Best Actress - BAFTA Awards", details: "Winner for 'La La Land' & 'Poor Things'", year: "2017, 2024" }
@@ -121,7 +121,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "1989" },
       { label: "Active Years", value: "1989 - Present" }
     ],
-    filmIds: [3, 14, 17],
+    filmIds: [5, 12, 17],
     awards: [
       { title: "Best Supporting Actor Nominee - Academy Awards", details: "For 'Spotlight' & 'Poor Things'", year: "2016, 2024" },
       { title: "Outstanding Lead Actor - Primetime Emmy Awards", details: "For 'I Know This Much Is True'", year: "2020" }
@@ -140,7 +140,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "1989" },
       { label: "Active Years", value: "1989 - Present" }
     ],
-    filmIds: [14, 15, 17],
+    filmIds: [9, 14, 21],
     awards: [
       { title: "Best Actor - Academy Awards", details: "Winner for his performance in 'The Revenant'", year: "2016" },
       { title: "Best Actor - Golden Globe Awards", details: "Winner for 'The Aviator', 'The Wolf of Wall Street', 'The Revenant'", year: "2005, 2014, 2016" }
@@ -159,7 +159,7 @@ const ACTOR_DETAILS = {
       { label: "Debut", value: "1986" },
       { label: "Active Years", value: "1986 - Present" }
     ],
-    filmIds: [12, 14],
+    filmIds: [8, 12, 14],
     awards: [
       { title: "Best Supporting Actor - Academy Awards", details: "Winner for his role in 'The Fighter'", year: "2011" },
       { title: "Best Actor - Golden Globe Awards", details: "Winner for 'Vice' as Dick Cheney", year: "2019" }

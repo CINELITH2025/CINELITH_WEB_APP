@@ -3,40 +3,40 @@ import { persist } from 'zustand/middleware';
 
 // Curated movie & TV show data helper to populate onboarding and explore
 export const MOVIE_CATALOG = [
-  { id: 1, title: "Dune: Part Two", year: "2024", genre: "Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Timothée Chalamet", "Zendaya", "Austin Butler", "Florence Pugh"] },
-  { id: 2, title: "Oppenheimer", year: "2023", genre: "Drama, History", rating: 8.9, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr."] },
-  { id: 3, title: "Poor Things", year: "2023", genre: "Comedy, Romance, Sci-Fi", rating: 8.4, image: "/images/poster_1.png", director: "Yorgos Lanthimos", type: "movie", region: "United Kingdom", language: "English", cast: ["Emma Stone", "Mark Ruffalo", "Willem Dafoe"] },
-  { id: 4, title: "The Holdovers", year: "2023", genre: "Comedy, Drama", rating: 8.0, image: "/images/poster_2.png", director: "Alexander Payne", type: "movie", region: "United States", language: "English", cast: ["Paul Giamatti", "Da'Vine Joy Randolph", "Dominic Sessa"] },
-  { id: 5, title: "Anatomy of a Fall", year: "2023", genre: "Thriller, Drama, Crime", rating: 7.8, image: "/images/poster_1.png", director: "Justine Triet", type: "movie", region: "France", language: "French", cast: ["Sandra Hüller", "Swann Arlaud", "Milo Machado-Graner"] },
-  { id: 6, title: "The Godfather", year: "1972", genre: "Crime, Drama", rating: 9.2, image: "/images/poster_2.png", director: "Francis Ford Coppola", type: "movie", region: "United States", language: "English", cast: ["Marlon Brando", "Al Pacino", "James Caan"] },
-  { id: 7, title: "Pulp Fiction", year: "1994", genre: "Crime, Thriller", rating: 8.9, image: "/images/poster_1.png", director: "Quentin Tarantino", type: "movie", region: "United States", language: "English", cast: ["John Travolta", "Samuel L. Jackson", "Uma Thurman", "Bruce Willis"] },
-  { id: 8, title: "2001: A Space Odyssey", year: "1968", genre: "Sci-Fi, Adventure", rating: 8.3, image: "/images/poster_2.png", director: "Stanley Kubrick", type: "movie", region: "United Kingdom", language: "English", cast: ["Keir Dullea", "Gary Lockwood"] },
-  { id: 9, title: "Blade Runner", year: "1982", genre: "Sci-Fi, Thriller", rating: 8.1, image: "/images/poster_1.png", director: "Ridley Scott", type: "movie", region: "United States", language: "English", cast: ["Harrison Ford", "Rutger Hauer", "Sean Young"] },
-  { id: 10, title: "Citizen Kane", year: "1941", genre: "Drama, Mystery", rating: 8.3, image: "/images/poster_2.png", director: "Orson Welles", type: "movie", region: "United States", language: "English", cast: ["Orson Welles", "Joseph Cotten", "Dorothy Comingore"] },
-  { id: 11, title: "The Creator", year: "2023", genre: "Sci-Fi, Action", rating: 7.1, image: "/images/poster_2.png", director: "Gareth Edwards", type: "movie", region: "United States", language: "English", cast: ["John David Washington", "Gemma Chan"] },
-  { id: 12, title: "The Dark Knight", year: "2008", genre: "Action, Crime, Thriller", rating: 9.0, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Christian Bale", "Heath Ledger", "Gary Oldman"] },
-  { id: 13, title: "Blade Runner 2049", year: "2017", genre: "Sci-Fi, Thriller", rating: 8.0, image: "/images/poster_1.png", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Ryan Gosling", "Harrison Ford", "Ana de Armas"] },
-  { id: 14, title: "Inception", year: "2010", genre: "Action, Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_1.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"] },
-  { id: 15, title: "Interstellar", year: "2014", genre: "Sci-Fi, Drama", rating: 8.7, image: "/images/poster_2.png", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"] },
-  { id: 16, title: "Parasite", year: "2019", genre: "Thriller, Drama, Comedy", rating: 8.6, image: "/images/poster_2.png", director: "Bong Joon Ho", type: "movie", region: "South Korea", language: "Korean", cast: ["Song Kang-ho", "Lee Sun-kyun", "Cho Yeo-jeong"] },
-  { id: 17, title: "Fight Club", year: "1999", genre: "Drama, Thriller", rating: 8.8, image: "/images/poster_2.png", director: "David Fincher", type: "movie", region: "United States", language: "English", cast: ["Brad Pitt", "Edward Norton", "Helena Bonham Carter"] },
-  
-  // TV Shows
-  { id: 18, title: "Breaking Bad", year: "2008", genre: "Crime, Drama, Thriller", rating: 9.5, image: "/images/poster_1.png", director: "Vince Gilligan", type: "tv", region: "United States", language: "English", cast: ["Bryan Cranston", "Aaron Paul", "Bob Odenkirk"] },
-  { id: 19, title: "Game of Thrones", year: "2011", genre: "Action, Adventure, Drama", rating: 9.2, image: "/images/poster_2.png", director: "David Benioff", type: "tv", region: "United Kingdom", language: "English", cast: ["Emilia Clarke", "Kit Harington", "Peter Dinklage"] },
-  { id: 20, title: "Succession", year: "2018", genre: "Drama", rating: 8.8, image: "/images/poster_1.png", director: "Jesse Armstrong", type: "tv", region: "United States", language: "English", cast: ["Brian Cox", "Jeremy Strong", "Sarah Snook"] },
-  { id: 21, title: "Severance", year: "2022", genre: "Sci-Fi, Thriller", rating: 8.7, image: "/images/poster_2.png", director: "Dan Erickson", type: "tv", region: "United States", language: "English", cast: ["Adam Scott", "Patricia Arquette", "John Turturro"] },
-  { id: 22, title: "Chernobyl", year: "2019", genre: "Drama, History", rating: 9.4, image: "/images/poster_1.png", director: "Craig Mazin", type: "tv", region: "United Kingdom", language: "English", cast: ["Jared Harris", "Stellan Skarsgård", "Emily Watson"] },
-  { id: 23, title: "Squid Game", year: "2021", genre: "Thriller, Drama, Action", rating: 8.0, image: "/images/poster_2.png", director: "Hwang Dong-hyuk", type: "tv", region: "South Korea", language: "Korean", cast: ["Lee Jung-jae", "Park Hae-soo", "Jung Ho-yeon"] }
+  { id: 1, title: "Dune: Part Two", year: "2024", genre: "Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_4.jpg", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Timothée Chalamet", "Zendaya", "Austin Butler", "Florence Pugh"] },
+  { id: 2, title: "Oppenheimer", year: "2023", genre: "Drama, History", rating: 8.9, image: "/images/poster_5.jpg", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr."] },
+  { id: 3, title: "La La Land", year: "2016", genre: "Comedy, Drama, Music", rating: 8.0, image: "/images/poster_7.jpg", director: "Damien Chazelle", type: "movie", region: "United States", language: "English", cast: ["Emma Stone", "Ryan Gosling", "John Legend"] },
+  { id: 4, title: "The Shawshank Redemption", year: "1994", genre: "Drama", rating: 9.3, image: "/images/poster_12.jpg", director: "Frank Darabont", type: "movie", region: "United States", language: "English", cast: ["Tim Robbins", "Morgan Freeman", "Bob Gunton"] },
+  { id: 5, title: "The Matrix", year: "1999", genre: "Action, Sci-Fi", rating: 8.7, image: "/images/poster_10.jpg", director: "Lana Wachowski", type: "movie", region: "United States", language: "English", cast: ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"] },
+  { id: 6, title: "The Godfather", year: "1972", genre: "Crime, Drama", rating: 9.2, image: "/images/poster_13.jpg", director: "Francis Ford Coppola", type: "movie", region: "United States", language: "English", cast: ["Marlon Brando", "Al Pacino", "James Caan"] },
+  { id: 7, title: "Pulp Fiction", year: "1994", genre: "Crime, Thriller", rating: 8.9, image: "/images/poster_8.jpg", director: "Quentin Tarantino", type: "movie", region: "United States", language: "English", cast: ["John Travolta", "Samuel L. Jackson", "Uma Thurman", "Bruce Willis"] },
+  { id: 8, title: "Gladiator", year: "2000", genre: "Action, Adventure, Drama", rating: 8.5, image: "/images/poster_18.jpg", director: "Ridley Scott", type: "movie", region: "United States", language: "English", cast: ["Russell Crowe", "Joaquin Phoenix", "Connie Nielsen"] },
+  { id: 9, title: "Django Unchained", year: "2012", genre: "Drama, Western", rating: 8.5, image: "/images/poster_19.jpg", director: "Quentin Tarantino", type: "movie", region: "United States", language: "English", cast: ["Jamie Foxx", "Christoph Waltz", "Leonardo DiCaprio"] },
+  { id: 10, title: "Whiplash", year: "2014", genre: "Drama, Music", rating: 8.5, image: "/images/poster_15.jpg", director: "Damien Chazelle", type: "movie", region: "United States", language: "English", cast: ["Miles Teller", "J.K. Simmons", "Paul Reiser"] },
+  { id: 11, title: "Spirited Away", year: "2001", genre: "Animation, Adventure, Family", rating: 8.6, image: "/images/poster_16.jpg", director: "Hayao Miyazaki", type: "movie", region: "Japan", language: "Japanese", cast: ["Rumi Hiiragi", "Miyu Irino", "Mari Natsuki"] },
+  { id: 12, title: "The Dark Knight", year: "2008", genre: "Action, Crime, Thriller", rating: 9.0, image: "/images/poster_3.jpg", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Christian Bale", "Heath Ledger", "Gary Oldman"] },
+  { id: 13, title: "Blade Runner 2049", year: "2017", genre: "Sci-Fi, Thriller", rating: 8.0, image: "/images/poster_14.jpg", director: "Denis Villeneuve", type: "movie", region: "United States", language: "English", cast: ["Ryan Gosling", "Harrison Ford", "Ana de Armas"] },
+  { id: 14, title: "Inception", year: "2010", genre: "Action, Sci-Fi, Adventure", rating: 8.8, image: "/images/poster_2.jpg", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"] },
+  { id: 15, title: "Interstellar", year: "2014", genre: "Sci-Fi, Drama", rating: 8.7, image: "/images/poster_1.jpg", director: "Christopher Nolan", type: "movie", region: "United States", language: "English", cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"] },
+  { id: 16, title: "Parasite", year: "2019", genre: "Thriller, Drama, Comedy", rating: 8.6, image: "/images/poster_11.jpg", director: "Bong Joon Ho", type: "movie", region: "South Korea", language: "Korean", cast: ["Song Kang-ho", "Lee Sun-kyun", "Cho Yeo-jeong"] },
+  { id: 17, title: "Fight Club", year: "1999", genre: "Drama, Thriller", rating: 8.8, image: "/images/poster_9.jpg", director: "David Fincher", type: "movie", region: "United States", language: "English", cast: ["Brad Pitt", "Edward Norton", "Helena Bonham Carter"] },
+  { id: 18, title: "Barbie", year: "2023", genre: "Comedy, Fantasy, Adventure", rating: 7.8, image: "/images/poster_6.jpg", director: "Greta Gerwig", type: "movie", region: "United States", language: "English", cast: ["Margot Robbie", "Ryan Gosling", "America Ferrera"] },
+  { id: 19, title: "Spider-Man: Into the Spider-Verse", year: "2018", genre: "Animation, Action, Sci-Fi", rating: 8.4, image: "/images/poster_17.jpg", director: "Peter Ramsey", type: "movie", region: "United States", language: "English", cast: ["Shameik Moore", "Jake Johnson", "Hailee Steinfeld"] },
+  { id: 20, title: "Your Name.", year: "2016", genre: "Animation, Drama, Fantasy", rating: 8.4, image: "/images/poster_20.jpg", director: "Makoto Shinkai", type: "movie", region: "Japan", language: "Japanese", cast: ["Ryunosuke Kamiki", "Mone Kamishiraishi"] },
+  { id: 21, title: "Inglourious Basterds", year: "2009", genre: "War, Drama, Adventure", rating: 8.3, image: "/images/poster_21.jpg", director: "Quentin Tarantino", type: "movie", region: "United States", language: "English", cast: ["Brad Pitt", "Christoph Waltz", "Michael Fassbender"] },
+  { id: 22, title: "Avatar", year: "2009", genre: "Action, Adventure, Sci-Fi", rating: 7.9, image: "/images/poster_22.jpg", director: "James Cameron", type: "movie", region: "United States", language: "English", cast: ["Sam Worthington", "Zoe Saldana", "Sigourney Weaver"] },
+  { id: 23, title: "Star Wars: A New Hope", year: "1977", genre: "Action, Adventure, Sci-Fi", rating: 8.6, image: "/images/poster_23.jpg", director: "George Lucas", type: "movie", region: "United States", language: "English", cast: ["Mark Hamill", "Harrison Ford", "Carrie Fisher"] },
+  { id: 24, title: "The Lord of the Rings: The Fellowship of the Ring", year: "2001", genre: "Action, Adventure, Drama", rating: 8.8, image: "/images/poster_24.jpg", director: "Peter Jackson", type: "movie", region: "United States", language: "English", cast: ["Elijah Wood", "Ian McKellen", "Viggo Mortensen"] },
+  { id: 25, title: "Forrest Gump", year: "1994", genre: "Drama, Romance", rating: 8.8, image: "/images/poster_25.jpg", director: "Robert Zemeckis", type: "movie", region: "United States", language: "English", cast: ["Tom Hanks", "Robin Wright", "Gary Sinise"] }
 ];
 
 export const ACTOR_CATALOG = [
   { id: 1, name: "Timothée Chalamet", image: "/images/chalamet.jpg", facts: { nationality: "American/French", debut: "2008" } },
   { id: 2, name: "Zendaya", image: "/images/poster_4.jpg", facts: { nationality: "American", debut: "2009" } },
-  { id: 3, name: "Austin Butler", image: "/images/poster_1.jpg", facts: { nationality: "American", debut: "2005" } },
+  { id: 3, name: "Austin Butler", image: "/images/poster_4.jpg", facts: { nationality: "American", debut: "2005" } },
   { id: 4, name: "Cillian Murphy", image: "/images/oppenheimer.jpg", facts: { nationality: "Irish", debut: "1996" } },
   { id: 5, name: "Emma Stone", image: "/images/lalaland.jpg", facts: { nationality: "American", debut: "2004" } },
-  { id: 6, name: "Mark Ruffalo", image: "/images/poster_2.jpg", facts: { nationality: "American", debut: "1989" } },
+  { id: 6, name: "Mark Ruffalo", image: "/images/actor_1.png", facts: { nationality: "American", debut: "1989" } },
   { id: 7, name: "Leonardo DiCaprio", image: "/images/inception.jpg", facts: { nationality: "American", debut: "1989" } },
   { id: 8, name: "Christian Bale", image: "/images/poster_3.jpg", facts: { nationality: "British", debut: "1986" } }
 ];
@@ -115,7 +115,7 @@ const useUserStore = create(
           ],
           customLists: [
             { id: 101, name: "Nolan Collection", movies: [MOVIE_CATALOG[1], MOVIE_CATALOG[11], MOVIE_CATALOG[14]] },
-            { id: 102, name: "Sci-Fi Favorites", movies: [MOVIE_CATALOG[0], MOVIE_CATALOG[8]] }
+            { id: 102, name: "Sci-Fi Favorites", movies: [MOVIE_CATALOG[0], MOVIE_CATALOG[4]] }
           ],
           cinephileScore: 8950,
           streak: 14
