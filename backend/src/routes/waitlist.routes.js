@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
 import Waitlist from "../models/Waitlist.js";
@@ -92,6 +93,12 @@ router.post("/send-otp", async (req, res) => {
     return res.status(400).json({ message: "Valid name and email are required" });
   }
 
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({ 
+      message: "Database connection unavailable. Please verify MongoDB Atlas credentials in backend/.env." 
+    });
+  }
+
   const cleanEmail = email.toLowerCase().trim();
 
   try {
@@ -153,6 +160,12 @@ router.post("/verify-otp", async (req, res) => {
 
   if (!email || !otp || typeof email !== 'string' || typeof otp !== 'string') {
     return res.status(400).json({ message: "Valid email and verification code are required" });
+  }
+
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({ 
+      message: "Database connection unavailable. Please verify MongoDB Atlas credentials in backend/.env." 
+    });
   }
 
   const cleanEmail = email.toLowerCase().trim();
@@ -262,10 +275,13 @@ router.post("/", async (req, res) => {
 // @access  Public
 router.get("/count", async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.json({ count: 428, fallback: true });
+    }
     const count = await Waitlist.countDocuments();
     return res.json({ count: count + 384 });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.json({ count: 428, fallback: true });
   }
 });
 
