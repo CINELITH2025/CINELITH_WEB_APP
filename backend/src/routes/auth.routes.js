@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { serializeUser } from "../utils/user.serializer.js";
+import { refreshCinephileScore } from "../services/cinephile-score.service.js";
 
 const router = express.Router();
 
@@ -73,6 +74,8 @@ router.post("/login", async (req, res) => {
     if (!ok) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
+    await refreshCinephileScore(user).catch(() => null);
 
     const safeUser = await User.findById(user._id)
       .select("-password")

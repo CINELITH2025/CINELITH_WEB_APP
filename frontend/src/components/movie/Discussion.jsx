@@ -1,32 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThumbsUp, MessageSquare, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
 
-const Discussion = ({ comments: initialComments, movieId }) => {
-  const [activeTab, setActiveTab] = useState("Top");
-  const [comments, setComments] = useState(initialComments);
+const Discussion = ({ comments: initialComments, movieId, onCommentsChange }) => {
+  const [activeTab, setActiveTab] = useState("Newest");
+  const [comments, setComments] = useState(initialComments || []);
   const [newCommentText, setNewCommentText] = useState("");
 
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const user = useUserStore((state) => state.user);
   const addReviewPoints = useUserStore((state) => state.addReviewPoints);
+  const postMovieComment = useUserStore((state) => state.postMovieComment);
 
-  const handlePostComment = () => {
-    if (!newCommentText.trim()) return;
-    const newComment = {
-      user: isAuthenticated ? user?.name || "You" : "Guest",
-      time: "Just now",
-      text: newCommentText,
-      likes: 0,
-      avatar: user?.avatar || "/images/actor_1.png"
-    };
-    setComments([newComment, ...comments]);
-    setNewCommentText("");
+  useEffect(() => {
+    setComments(initialComments || []);
+  }, [initialComments]);
 
-    // Award +30 Cinephile points for posting a review
-    if (isAuthenticated && movieId) {
+  const handlePostComment = async () => {
+    if (!newCommentText.trim() || !isAuthenticated) return;
+    try {
+      const saved = await postMovieComment(movieId, newCommentText.trim());
+      const next = [saved, ...comments];
+      setComments(next);
+      onCommentsChange?.(next);
+      setNewCommentText("");
       addReviewPoints(movieId, newCommentText);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -48,9 +49,10 @@ const Discussion = ({ comments: initialComments, movieId }) => {
           />
           <Button 
             onClick={handlePostComment}
-            className="w-fit bg-[#F5BF26] hover:bg-[#C59E0C] text-black font-extrabold text-xs px-6 py-3 rounded-lg shadow-md cursor-pointer ml-auto"
+            disabled={!isAuthenticated}
+            className="w-fit bg-[#F5BF26] hover:bg-[#C59E0C] text-black font-extrabold text-xs px-6 py-3 rounded-lg shadow-md cursor-pointer ml-auto disabled:opacity-50"
           >
-            Post
+            {isAuthenticated ? "Post" : "Sign in to post"}
           </Button>
         </div>
       </div>
@@ -76,15 +78,10 @@ const Discussion = ({ comments: initialComments, movieId }) => {
       {/* Comment List */}
       <div className="flex flex-col gap-6">
         {comments.map((comment, idx) => {
-          // Nest the second comment (idx === 1) as a reply under the first (idx === 0) for mockup visuals
-          const isNested = idx === 1;
-
           return (
             <div 
-              key={idx} 
-              className={`flex gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 transition-colors shadow-md ${
-                isNested ? 'ml-12 border-l-2 border-l-[#F5BF26]' : ''
-              }`}
+              key={comment.id || idx} 
+              className="flex gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 transition-colors shadow-md"
             >
               <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-white/20">
                 <img src={comment.avatar} alt={comment.user} className="w-full h-full object-cover" />
@@ -93,7 +90,9 @@ const Discussion = ({ comments: initialComments, movieId }) => {
               <div className="flex-1 flex flex-col">
                 <div className="flex items-center gap-3 mb-1">
                   <span className="font-bold text-white text-sm">{comment.user}</span>
-                  <span className="text-[10px] text-gray-500 font-bold">{comment.time}</span>
+                  <span className="text-[10px] text-gray-500 font-bold">
+                    {comment.time ? new Date(comment.time).toLocaleString() : ""}
+                  </span>
                 </div>
                 
                 <p className="text-gray-400 text-sm leading-relaxed font-medium mb-4">

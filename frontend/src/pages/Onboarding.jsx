@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useUserStore, { MOVIE_CATALOG, ACTOR_CATALOG, GENRE_CATALOG } from '../store/useUserStore';
+import useUserStore, { ACTOR_CATALOG, GENRE_CATALOG } from '../store/useUserStore';
 import { Search, Film, Star, Check, Sparkles, User, Bookmark } from 'lucide-react';
 import Logo from '../components/ui/Logo';
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const saveOnboarding = useUserStore((state) => state.saveOnboarding);
+  const searchRecommendMovies = useUserStore((state) => state.searchRecommendMovies);
   const user = useUserStore((state) => state.user);
+  const [catalogMovies, setCatalogMovies] = useState([]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
@@ -68,11 +70,24 @@ const Onboarding = () => {
     }
   }, [loadingComplete, navigate]);
 
-  // Filter Catalog Movies based on search query
-  const filteredCatalog = MOVIE_CATALOG.filter((movie) =>
-    movie.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    movie.director.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      searchRecommendMovies(searchQuery)
+        .then((movies) => {
+          if (!cancelled) setCatalogMovies(movies);
+        })
+        .catch(() => {
+          if (!cancelled) setCatalogMovies([]);
+        });
+    }, 200);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchQuery, searchRecommendMovies, currentStep]);
+
+  const filteredCatalog = catalogMovies;
 
   // Filter Catalog Actors
   const filteredActors = ACTOR_CATALOG.filter((actor) =>
@@ -243,7 +258,7 @@ const Onboarding = () => {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
-              {MOVIE_CATALOG.map((movie) => {
+              {catalogMovies.map((movie) => {
                 const isWatched = watchedMovies.some(m => m.id === movie.id);
                 const isWatchlist = watchlist.some(m => m.id === movie.id);
                 return (

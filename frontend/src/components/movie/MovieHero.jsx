@@ -58,11 +58,15 @@ const MovieHero = ({ movie }) => {
         <div className="flex items-center gap-4 mb-8">
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">CL Score</span>
-            <span className="text-2xl font-black text-[#F5BF26]">{movie.clScore}</span>
+            <span className="text-2xl font-black text-[#F5BF26]">{movie.clScore ?? "—"}</span>
+            <span className="text-[9px] text-gray-500 font-bold mt-1">Bayesian /100</span>
           </div>
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">User Score</span>
-            <span className="text-2xl font-black text-[#F5BF26]">{movie.userScore}</span>
+            <span className="text-2xl font-black text-[#F5BF26]">{movie.userScore ?? "—"}</span>
+            <span className="text-[9px] text-gray-500 font-bold mt-1">
+              {movie.voteCount ? `${movie.voteCount} votes` : "Mean /100"}
+            </span>
           </div>
         </div>
 
@@ -92,7 +96,9 @@ const MovieHero = ({ movie }) => {
           <div className="md:col-span-2 flex flex-col gap-4">
             <h3 className="text-lg font-black text-white tracking-tight">Overview</h3>
             <p className="text-sm md:text-base text-gray-400 leading-relaxed font-medium">
-              {showFullOverview ? movie.description : `${movie.description.slice(0, 200)}...`}
+              {showFullOverview || !(movie.description || "").length
+                ? (movie.description || "No overview in the catalog for this title.")
+                : `${movie.description.slice(0, 200)}...`}
             </p>
             <button 
               onClick={() => setShowFullOverview(!showFullOverview)}

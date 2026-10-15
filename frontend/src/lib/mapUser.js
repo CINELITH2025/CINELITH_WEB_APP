@@ -2,7 +2,7 @@ export const toBackendMovieType = (type) =>
   type === "tv" || type === "series" ? "series" : "movie";
 
 export const toBackendMovie = (movie) => ({
-  tvdbId: Number(movie.tvdbId || movie.id) || 0,
+  tvdbId: Number(movie.tvdbId || movie.movieId || movie.id) || 0,
   title: movie.title || movie.name,
   type: toBackendMovieType(movie.type)
 });
@@ -16,8 +16,8 @@ export const toBackendActor = (actor) => {
 };
 
 export const mapMovie = (movie = {}) => ({
-  id: movie.tvdbId || movie.id,
-  tvdbId: movie.tvdbId || movie.id,
+  id: movie.tvdbId || movie.movieId || movie.id,
+  tvdbId: movie.tvdbId || movie.movieId || movie.id,
   title: movie.title || movie.name || "Untitled",
   type: movie.type === "series" ? "tv" : movie.type || "movie",
   year: movie.year || "",
@@ -77,7 +77,11 @@ export const mapUser = (raw) => {
       name: collection.name,
       movies: (collection.movies || []).map(mapMovie)
     })),
-    cinephileScore: raw.cinephileScore || 0,
+    cinephileScore: Number(raw.cinephileScore) || 0,
+    cinephileLevel: raw.cinephileLevel || "Newcomer",
+    cinephileBreakdown: raw.cinephileBreakdown || {
+      wa: 0, eg: 0, ac: 0, rq: 0, dv: 0, ct: 0, cr: 0
+    },
     streak: raw.streak || 0,
     friends,
     following: (raw.following || []).map((item) => String(item._id || item)),
@@ -104,6 +108,11 @@ export const mapPerson = (person) => ({
   isPrivate: false,
   location: person.location || ""
 });
+
+export const formatCinephileScore = (score) => {
+  const value = Number(score);
+  return Number.isFinite(value) ? value.toFixed(1) : "0.0";
+};
 
 export const mapChatMessage = (msg, myId) => ({
   senderId: String(msg.senderId),

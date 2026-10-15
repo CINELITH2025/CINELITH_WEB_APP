@@ -169,6 +169,55 @@ const useUserStore = create(
         return data.people || [];
       },
 
+      searchRecommendMovies: async (query = "") => {
+        const { data } = await api.get("/catalog/movies", { params: { q: query, limit: 24 } });
+        return data.movies || [];
+      },
+
+      fetchCatalog: async (params = {}) => {
+        const { data } = await api.get("/catalog/movies", { params });
+        return data;
+      },
+
+      fetchCatalogFilters: async () => {
+        const { data } = await api.get("/catalog/filters");
+        return data;
+      },
+
+      fetchHomeCatalog: async () => {
+        const { data } = await api.get("/catalog/home");
+        return data;
+      },
+
+      fetchCatalogMovie: async (id) => {
+        const { data } = await api.get(`/catalog/movies/${id}`);
+        return data;
+      },
+
+      fetchMovieComments: async (id) => {
+        const { data } = await api.get(`/catalog/movies/${id}/comments`);
+        return data.comments || [];
+      },
+
+      postMovieComment: async (id, text) => {
+        const { data } = await api.post(`/catalog/movies/${id}/comments`, { text });
+        return data;
+      },
+
+      fetchNotifications: async () => {
+        const { data } = await api.get("/notifications");
+        return data.notifications || [];
+      },
+
+      recommendMovie: async (movie) => {
+        const { data } = await api.post("/recommend", {
+          movieId: movie.movieId,
+          title: movie.title,
+          limit: 10
+        });
+        return data;
+      },
+
       connectUser: async (userId) => {
         await api.post(`/users/connect/${userId}`);
         await get().fetchMe();
@@ -312,32 +361,19 @@ const useUserStore = create(
       },
 
       addReviewPoints: async (movieId, commentText) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
+        if (!get().user) return;
         await api.post("/users/review", {
           tvdbId: Number(movieId) || 0,
           title: String(movieId),
           type: "movie",
           content: commentText
         }).catch(() => null);
-        set({
-          user: {
-            ...currentUser,
-            reviews: [...(currentUser.reviews || []), { id: Date.now(), movieId, text: commentText, date: new Date().toISOString() }],
-            cinephileScore: currentUser.cinephileScore + 30
-          }
-        });
+        await get().fetchMe();
       },
 
-      awardPoints: (amount) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-        set({
-          user: {
-            ...currentUser,
-            cinephileScore: currentUser.cinephileScore + amount
-          }
-        });
+      recordActivity: async (kind, won = false) => {
+        const { data } = await api.post("/users/activity", { kind, won });
+        return applyUser(data);
       }
     };
     },

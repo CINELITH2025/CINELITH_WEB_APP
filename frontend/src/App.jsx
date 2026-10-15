@@ -13,6 +13,7 @@ import Notifications from './pages/Notifications'
 import Messages from './pages/Messages'
 import Auth from './pages/Auth'
 import Onboarding from './pages/Onboarding'
+import Recommend from './pages/Recommend'
 
 const ProtectedRoute = ({ children }) => {
   const location = useLocation()
@@ -68,6 +69,7 @@ function AppRoutes() {
       <Route path="/actor/:id" element={<ActorProfile />} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/explore" element={<Explore />} />
+      <Route path="/recommend" element={<Recommend />} />
       <Route path="/movies" element={<Navigate to="/" replace />} />
       <Route path="/movie/:id" element={<MovieDetails />} />
       <Route path="/people" element={<ProtectedRoute><People /></ProtectedRoute>} />

@@ -4,6 +4,7 @@ import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
+import { formatCinephileScore } from '../lib/mapUser';
 import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
 
 const Profile = () => {
@@ -416,7 +417,8 @@ const Profile = () => {
 
               <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cinephile Score</span>
-                <span className="text-2xl font-black text-[#F5BF26]">{user.cinephileScore?.toLocaleString() || "0"}</span>
+                <span className="text-2xl font-black text-[#F5BF26]">{formatCinephileScore(user.cinephileScore)}</span>
+                <span className="text-[10px] text-gray-500 font-bold mt-1">{user.cinephileLevel || "Newcomer"}</span>
               </div>
             </div>
           </div>

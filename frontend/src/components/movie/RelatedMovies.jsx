@@ -1,12 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RelatedMovies = ({ movies }) => {
+  const navigate = useNavigate();
+  if (!movies?.length) return null;
+
   return (
     <section className="mb-12">
       <h2 className="text-2xl font-bold text-foreground mb-8">Related Movies</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
         {movies.map((movie, idx) => (
-          <div key={idx} className="flex flex-col group cursor-pointer">
+          <div key={movie.id || idx} className="flex flex-col group cursor-pointer" onClick={() => movie.id && navigate(`/movie/${movie.id}`)}>
             <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/5">
               <img 
                 src={movie.image} 

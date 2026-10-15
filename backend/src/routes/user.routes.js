@@ -3,6 +3,19 @@ import User from "../models/User.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { serializeUser } from "../utils/user.serializer.js";
 import { buildOnboardingFields } from "../utils/onboarding.js";
+import { recordUserRating } from "../services/knn-collect.service.js";
+import { createNotification } from "../services/notification.service.js";
+import {
+  applyStreak,
+  refreshCinephileScore
+} from "../services/cinephile-score.service.js";
+
+const SCORE_TTL_MS = 10 * 60 * 1000;
+
+const recordActivity = async (user, { streak = true } = {}) => {
+  if (streak) applyStreak(user);
+  await refreshCinephileScore(user);
+};
 
 const router = express.Router();
 
@@ -29,10 +42,17 @@ const getUserOr404 = async (id, res) => {
  */
 router.get("/me", protect, async (req, res, next) => {
   try {
-    const user = await loadSafeUser(req.user.id);
-    if (!user) {
+    const existing = await User.findById(req.user.id);
+    if (!existing) {
       return res.status(404).json({ message: "User not found" });
     }
+    const stale =
+      !existing.cinephileScoreUpdatedAt ||
+      Date.now() - new Date(existing.cinephileScoreUpdatedAt).getTime() > SCORE_TTL_MS;
+    if (stale) {
+      await refreshCinephileScore(existing).catch(() => null);
+    }
+    const user = await loadSafeUser(req.user.id);
     res.json(serializeUser(user));
   } catch (err) {
     next(err);
@@ -71,7 +91,18 @@ router.put("/onboarding", protect, async (req, res, next) => {
     if (!user) return;
 
     Object.assign(user, buildOnboardingFields(req.body));
-    await user.save();
+    await recordActivity(user);
+
+    await Promise.all(
+      (user.topMovies || []).map((movie) =>
+        recordUserRating({
+          userId: user._id,
+          title: movie.title,
+          rating: 5,
+          source: "onboarding"
+        }).catch(() => null)
+      )
+    );
 
     const updated = await loadSafeUser(req.user.id);
     res.json(serializeUser(updated));
@@ -114,7 +145,15 @@ router.post("/connect/:id", protect, async (req, res, next) => {
       (id) => String(id) !== userId
     );
 
-    await Promise.all([user.save(), friend.save()]);
+    await Promise.all([recordActivity(user, { streak: false }), friend.save()]);
+    await refreshCinephileScore(friend).catch(() => null);
+
+    await createNotification({
+      userId: friend._id,
+      type: "connect",
+      title: "New connection",
+      text: `${user.name} connected with you on CINELITH.`
+    }).catch(() => null);
 
     res.json({ message: "Connected mutually" });
   } catch (err) {
@@ -152,6 +191,13 @@ router.post("/friend-request/:id", protect, async (req, res, next) => {
     target.pendingRequests.push(userId);
     await target.save();
 
+    await createNotification({
+      userId: target._id,
+      type: "friend_request",
+      title: "Friend request",
+      text: `${user.name} sent you a friend request.`
+    }).catch(() => null);
+
     res.json({ message: "Friend request sent" });
   } catch (err) {
     next(err);
@@ -179,13 +225,23 @@ router.post("/follow/:id", protect, async (req, res, next) => {
 
     if (!user.following.map(String).includes(targetId)) {
       user.following.push(targetId);
-      await user.save();
     }
 
     if (!target.followers.map(String).includes(userId)) {
       target.followers.push(userId);
-      await target.save();
     }
+
+    await Promise.all([
+      recordActivity(user, { streak: false }),
+      target.save().then(() => refreshCinephileScore(target).catch(() => null))
+    ]);
+
+    await createNotification({
+      userId: target._id,
+      type: "follow",
+      title: "New follower",
+      text: `${user.name} started following you.`
+    }).catch(() => null);
 
     res.json({ message: "Followed user" });
   } catch (err) {
@@ -208,9 +264,16 @@ router.post("/like", protect, async (req, res, next) => {
 
     if (!user.favoriteMovies.some((m) => m.tvdbId === tvdbId)) {
       user.favoriteMovies.push({ tvdbId, title, type });
-      await user.save();
     }
 
+    await recordUserRating({
+      userId: user._id,
+      title,
+      rating: 5,
+      source: "like"
+    }).catch(() => null);
+
+    await recordActivity(user);
     res.json({ message: "Liked", title });
   } catch (err) {
     next(err);
@@ -230,9 +293,9 @@ router.post("/watchlist", protect, async (req, res, next) => {
 
     if (!user.watchlist.some((m) => m.tvdbId === tvdbId)) {
       user.watchlist.push({ tvdbId, title, type });
-      await user.save();
     }
 
+    await recordActivity(user);
     res.json({ message: "Added to watchlist", title });
   } catch (err) {
     next(err);
@@ -255,8 +318,14 @@ router.post("/rate", protect, async (req, res, next) => {
     user.ratings = user.ratings.filter((r) => r.tvdbId !== tvdbId);
     user.ratings.push({ tvdbId, title, type, rating });
 
-    await user.save();
+    await recordUserRating({
+      userId: user._id,
+      title,
+      rating,
+      source: "rate"
+    }).catch(() => null);
 
+    await recordActivity(user);
     res.json({ message: "Rated", title, rating });
   } catch (err) {
     next(err);
@@ -279,8 +348,16 @@ router.post("/review", protect, async (req, res, next) => {
     user.reviews = user.reviews.filter((r) => r.tvdbId !== tvdbId);
     user.reviews.push({ tvdbId, title, type, content, rating });
 
-    await user.save();
+    if (rating != null) {
+      await recordUserRating({
+        userId: user._id,
+        title,
+        rating,
+        source: "review"
+      }).catch(() => null);
+    }
 
+    await recordActivity(user);
     res.json({ message: "Review saved", title });
   } catch (err) {
     next(err);
@@ -308,8 +385,7 @@ router.post("/recently-viewed", protect, async (req, res, next) => {
       user.moviesWatched += 1;
     }
 
-    await user.save();
-
+    await recordActivity(user);
     res.json({ message: "Recently viewed updated", title });
   } catch (err) {
     next(err);
@@ -335,7 +411,7 @@ router.post("/collections", protect, async (req, res, next) => {
       movies: movies || []
     });
 
-    await user.save();
+    await recordActivity(user);
 
     res.status(201).json({ message: "Collection created", name });
   } catch (err) {
@@ -363,6 +439,35 @@ router.patch("/notifications", protect, async (req, res, next) => {
 
     await user.save();
 
+    const updated = await loadSafeUser(req.user.id);
+    res.json(serializeUser(updated));
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Record quiz / battle activity. Extra kinds can be added later without
+ * changing the Cinephile Score formula — they already have reserved weights.
+ */
+router.post("/activity", protect, async (req, res, next) => {
+  try {
+    const kind = String(req.body.kind || "").toLowerCase();
+    const won = Boolean(req.body.won);
+    const user = await getUserOr404(req.user.id, res);
+    if (!user) return;
+
+    if (kind === "quiz") {
+      user.quizzesPlayed += 1;
+      if (won) user.quizzesWon += 1;
+    } else if (kind === "battle") {
+      user.battlesPlayed += 1;
+      if (won) user.battlesWon += 1;
+    } else {
+      return res.status(400).json({ message: "kind must be quiz or battle" });
+    }
+
+    await recordActivity(user);
     const updated = await loadSafeUser(req.user.id);
     res.json(serializeUser(updated));
   } catch (err) {

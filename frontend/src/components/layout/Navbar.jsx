@@ -30,6 +30,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
             <Link to="/" className="hover:text-white transition-colors">Home</Link>
             <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
+            <Link to="/recommend" className="hover:text-white transition-colors">For You</Link>
             <Link to="/people" className="hover:text-white transition-colors">People</Link>
             {isAuthenticated && (
               <Link to="/messages" className="hover:text-white transition-colors">Messages</Link>
@@ -44,7 +45,12 @@ const Navbar = () => {
             <Search className="absolute left-3 w-4 h-4 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search films..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.currentTarget.value.trim()) {
+                  navigate(`/explore?q=${encodeURIComponent(e.currentTarget.value.trim())}`);
+                }
+              }}
               className="pl-9 pr-4 py-2 w-48 lg:w-64 rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-sm placeholder:text-gray-600 text-white"
             />
           </div>

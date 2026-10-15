@@ -102,10 +102,30 @@ const userSchema = new mongoose.Schema(
     collections: { type: [collectionSchema], default: [] },
 
     // Analytics
-    cinephileScore: { type: Number, default: 0 },
+    cinephileScore: { type: Number, default: 0, min: 0, max: 10 },
+    cinephileBreakdown: {
+      type: new mongoose.Schema(
+        {
+          wa: { type: Number, default: 0 },
+          eg: { type: Number, default: 0 },
+          ac: { type: Number, default: 0 },
+          rq: { type: Number, default: 0 },
+          dv: { type: Number, default: 0 },
+          ct: { type: Number, default: 0 },
+          cr: { type: Number, default: 0 }
+        },
+        { _id: false }
+      ),
+      default: () => ({ wa: 0, eg: 0, ac: 0, rq: 0, dv: 0, ct: 0, cr: 0 })
+    },
+    cinephileLevel: { type: String, default: "Newcomer" },
+    cinephileScoreUpdatedAt: { type: Date, default: null },
+    lastActiveAt: { type: Date, default: null },
     streak: { type: Number, default: 0 },
     quizzesPlayed: { type: Number, default: 0 },
     quizzesWon: { type: Number, default: 0 },
+    battlesPlayed: { type: Number, default: 0 },
+    battlesWon: { type: Number, default: 0 },
     moviesWatched: { type: Number, default: 0 },
     hoursWatched: { type: Number, default: 0 },
 

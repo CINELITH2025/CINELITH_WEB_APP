@@ -1,5 +1,8 @@
 import { Server } from "socket.io";
 import Message, { conversationKeyFor, serializeMessage } from "../models/Message.js";
+import { createNotification } from "../services/notification.service.js";
+import { applyStreak, refreshCinephileScore } from "../services/cinephile-score.service.js";
+import User from "../models/User.js";
 
 export const initSocket = (server) => {
   const io = new Server(server, {
@@ -44,6 +47,19 @@ export const initSocket = (server) => {
 
         io.to(userRoom(receiverId)).emit("receive_message", payload);
         socket.emit("message_sent", payload);
+
+        await createNotification({
+          userId: receiverId,
+          type: "message",
+          title: "New message",
+          text: `${payload.senderName || "Someone"} sent you a message.`
+        }).catch(() => null);
+
+        const sender = await User.findById(senderId);
+        if (sender) {
+          applyStreak(sender);
+          await refreshCinephileScore(sender).catch(() => null);
+        }
       } catch (err) {
         console.error("CHAT SAVE ERROR:", err);
         socket.emit("message_error", { message: "Failed to save message" });
