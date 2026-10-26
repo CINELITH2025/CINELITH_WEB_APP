@@ -69,11 +69,6 @@ const Profile = () => {
     setNewListName("");
   };
 
-  // Find movie details helper
-  const getMovieById = (id) => {
-    return MOVIE_CATALOG.find(m => m.id === id);
-  };
-
   // Search filtered movies to add to custom list
   const filteredCatalogForList = MOVIE_CATALOG.filter(m => 
     m.title.toLowerCase().includes(movieSearchQuery.toLowerCase())
@@ -231,34 +226,45 @@ const Profile = () => {
             {activeTab === "My Reviews" && (
               user.reviews && user.reviews.length > 0 ? (
                 <div className="flex flex-col gap-4 mb-12">
-                  {user.reviews.map((rev) => {
-                    const media = getMovieById(rev.movieId);
-                    const userRating = user.ratings?.find(r => r.id === rev.movieId)?.rating;
+                  {user.reviews.map((rev, idx) => {
+                    const movieId = rev.movieId || rev.id;
+                    const userRating = rev.rating || user.ratings?.find((r) => String(r.id) === String(movieId))?.rating;
+                    const dateLabel = rev.date
+                      ? new Date(rev.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                      : "";
+                    const invalidDate = !rev.date || Number.isNaN(new Date(rev.date).getTime());
                     return (
-                      <div key={rev.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 hover:border-white/20 transition-all">
-                        {media && (
-                          <div 
-                            onClick={() => navigate(`/movie/${media.id}`)}
+                      <div key={`${movieId || "review"}-${idx}`} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 hover:border-white/20 transition-all">
+                        {rev.image && (
+                          <Link
+                            to={movieId ? `/movie/${movieId}` : "/explore"}
                             className="w-16 h-24 rounded-lg overflow-hidden shrink-0 border border-white/10 bg-white/5 cursor-pointer"
                           >
-                            <img src={media.image} alt={media.title} className="w-full h-full object-cover" />
-                          </div>
+                            <img src={rev.image} alt={rev.title} className="w-full h-full object-cover" />
+                          </Link>
                         )}
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2">
-                              <h4 className="font-extrabold text-white text-base hover:text-[#F5BF26] transition-colors cursor-pointer" onClick={() => navigate(`/movie/${rev.movieId}`)}>
-                                {media ? media.title : `Movie #${rev.movieId}`}
-                              </h4>
-                              {userRating && (
+                              <Link
+                                to={movieId ? `/movie/${movieId}` : "/explore"}
+                                className="font-extrabold text-white text-base hover:text-[#F5BF26] transition-colors cursor-pointer"
+                              >
+                                {rev.title || (movieId ? `Movie #${movieId}` : "Untitled")}
+                              </Link>
+                              {userRating ? (
                                 <div className="flex items-center gap-1 bg-[#F5BF26]/10 border border-[#F5BF26]/20 px-2 py-0.5 rounded text-xs font-black text-[#F5BF26]">
                                   <Star className="w-3.5 h-3.5 fill-current" />
                                   {userRating}/10
                                 </div>
-                              )}
+                              ) : null}
                             </div>
-                            <p className="text-xs text-gray-500 mt-0.5">{new Date(rev.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                            <p className="text-sm text-gray-300 mt-3 leading-relaxed italic">"{rev.text}"</p>
+                            {!invalidDate && (
+                              <p className="text-xs text-gray-500 mt-0.5">{dateLabel}</p>
+                            )}
+                            {rev.text ? (
+                              <p className="text-sm text-gray-300 mt-3 leading-relaxed italic">"{rev.text}"</p>
+                            ) : null}
                           </div>
                         </div>
                       </div>

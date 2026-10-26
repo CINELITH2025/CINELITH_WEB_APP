@@ -3,7 +3,7 @@ import { ThumbsUp, MessageSquare, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
 
-const Discussion = ({ comments: initialComments, movieId, onCommentsChange }) => {
+const Discussion = ({ comments: initialComments, movieId, movieTitle, onCommentsChange }) => {
   const [activeTab, setActiveTab] = useState("Newest");
   const [comments, setComments] = useState(initialComments || []);
   const [newCommentText, setNewCommentText] = useState("");
@@ -25,7 +25,7 @@ const Discussion = ({ comments: initialComments, movieId, onCommentsChange }) =>
       setComments(next);
       onCommentsChange?.(next);
       setNewCommentText("");
-      addReviewPoints(movieId, newCommentText);
+      addReviewPoints(movieId, newCommentText.trim(), movieTitle);
     } catch (err) {
       console.error(err);
     }

@@ -360,11 +360,11 @@ const useUserStore = create(
         await get().fetchMe();
       },
 
-      addReviewPoints: async (movieId, commentText) => {
+      addReviewPoints: async (movieId, commentText, title) => {
         if (!get().user) return;
         await api.post("/users/review", {
           tvdbId: Number(movieId) || 0,
-          title: String(movieId),
+          title: title || String(movieId),
           type: "movie",
           content: commentText
         }).catch(() => null);

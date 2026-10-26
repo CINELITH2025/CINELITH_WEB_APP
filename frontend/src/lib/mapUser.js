@@ -69,13 +69,28 @@ export const mapUser = (raw) => {
     favoriteActors: (raw.topActors || []).map((actor) => actor.name || actor),
     favoriteGenres: raw.topGenres || [],
     topGenres: raw.topGenres || [],
-    ratings: (raw.ratings || []).map((rating) => ({
-      id: rating.tvdbId,
-      tvdbId: rating.tvdbId,
-      title: rating.title,
-      rating: rating.rating
-    })),
-    reviews: raw.reviews || [],
+    ratings: (raw.ratings || []).map((rating) => {
+      const movie = mapMovie(rating);
+      return {
+        id: movie.id,
+        tvdbId: movie.id,
+        title: movie.title,
+        rating: rating.rating,
+        image: movie.image
+      };
+    }),
+    reviews: (raw.reviews || []).map((review) => {
+      const movie = mapMovie(review);
+      return {
+        id: movie.id,
+        movieId: movie.id,
+        title: movie.title,
+        text: review.content || review.text || "",
+        date: review.createdAt || review.date,
+        rating: review.rating,
+        image: movie.image
+      };
+    }),
     customLists: (raw.collections || []).map((collection) => ({
       id: collection._id,
       name: collection.name,

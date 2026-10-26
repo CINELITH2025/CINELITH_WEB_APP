@@ -1,7 +1,14 @@
 import { hydrateLibraryMovie } from "../services/recommend.service.js";
 
 const REF_FIELDS = ["friends", "followers", "following", "pendingRequests"];
-const MOVIE_LIST_FIELDS = ["watchlist", "favoriteMovies", "topMovies", "recentlyViewed", "ratings"];
+const MOVIE_LIST_FIELDS = [
+  "watchlist",
+  "favoriteMovies",
+  "topMovies",
+  "recentlyViewed",
+  "ratings",
+  "reviews"
+];
 
 const serializeRef = (value) => {
   if (value == null) return value;
