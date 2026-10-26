@@ -43,7 +43,7 @@ const MovieDetails = () => {
           <>
             <MovieHero movie={movie} />
             <CastAndCrew cast={movie.cast || []} />
-            <Discussion comments={comments} movieId={movie.id} movieTitle={movie.title} movieImage={movie.image} onCommentsChange={setComments} />
+            <Discussion comments={comments} movieId={movie.id} movieTitle={movie.title} onCommentsChange={setComments} />
             <RelatedMovies movies={movie.related || []} />
           </>
         )}

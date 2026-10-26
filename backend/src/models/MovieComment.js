@@ -7,7 +7,9 @@ const movieCommentSchema = new mongoose.Schema(
     userName: { type: String, required: true },
     avatar: { type: String, default: "/images/actor_1.png" },
     text: { type: String, required: true },
-    likes: { type: Number, default: 0 }
+    likes: { type: Number, default: 0 },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    parentId: { type: mongoose.Schema.Types.ObjectId, ref: "MovieComment", default: null, index: true }
   },
   { timestamps: true }
 );

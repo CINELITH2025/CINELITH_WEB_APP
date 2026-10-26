@@ -198,15 +198,6 @@ const MovieHero = ({ movie }) => {
               Share
             </Button>
           )}
-          {isAuthenticated && existingRating?.rating ? (
-            <Button
-              onClick={() => setSharePayload(buildSharePayload({ kind: "rating", movie, rating: existingRating.rating }))}
-              className="font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer bg-white/5 border border-white/10 text-white hover:bg-white/10"
-            >
-              <Share2 className="w-4 h-4 mr-2" />
-              Share rating
-            </Button>
-          ) : null}
         </div>
         <ShareToChat open={Boolean(sharePayload)} payload={sharePayload} onClose={() => setSharePayload(null)} />
 

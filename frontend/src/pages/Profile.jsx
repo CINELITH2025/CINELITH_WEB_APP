@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
 import { formatCinephileScore } from '../lib/mapUser';
-import { buildSharePayload } from '../lib/share';
-import ShareToChat from '../components/chat/ShareToChat';
-import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check, Share2 } from 'lucide-react';
+import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -31,7 +29,6 @@ const Profile = () => {
   const [newListName, setNewListName] = useState("");
   const [addingMovieToListId, setAddingMovieToListId] = useState(null);
   const [movieSearchQuery, setMovieSearchQuery] = useState("");
-  const [sharePayload, setSharePayload] = useState(null);
 
   // Mock avatar options for editing
   const avatarOptions = [
@@ -268,17 +265,6 @@ const Profile = () => {
                             {rev.text ? (
                               <p className="text-sm text-gray-300 mt-3 leading-relaxed italic">"{rev.text}"</p>
                             ) : null}
-                            <button
-                              onClick={() => setSharePayload(buildSharePayload({
-                                kind: "review",
-                                movie: { id: movieId, title: rev.title, image: rev.image },
-                                rating: userRating,
-                                text: rev.text
-                              }))}
-                              className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#F5BF26] hover:underline"
-                            >
-                              <Share2 className="w-3.5 h-3.5" /> Share to chat
-                            </button>
                           </div>
                         </div>
                       </div>
@@ -543,7 +529,6 @@ const Profile = () => {
         </div>
       )}
 
-      <ShareToChat open={Boolean(sharePayload)} payload={sharePayload} onClose={() => setSharePayload(null)} />
       <Footer />
     </div>
   );

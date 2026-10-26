@@ -199,8 +199,13 @@ const useUserStore = create(
         return data.comments || [];
       },
 
-      postMovieComment: async (id, text) => {
-        const { data } = await api.post(`/catalog/movies/${id}/comments`, { text });
+      postMovieComment: async (id, text, parentId = null) => {
+        const { data } = await api.post(`/catalog/movies/${id}/comments`, { text, parentId });
+        return data;
+      },
+
+      likeMovieComment: async (id, commentId) => {
+        const { data } = await api.post(`/catalog/movies/${id}/comments/${commentId}/like`);
         return data;
       },
 
