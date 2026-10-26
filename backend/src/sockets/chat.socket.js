@@ -29,6 +29,7 @@ export const initSocket = (server) => {
         const senderId = String(msg.senderId || socket.data.userId || "");
         const receiverId = String(msg.receiverId || "");
         const text = String(msg.text || "").trim();
+        const share = msg.share && typeof msg.share === "object" ? msg.share : null;
 
         if (!senderId || !receiverId || !text) {
           socket.emit("message_error", { message: "Invalid message" });
@@ -40,7 +41,20 @@ export const initSocket = (server) => {
           sender: senderId,
           receiver: receiverId,
           senderName: msg.senderName || "User",
-          text
+          text,
+          ...(share?.kind
+            ? {
+                share: {
+                  kind: share.kind,
+                  movieId: share.movieId,
+                  title: share.title,
+                  image: share.image,
+                  year: share.year,
+                  rating: share.rating,
+                  text: share.text
+                }
+              }
+            : {})
         });
 
         const payload = serializeMessage(saved);
@@ -52,7 +66,9 @@ export const initSocket = (server) => {
           userId: receiverId,
           type: "message",
           title: "New message",
-          text: `${payload.senderName || "Someone"} sent you a message.`
+          text: payload.share?.title
+            ? `${payload.senderName || "Someone"} shared ${payload.share.title} with you.`
+            : `${payload.senderName || "Someone"} sent you a message.`
         }).catch(() => null);
 
         const sender = await User.findById(senderId);

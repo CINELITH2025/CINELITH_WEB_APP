@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api, apiErrorMessage, getToken, setToken } from '../lib/api';
-import { mapUser, mapChatMessage, toBackendMovie, toBackendActor } from '../lib/mapUser';
+import { mapUser, mapMovie, mapChatMessage, toBackendMovie, toBackendActor } from '../lib/mapUser';
 import { connectSocket, disconnectSocket, sendChatMessage } from '../lib/socket';
 
 // Curated movie & TV show data helper to populate onboarding and explore
@@ -247,14 +247,15 @@ const useUserStore = create(
         return messages;
       },
 
-      sendMessage: (friendId, text) => {
+      sendMessage: (friendId, text, share = null) => {
         const user = get().user;
         if (!user) return;
         sendChatMessage({
           senderId: user._id,
           senderName: user.name,
           receiverId: String(friendId),
-          text
+          text,
+          share
         });
         const current = get().chats[String(friendId)] || [];
         set({
@@ -267,6 +268,7 @@ const useUserStore = create(
                 senderId: user._id,
                 senderName: user.name,
                 text,
+                share: share || null,
                 timestamp: new Date().toISOString()
               }
             ]
@@ -341,18 +343,37 @@ const useUserStore = create(
       },
 
       toggleMovieWatchlist: async (movie) => {
-        await api.post("/users/watchlist", toBackendMovie(movie));
+        get().patchLibrary("watchlist", movie);
+        await api.post("/users/watchlist", { ...toBackendMovie(movie), toggle: true });
         await get().fetchMe();
       },
 
       toggleMovieLiked: async (movie) => {
-        await api.post("/users/like", toBackendMovie(movie));
+        get().patchLibrary("favoriteMovies", movie);
+        await api.post("/users/like", { ...toBackendMovie(movie), toggle: true });
         await get().fetchMe();
       },
 
       toggleMovieWatched: async (movie) => {
+        get().patchLibrary("watchedMovies", movie);
         await api.post("/users/recently-viewed", { ...toBackendMovie(movie), toggle: true });
         await get().fetchMe();
+      },
+
+      patchLibrary: (field, movie) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const key = String(movie?.id ?? movie?.tvdbId ?? movie?.movieId);
+        const list = currentUser[field] || [];
+        const exists = list.some((item) => String(item?.id ?? item?.tvdbId) === key);
+        set({
+          user: {
+            ...currentUser,
+            [field]: exists
+              ? list.filter((item) => String(item?.id ?? item?.tvdbId) !== key)
+              : [...list, mapMovie(movie)]
+          }
+        });
       },
 
       addMovieRating: async (movie, ratingValue) => {

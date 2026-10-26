@@ -29,6 +29,15 @@ const messageSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    share: {
+      kind: { type: String, enum: ["movie", "rating", "review", "article"] },
+      movieId: Number,
+      title: String,
+      image: String,
+      year: String,
+      rating: Number,
+      text: String
+    },
     read: {
       type: Boolean,
       default: false
@@ -46,6 +55,17 @@ export const serializeMessage = (msg) => ({
   receiverId: String(msg.receiver),
   senderName: msg.senderName,
   text: msg.text,
+  share: msg.share && msg.share.kind
+    ? {
+        kind: msg.share.kind,
+        movieId: msg.share.movieId,
+        title: msg.share.title,
+        image: msg.share.image,
+        year: msg.share.year,
+        rating: msg.share.rating,
+        text: msg.share.text
+      }
+    : null,
   read: Boolean(msg.read),
   createdAt: msg.createdAt
 });

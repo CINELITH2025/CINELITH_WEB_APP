@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Search, Send, Film, MessageCircle, Phone, Video, Info, User, CheckCheck } from 'lucide-react';
@@ -65,7 +65,11 @@ const Messages = () => {
       name: friend.name || "Cinephile",
       avatar: friend.avatar || "/images/actor_1.png",
       role: friend.bio || "Connected cinephile",
-      lastText: lastMsg ? lastMsg.text : "No messages yet",
+      lastText: lastMsg?.share?.title
+        ? `Shared ${lastMsg.share.title}`
+        : lastMsg
+          ? lastMsg.text
+          : "No messages yet",
       lastTime: lastMsg ? new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""
     };
   });
@@ -217,7 +221,32 @@ const Messages = () => {
                       ? 'bg-[#F5BF26] text-black rounded-tr-none' 
                       : 'bg-white/5 border border-white/10 text-white rounded-tl-none'
                   }`}>
-                    {msg.text}
+                    {msg.share?.kind ? (
+                      <Link
+                        to={msg.share.movieId ? `/movie/${msg.share.movieId}` : "/explore"}
+                        className="flex gap-3 items-start text-left"
+                      >
+                        {msg.share.image ? (
+                          <img src={msg.share.image} alt="" className="w-12 h-16 rounded-lg object-cover shrink-0" />
+                        ) : (
+                          <Film className="w-5 h-5 mt-0.5 shrink-0" />
+                        )}
+                        <span className="flex flex-col min-w-0">
+                          <span className="text-[10px] font-black uppercase tracking-wider opacity-70">
+                            {msg.share.kind}
+                          </span>
+                          <span className="font-black truncate">{msg.share.title}</span>
+                          {msg.share.rating != null ? (
+                            <span className="text-xs font-bold mt-0.5">{msg.share.rating}/10</span>
+                          ) : null}
+                          {msg.share.text ? (
+                            <span className="text-xs font-medium mt-1 line-clamp-3 opacity-80">"{msg.share.text}"</span>
+                          ) : null}
+                        </span>
+                      </Link>
+                    ) : (
+                      msg.text
+                    )}
                   </div>
                   
                   {/* Message meta information */}

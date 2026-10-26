@@ -138,5 +138,6 @@ export const mapChatMessage = (msg, myId) => ({
   senderName: msg.senderName,
   sender: String(msg.senderId) === String(myId) ? "You" : msg.senderName,
   text: msg.text,
+  share: msg.share || null,
   timestamp: msg.createdAt
 });

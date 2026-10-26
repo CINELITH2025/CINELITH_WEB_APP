@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ThumbsUp, MessageSquare, ArrowDown } from 'lucide-react';
+import { ThumbsUp, MessageSquare, ArrowDown, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
+import ShareToChat from '../chat/ShareToChat';
+import { buildSharePayload } from '../../lib/share';
 
-const Discussion = ({ comments: initialComments, movieId, movieTitle, onCommentsChange }) => {
+const Discussion = ({ comments: initialComments, movieId, movieTitle, movieImage, onCommentsChange }) => {
   const [activeTab, setActiveTab] = useState("Newest");
   const [comments, setComments] = useState(initialComments || []);
   const [newCommentText, setNewCommentText] = useState("");
+  const [sharePayload, setSharePayload] = useState(null);
 
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const user = useUserStore((state) => state.user);
@@ -108,12 +111,26 @@ const Discussion = ({ comments: initialComments, movieId, movieTitle, onComments
                   <button className="text-xs font-bold text-gray-500 hover:text-white transition-all cursor-pointer">
                     Reply
                   </button>
+                  {isAuthenticated && (
+                    <button
+                      onClick={() => setSharePayload(buildSharePayload({
+                        kind: "article",
+                        movie: { id: movieId, title: movieTitle, image: movieImage },
+                        text: comment.text
+                      }))}
+                      className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-white transition-all cursor-pointer"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      Share
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+      <ShareToChat open={Boolean(sharePayload)} payload={sharePayload} onClose={() => setSharePayload(null)} />
     </section>
   );
 };

@@ -45,9 +45,9 @@ export const disconnectSocket = () => {
 
 export const getSocket = () => socket;
 
-export const sendChatMessage = ({ senderId, senderName, receiverId, text }) => {
+export const sendChatMessage = ({ senderId, senderName, receiverId, text, share }) => {
   if (!socket?.connected) {
     throw new Error("Chat is not connected");
   }
-  socket.emit("send_message", { senderId, senderName, receiverId, text });
+  socket.emit("send_message", { senderId, senderName, receiverId, text, share });
 };

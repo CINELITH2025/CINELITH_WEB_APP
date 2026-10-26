@@ -50,3 +50,14 @@ export const recordUserRating = async ({ userId, title, movieId, rating = 5, sou
   scheduleKnnRebuild();
   return movie;
 };
+
+export const removeLikeRating = async ({ userId, title, movieId }) => {
+  if (!userId || !title) return null;
+  const movie = resolveMovie(title, movieId);
+  const existing = await KnnRating.findOne({ userId, movieId: movie.movieId });
+  if (existing?.source !== "like") return existing;
+  await KnnRating.deleteOne({ _id: existing._id });
+  invalidateLiveRatings();
+  scheduleKnnRebuild();
+  return movie;
+};

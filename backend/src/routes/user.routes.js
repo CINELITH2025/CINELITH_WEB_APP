@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { serializeUser } from "../utils/user.serializer.js";
 import { buildOnboardingFields } from "../utils/onboarding.js";
-import { recordUserRating } from "../services/knn-collect.service.js";
+import { recordUserRating, removeLikeRating } from "../services/knn-collect.service.js";
 import { createNotification } from "../services/notification.service.js";
 import {
   applyStreak,
@@ -254,27 +254,41 @@ router.post("/follow/:id", protect, async (req, res, next) => {
  */
 router.post("/like", protect, async (req, res, next) => {
   try {
-    const { tvdbId, title, type } = req.body;
+    const { tvdbId, title, type, toggle } = req.body;
 
     if (!tvdbId || !title || !type) {
       return res.status(400).json({ message: "tvdbId, title, type required" });
     }
 
     const user = await User.findById(req.user.id);
+    const sameMovie = (item) => Number(item.tvdbId) === Number(tvdbId);
+    const alreadyLiked = user.favoriteMovies.some(sameMovie);
 
-    if (!user.favoriteMovies.some((m) => m.tvdbId === tvdbId)) {
+    if (toggle && alreadyLiked) {
+      user.favoriteMovies = user.favoriteMovies.filter((item) => !sameMovie(item));
+      await removeLikeRating({
+        userId: user._id,
+        title,
+        movieId: tvdbId
+      }).catch(() => null);
+      await recordActivity(user);
+      return res.json({ message: "Unliked", title, liked: false });
+    }
+
+    if (!alreadyLiked) {
       user.favoriteMovies.push({ tvdbId, title, type });
     }
 
     await recordUserRating({
       userId: user._id,
       title,
+      movieId: tvdbId,
       rating: 5,
       source: "like"
     }).catch(() => null);
 
     await recordActivity(user);
-    res.json({ message: "Liked", title });
+    res.json({ message: "Liked", title, liked: true });
   } catch (err) {
     next(err);
   }
@@ -285,18 +299,26 @@ router.post("/like", protect, async (req, res, next) => {
  */
 router.post("/watchlist", protect, async (req, res, next) => {
   try {
-    const { tvdbId, title, type } = req.body;
+    const { tvdbId, title, type, toggle } = req.body;
 
     if (!userFieldsValid(tvdbId, title, type, res)) return;
 
     const user = await User.findById(req.user.id);
+    const sameMovie = (item) => Number(item.tvdbId) === Number(tvdbId);
+    const alreadyInWatchlist = user.watchlist.some(sameMovie);
 
-    if (!user.watchlist.some((m) => m.tvdbId === tvdbId)) {
+    if (toggle && alreadyInWatchlist) {
+      user.watchlist = user.watchlist.filter((item) => !sameMovie(item));
+      await recordActivity(user);
+      return res.json({ message: "Removed from watchlist", title, watchlist: false });
+    }
+
+    if (!alreadyInWatchlist) {
       user.watchlist.push({ tvdbId, title, type });
     }
 
     await recordActivity(user);
-    res.json({ message: "Added to watchlist", title });
+    res.json({ message: "Added to watchlist", title, watchlist: true });
   } catch (err) {
     next(err);
   }

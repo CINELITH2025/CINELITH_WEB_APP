@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Bookmark, Award, Check, Star } from 'lucide-react';
+import { Bookmark, Award, Check, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
+import ShareToChat from '../chat/ShareToChat';
+import { buildSharePayload } from '../../lib/share';
 
 const MovieHero = ({ movie }) => {
   const [showFullOverview, setShowFullOverview] = useState(false);
@@ -10,14 +12,17 @@ const MovieHero = ({ movie }) => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const toggleMovieWatchlist = useUserStore((state) => state.toggleMovieWatchlist);
   const toggleMovieWatched = useUserStore((state) => state.toggleMovieWatched);
+  const toggleMovieLiked = useUserStore((state) => state.toggleMovieLiked);
   const addMovieRating = useUserStore((state) => state.addMovieRating);
 
   const sameMovie = (item) => String(item?.id) === String(movie?.id);
   const inWatchlist = isAuthenticated && user?.watchlist?.some(sameMovie);
   const isWatched = isAuthenticated && user?.watchedMovies?.some(sameMovie);
+  const isLiked = isAuthenticated && user?.favoriteMovies?.some(sameMovie);
   const existingRating = isAuthenticated ? user?.ratings?.find(sameMovie) : null;
 
   const [hoverRating, setHoverRating] = useState(0);
+  const [sharePayload, setSharePayload] = useState(null);
 
   const handleWatchlistToggle = () => {
     if (!isAuthenticated) return;
@@ -27,6 +32,11 @@ const MovieHero = ({ movie }) => {
   const handleWatchedToggle = () => {
     if (!isAuthenticated) return;
     toggleMovieWatched(movie);
+  };
+
+  const handleLikeToggle = () => {
+    if (!isAuthenticated) return;
+    toggleMovieLiked(movie);
   };
 
   const handleRate = (value) => {
@@ -141,6 +151,18 @@ const MovieHero = ({ movie }) => {
 
         {/* === INTERACTIVE ACTION BUTTONS === */}
         <div className="flex flex-wrap items-center gap-4 mt-8 border-t border-white/5 pt-8">
+          <Button
+            onClick={handleLikeToggle}
+            className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
+              isLiked
+                ? 'bg-red-500/10 border border-red-500/40 text-red-400'
+                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'
+            }`}
+          >
+            <Heart className={`w-4 h-4 mr-2 ${isLiked ? 'fill-red-400 text-red-400' : ''}`} />
+            {isLiked ? 'Liked' : 'Like'}
+          </Button>
+
           {/* Watchlist Toggle */}
           <Button 
             onClick={handleWatchlistToggle}
@@ -166,7 +188,27 @@ const MovieHero = ({ movie }) => {
             <Check className={`w-4 h-4 mr-2 ${isWatched ? 'text-emerald-400' : ''}`} strokeWidth={3} />
             {isWatched ? 'Watched' : 'Mark Watched'}
           </Button>
+
+          {isAuthenticated && (
+            <Button
+              onClick={() => setSharePayload(buildSharePayload({ kind: "movie", movie }))}
+              className="font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer bg-white/5 border border-white/10 text-white hover:bg-white/10"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+          )}
+          {isAuthenticated && existingRating?.rating ? (
+            <Button
+              onClick={() => setSharePayload(buildSharePayload({ kind: "rating", movie, rating: existingRating.rating }))}
+              className="font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer bg-white/5 border border-white/10 text-white hover:bg-white/10"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share rating
+            </Button>
+          ) : null}
         </div>
+        <ShareToChat open={Boolean(sharePayload)} payload={sharePayload} onClose={() => setSharePayload(null)} />
 
         {/* === STAR RATING WIDGET === */}
         {isAuthenticated && (
@@ -205,7 +247,7 @@ const MovieHero = ({ movie }) => {
         {/* Login prompt for anonymous users */}
         {!isAuthenticated && (
           <p className="mt-6 text-xs text-gray-500 font-medium italic">
-            Sign in to add to watchlist, mark as watched, and rate this movie.
+            Sign in to like, add to watchlist, mark as watched, and rate this movie.
           </p>
         )}
       </div>
