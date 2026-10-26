@@ -15,18 +15,22 @@ export const toBackendActor = (actor) => {
   };
 };
 
-export const mapMovie = (movie = {}) => ({
-  id: movie.tvdbId || movie.movieId || movie.id,
-  tvdbId: movie.tvdbId || movie.movieId || movie.id,
-  title: movie.title || movie.name || "Untitled",
-  type: movie.type === "series" ? "tv" : movie.type || "movie",
-  year: movie.year || "",
-  genre: movie.genre || "",
-  rating: movie.rating,
-  image: movie.image || "/images/poster_1.png",
-  director: movie.director,
-  cast: movie.cast
-});
+export const mapMovie = (movie = {}) => {
+  const id = Number(movie.tvdbId || movie.movieId || movie.id) || movie.id;
+  return {
+    id,
+    tvdbId: id,
+    movieId: id,
+    title: movie.title || movie.name || "Untitled",
+    type: movie.type === "series" ? "tv" : movie.type || "movie",
+    year: movie.year || "",
+    genre: movie.genre || (movie.genres || []).join(", "),
+    rating: movie.rating,
+    image: movie.image || movie.poster || "/images/poster_1.png",
+    director: movie.director,
+    cast: movie.cast
+  };
+};
 
 export const mapUser = (raw) => {
   if (!raw) return null;

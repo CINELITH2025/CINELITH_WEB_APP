@@ -1,4 +1,7 @@
+import { hydrateLibraryMovie } from "../services/recommend.service.js";
+
 const REF_FIELDS = ["friends", "followers", "following", "pendingRequests"];
+const MOVIE_LIST_FIELDS = ["watchlist", "favoriteMovies", "topMovies", "recentlyViewed", "ratings"];
 
 const serializeRef = (value) => {
   if (value == null) return value;
@@ -25,10 +28,17 @@ export const serializeUser = (user) => {
     }
   }
 
+  for (const field of MOVIE_LIST_FIELDS) {
+    if (Array.isArray(serialized[field])) {
+      serialized[field] = serialized[field].map(hydrateLibraryMovie);
+    }
+  }
+
   if (Array.isArray(serialized.collections)) {
     serialized.collections = serialized.collections.map((collection) => ({
       ...collection,
-      _id: collection._id ? String(collection._id) : collection._id
+      _id: collection._id ? String(collection._id) : collection._id,
+      movies: (collection.movies || []).map(hydrateLibraryMovie)
     }));
   }
 

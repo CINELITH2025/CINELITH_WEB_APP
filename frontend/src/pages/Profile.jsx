@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
 import { formatCinephileScore } from '../lib/mapUser';
 import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
@@ -178,16 +178,19 @@ const Profile = () => {
               user.favoriteMovies && user.favoriteMovies.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
                   {user.favoriteMovies.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative"
+                    <Link
+                      key={item.id || idx}
+                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      className="flex flex-col group"
                     >
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Heart className="w-4 h-4 text-red-500 fill-current" />
+                      <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Heart className="w-4 h-4 text-red-500 fill-current" />
+                        </div>
                       </div>
-                    </div>
+                      <span className="mt-2 text-xs font-bold text-white truncate group-hover:text-[#F5BF26]">{item.title}</span>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -202,16 +205,19 @@ const Profile = () => {
               user.watchlist && user.watchlist.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
                   {user.watchlist.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative"
+                    <Link
+                      key={item.id || idx}
+                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      className="flex flex-col group"
                     >
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Bookmark className="w-4 h-4 text-[#F5BF26] fill-current" />
+                      <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Bookmark className="w-4 h-4 text-[#F5BF26] fill-current" />
+                        </div>
                       </div>
-                    </div>
+                      <span className="mt-2 text-xs font-bold text-white truncate group-hover:text-[#F5BF26]">{item.title}</span>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -320,11 +326,13 @@ const Profile = () => {
                         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 mb-6">
                           {list.movies.map((movie) => (
                             <div key={movie.id} className="relative aspect-[2/3] rounded-xl overflow-hidden bg-white/5 border border-white/5 group shadow-lg">
-                              <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
-                              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                              <Link to={movie.id ? `/movie/${movie.id}` : '/explore'} className="block w-full h-full">
+                                <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
+                              </Link>
+                              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 pointer-events-none">
                                 <button
                                   onClick={() => removeMovieFromCustomList(list.id, movie.id)}
-                                  className="p-1.5 rounded-full bg-red-500 text-white cursor-pointer hover:scale-115 transition-transform"
+                                  className="p-1.5 rounded-full bg-red-500 text-white cursor-pointer hover:scale-115 transition-transform pointer-events-auto"
                                   title="Remove from list"
                                 >
                                   <X className="w-3.5 h-3.5" strokeWidth={3} />

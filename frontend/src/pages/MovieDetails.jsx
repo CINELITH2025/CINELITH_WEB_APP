@@ -19,6 +19,11 @@ const MovieDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setMovie(null);
+    setError("");
+    if (!id || id === "undefined" || id === "null") {
+      setError("This title is not in the live catalog.");
+      return;
+    }
     fetchCatalogMovie(id)
       .then(setMovie)
       .catch(() => setError("This title is not in the live catalog."));

@@ -66,6 +66,33 @@ export const findCatalogMovie = ({ title, movieId } = {}) => {
   return null;
 };
 
+/** Attach catalog poster + canonical movieId so library clicks open /movie/:id. */
+export const hydrateLibraryMovie = (item = {}) => {
+  if (!item || typeof item !== "object") return item;
+  try {
+    const title = item.title || item.name;
+    const requestedId = item.tvdbId ?? item.movieId ?? item.id;
+    let found = findCatalogMovie({ movieId: requestedId });
+    if (title && found && String(found.title).toLowerCase() !== String(title).toLowerCase()) {
+      found = findCatalogMovie({ title }) || found;
+    }
+    if (!found && title) found = findCatalogMovie({ title });
+    if (!found) return item;
+    return {
+      ...item,
+      tvdbId: found.movieId,
+      movieId: found.movieId,
+      title: found.title || title,
+      image: found.poster || item.image,
+      poster: found.poster || item.poster,
+      year: found.year || item.year,
+      genres: found.genres || item.genres
+    };
+  } catch {
+    return item;
+  }
+};
+
 export const searchRecommendCatalog = (query = "", limit = 24) => {
   const { raw } = loadIndex();
   const needle = String(query || "").trim().toLowerCase();
