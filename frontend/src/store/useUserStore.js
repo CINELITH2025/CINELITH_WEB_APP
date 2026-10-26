@@ -351,7 +351,7 @@ const useUserStore = create(
       },
 
       toggleMovieWatched: async (movie) => {
-        await api.post("/users/recently-viewed", toBackendMovie(movie));
+        await api.post("/users/recently-viewed", { ...toBackendMovie(movie), toggle: true });
         await get().fetchMe();
       },
 

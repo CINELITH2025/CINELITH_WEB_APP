@@ -369,24 +369,32 @@ router.post("/review", protect, async (req, res, next) => {
  */
 router.post("/recently-viewed", protect, async (req, res, next) => {
   try {
-    const { tvdbId, title, type } = req.body;
+    const { tvdbId, title, type, toggle } = req.body;
 
     if (!userFieldsValid(tvdbId, title, type, res)) return;
 
     const user = await User.findById(req.user.id);
+    const sameMovie = (item) => Number(item.tvdbId) === Number(tvdbId);
+    const alreadyWatched = user.recentlyViewed.some(sameMovie);
 
-    const isNewView = !user.recentlyViewed.some((m) => m.tvdbId === tvdbId);
-
-    user.recentlyViewed = user.recentlyViewed.filter((m) => m.tvdbId !== tvdbId);
-    user.recentlyViewed.unshift({ tvdbId, title, type, viewedAt: new Date() });
-    user.recentlyViewed = user.recentlyViewed.slice(0, 50);
-
-    if (isNewView) {
-      user.moviesWatched += 1;
+    if (toggle && alreadyWatched) {
+      user.recentlyViewed = user.recentlyViewed.filter((item) => !sameMovie(item));
+      user.moviesWatched = Math.max(0, (user.moviesWatched || 0) - 1);
+      await recordActivity(user);
+      return res.json({ message: "Removed from watched", title, watched: false });
     }
 
+    if (alreadyWatched) {
+      await recordActivity(user);
+      return res.json({ message: "Already watched", title, watched: true });
+    }
+
+    user.recentlyViewed.unshift({ tvdbId, title, type, viewedAt: new Date() });
+    user.recentlyViewed = user.recentlyViewed.slice(0, 50);
+    user.moviesWatched = (user.moviesWatched || 0) + 1;
+
     await recordActivity(user);
-    res.json({ message: "Recently viewed updated", title });
+    res.json({ message: "Marked watched", title, watched: true });
   } catch (err) {
     next(err);
   }

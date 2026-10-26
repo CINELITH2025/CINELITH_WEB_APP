@@ -12,9 +12,10 @@ const MovieHero = ({ movie }) => {
   const toggleMovieWatched = useUserStore((state) => state.toggleMovieWatched);
   const addMovieRating = useUserStore((state) => state.addMovieRating);
 
-  const inWatchlist = isAuthenticated && user?.watchlist?.some(m => m.id === movie.id);
-  const isWatched = isAuthenticated && user?.watchedMovies?.some(m => m.id === movie.id);
-  const existingRating = isAuthenticated ? user?.ratings?.find(r => r.id === movie.id) : null;
+  const sameMovie = (item) => String(item?.id) === String(movie?.id);
+  const inWatchlist = isAuthenticated && user?.watchlist?.some(sameMovie);
+  const isWatched = isAuthenticated && user?.watchedMovies?.some(sameMovie);
+  const existingRating = isAuthenticated ? user?.ratings?.find(sameMovie) : null;
 
   const [hoverRating, setHoverRating] = useState(0);
 
