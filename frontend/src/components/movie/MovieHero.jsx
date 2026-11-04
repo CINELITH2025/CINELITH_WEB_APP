@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Bookmark, Award, Check, Star } from 'lucide-react';
+import { Bookmark, Award, Check, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
+import ShareToChat from '../chat/ShareToChat';
+import { buildSharePayload } from '../../lib/share';
 
 const MovieHero = ({ movie }) => {
   const [showFullOverview, setShowFullOverview] = useState(false);
@@ -10,13 +12,17 @@ const MovieHero = ({ movie }) => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const toggleMovieWatchlist = useUserStore((state) => state.toggleMovieWatchlist);
   const toggleMovieWatched = useUserStore((state) => state.toggleMovieWatched);
+  const toggleMovieLiked = useUserStore((state) => state.toggleMovieLiked);
   const addMovieRating = useUserStore((state) => state.addMovieRating);
 
-  const inWatchlist = isAuthenticated && user?.watchlist?.some(m => m.id === movie.id);
-  const isWatched = isAuthenticated && user?.watchedMovies?.some(m => m.id === movie.id);
-  const existingRating = isAuthenticated ? user?.ratings?.find(r => r.id === movie.id) : null;
+  const sameMovie = (item) => String(item?.id) === String(movie?.id);
+  const inWatchlist = isAuthenticated && user?.watchlist?.some(sameMovie);
+  const isWatched = isAuthenticated && user?.watchedMovies?.some(sameMovie);
+  const isLiked = isAuthenticated && user?.favoriteMovies?.some(sameMovie);
+  const existingRating = isAuthenticated ? user?.ratings?.find(sameMovie) : null;
 
   const [hoverRating, setHoverRating] = useState(0);
+  const [sharePayload, setSharePayload] = useState(null);
 
   const handleWatchlistToggle = () => {
     if (!isAuthenticated) return;
@@ -26,6 +32,11 @@ const MovieHero = ({ movie }) => {
   const handleWatchedToggle = () => {
     if (!isAuthenticated) return;
     toggleMovieWatched(movie);
+  };
+
+  const handleLikeToggle = () => {
+    if (!isAuthenticated) return;
+    toggleMovieLiked(movie);
   };
 
   const handleRate = (value) => {
@@ -58,11 +69,15 @@ const MovieHero = ({ movie }) => {
         <div className="flex items-center gap-4 mb-8">
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">CL Score</span>
-            <span className="text-2xl font-black text-[#F5BF26]">{movie.clScore}</span>
+            <span className="text-2xl font-black text-[#F5BF26]">{movie.clScore ?? "—"}</span>
+            <span className="text-[9px] text-gray-500 font-bold mt-1">Bayesian /100</span>
           </div>
           <div className="flex flex-col bg-white/5 border border-white/10 px-4 py-3 rounded-xl min-w-[90px] text-center shadow-lg">
             <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">User Score</span>
-            <span className="text-2xl font-black text-[#F5BF26]">{movie.userScore}</span>
+            <span className="text-2xl font-black text-[#F5BF26]">{movie.userScore ?? "—"}</span>
+            <span className="text-[9px] text-gray-500 font-bold mt-1">
+              {movie.voteCount ? `${movie.voteCount} votes` : "Mean /100"}
+            </span>
           </div>
         </div>
 
@@ -92,7 +107,9 @@ const MovieHero = ({ movie }) => {
           <div className="md:col-span-2 flex flex-col gap-4">
             <h3 className="text-lg font-black text-white tracking-tight">Overview</h3>
             <p className="text-sm md:text-base text-gray-400 leading-relaxed font-medium">
-              {showFullOverview ? movie.description : `${movie.description.slice(0, 200)}...`}
+              {showFullOverview || !(movie.description || "").length
+                ? (movie.description || "No overview in the catalog for this title.")
+                : `${movie.description.slice(0, 200)}...`}
             </p>
             <button 
               onClick={() => setShowFullOverview(!showFullOverview)}
@@ -134,6 +151,18 @@ const MovieHero = ({ movie }) => {
 
         {/* === INTERACTIVE ACTION BUTTONS === */}
         <div className="flex flex-wrap items-center gap-4 mt-8 border-t border-white/5 pt-8">
+          <Button
+            onClick={handleLikeToggle}
+            className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
+              isLiked
+                ? 'bg-red-500/10 border border-red-500/40 text-red-400'
+                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'
+            }`}
+          >
+            <Heart className={`w-4 h-4 mr-2 ${isLiked ? 'fill-red-400 text-red-400' : ''}`} />
+            {isLiked ? 'Liked' : 'Like'}
+          </Button>
+
           {/* Watchlist Toggle */}
           <Button 
             onClick={handleWatchlistToggle}
@@ -159,7 +188,18 @@ const MovieHero = ({ movie }) => {
             <Check className={`w-4 h-4 mr-2 ${isWatched ? 'text-emerald-400' : ''}`} strokeWidth={3} />
             {isWatched ? 'Watched' : 'Mark Watched'}
           </Button>
+
+          {isAuthenticated && (
+            <Button
+              onClick={() => setSharePayload(buildSharePayload({ kind: "movie", movie }))}
+              className="font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer bg-white/5 border border-white/10 text-white hover:bg-white/10"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+          )}
         </div>
+        <ShareToChat open={Boolean(sharePayload)} payload={sharePayload} onClose={() => setSharePayload(null)} />
 
         {/* === STAR RATING WIDGET === */}
         {isAuthenticated && (
@@ -198,7 +238,7 @@ const MovieHero = ({ movie }) => {
         {/* Login prompt for anonymous users */}
         {!isAuthenticated && (
           <p className="mt-6 text-xs text-gray-500 font-medium italic">
-            Sign in to add to watchlist, mark as watched, and rate this movie.
+            Sign in to like, add to watchlist, mark as watched, and rate this movie.
           </p>
         )}
       </div>

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 const InteractiveActivities = () => {
   const user = useUserStore((state) => state.user);
-  const awardPoints = useUserStore((state) => state.awardPoints);
+  const recordActivity = useUserStore((state) => state.recordActivity);
 
   // --- Battle of the Day States ---
   const [battleVote, setBattleVote] = useState(null); // 'dune' or 'oppenheimer'
@@ -54,9 +54,8 @@ const InteractiveActivities = () => {
       setBattlePercentages({ dune: 47, oppenheimer: 53 });
     }
 
-    // Award +10 points
-    awardPoints(10);
-    triggerToast("Vote registered! +10 Cinephile points awarded!");
+    recordActivity("battle", true).catch(() => null);
+    triggerToast("Vote registered — Battle score updated.");
   };
 
   // --- Quiz Click ---
@@ -75,9 +74,9 @@ const InteractiveActivities = () => {
     setQuizSubmitted(true);
     localStorage.setItem('cinelith_quiz_selection', index.toString());
 
+    recordActivity("quiz", index === correctQuizIndex).catch(() => null);
     if (index === correctQuizIndex) {
-      awardPoints(20);
-      triggerToast("Correct! +20 Cinephile points awarded!");
+      triggerToast("Correct — quiz activity is now in your Cinephile Score.");
     } else {
       triggerToast("Incorrect. The correct answer is Stanley Kubrick.");
     }

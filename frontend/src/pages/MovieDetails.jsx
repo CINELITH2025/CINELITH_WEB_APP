@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -6,8 +6,7 @@ import MovieHero from '../components/movie/MovieHero';
 import CastAndCrew from '../components/movie/CastAndCrew';
 import Discussion from '../components/movie/Discussion';
 import RelatedMovies from '../components/movie/RelatedMovies';
-import UnlockGate from '../components/auth/UnlockGate';
-import { MOVIE_CATALOG } from '../store/useUserStore';
+import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
 
 // Extended movie details data keyed by catalog ID
 const MOVIE_DETAILS = {
@@ -32,13 +31,12 @@ const MOVIE_DETAILS = {
   19: { pgRating: "PG", clScore: 96, userScore: 94, runtime: "1h 57m", releaseDate: "December 14, 2018", awards: "Winner of 1 Academy Award", writer: "Phil Lord, Rodney Rothman", description: "Teen Miles Morales becomes the new Spider-Man and must join with five spider-powered individuals from other dimensions to stop a threat for all realities." },
   20: { pgRating: "PG", clScore: 95, userScore: 93, runtime: "1h 46m", releaseDate: "August 26, 2016", awards: "Winner of LA Film Critics Award", writer: "Makoto Shinkai", description: "Two teenagers share a profound, magical connection upon discovering they are swapping bodies. Things manage to become even more complicated when the boy and girl decide to meet in person." },
   21: { pgRating: "R", clScore: 92, userScore: 91, runtime: "2h 33m", releaseDate: "August 21, 2009", awards: "Winner of 1 Academy Award", writer: "Quentin Tarantino", description: "In Nazi-occupied France during World War II, a plan to assassinate Nazi leaders by a group of Jewish U.S. soldiers coincides with a theatre owner's vengeful plans for the same." },
-  22: { pgRating: "PG-13", clScore: 89, userScore: 85, runtime: "2h 42m", releaseDate: "December 18, 2009", awards: "Winner of 3 Academy Awards", writer: "James Cameron", description: "A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home." },
+  22: { pgRating: "PG-13", clScore: 89, userScore: 85, runtime: "2h 42m", releaseDate: "December 18, 2009", awards: "Winner of 3 Academy Awards", writer: "James Cameron", description: "A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world feels is his home." },
   23: { pgRating: "PG", clScore: 97, userScore: 94, runtime: "2h 1m", releaseDate: "May 25, 1977", awards: "Winner of 6 Academy Awards", writer: "George Lucas", description: "Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empire's world-destroying battle station, while also attempting to rescue Princess Leia from Darth Vader." },
   24: { pgRating: "PG-13", clScore: 97, userScore: 96, runtime: "2h 58m", releaseDate: "December 19, 2001", awards: "Winner of 4 Academy Awards", writer: "J.R.R. Tolkien, Fran Walsh, Peter Jackson", description: "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron." },
   25: { pgRating: "PG-13", clScore: 95, userScore: 95, runtime: "2h 22m", releaseDate: "July 6, 1994", awards: "Winner of 6 Academy Awards", writer: "Winston Groom, Eric Roth", description: "The history of the United States from the 1950s to the '70s unfolds from the perspective of an Alabama man with an IQ of 75, who yearns to be reunited with his childhood sweetheart." }
 };
 
-// Default cast for all movies (since we use the same actor images)
 const defaultCast = [
   { name: "Lead Actor", role: "Protagonist", image: "/images/actor_1.png" },
   { name: "Lead Actress", role: "Co-Lead", image: "/images/actor_1.png" },
@@ -66,79 +64,87 @@ const defaultComments = [
 
 const MovieDetails = () => {
   const { id } = useParams();
-  const movieId = parseInt(id, 10);
+  const fetchCatalogMovie = useUserStore((state) => state.fetchCatalogMovie);
+  const fetchMovieComments = useUserStore((state) => state.fetchMovieComments);
+  const [movie, setMovie] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+    setMovie(null);
+    setError("");
 
-  // Build the full movie object from MOVIE_CATALOG + MOVIE_DETAILS
-  const movie = useMemo(() => {
-    const catalogEntry = MOVIE_CATALOG.find(m => m.id === movieId);
-    const details = MOVIE_DETAILS[movieId];
-
-    if (!catalogEntry) {
-      // Fallback for unknown IDs
-      return {
-        id: movieId,
-        title: "Unknown Movie",
-        year: "N/A",
-        genre: "N/A",
-        image: "/images/poster_1.jpg",
-        director: "Unknown",
-        pgRating: "N/A",
-        clScore: 0,
-        userScore: 0,
-        runtime: "N/A",
-        releaseDate: "N/A",
-        awards: "N/A",
-        writer: "Unknown",
-        description: "No description available for this title.",
-        cast: defaultCast,
-        comments: defaultComments,
-        related: MOVIE_CATALOG.slice(0, 6).map(m => ({ title: m.title, image: m.image }))
-      };
+    if (!id || id === "undefined" || id === "null") {
+      setError("This title is not in the live catalog.");
+      return;
     }
 
-    return {
-      ...catalogEntry,
-      ...(details || {}),
-      cast: defaultCast,
-      comments: defaultComments,
-      related: MOVIE_CATALOG
-        .filter(m => m.id !== movieId)
-        .slice(0, 6)
-        .map(m => ({ title: m.title, image: m.image }))
-    };
-  }, [movieId]);
+    // Try fetching from backend API catalog first
+    fetchCatalogMovie(id)
+      .then((data) => {
+        if (data) {
+          setMovie(data);
+        } else {
+          fallbackToStaticCatalog();
+        }
+      })
+      .catch(() => {
+        fallbackToStaticCatalog();
+      });
+
+    // Fetch live discussion comments
+    fetchMovieComments(id)
+      .then((liveComments) => {
+        if (Array.isArray(liveComments) && liveComments.length > 0) {
+          setComments(liveComments);
+        } else {
+          setComments(defaultComments);
+        }
+      })
+      .catch(() => {
+        setComments(defaultComments);
+      });
+
+    function fallbackToStaticCatalog() {
+      const numId = Number(id);
+      const catalogEntry = MOVIE_CATALOG.find((m) => m.id === numId || String(m.id) === String(id));
+      if (catalogEntry) {
+        const details = MOVIE_DETAILS[numId] || {};
+        const castMembers = Array.isArray(catalogEntry.cast)
+          ? catalogEntry.cast.map((name) => ({ name, role: "Cast", image: "/images/actor_1.png" }))
+          : defaultCast;
+
+        setMovie({
+          ...catalogEntry,
+          ...details,
+          cast: castMembers,
+          comments: defaultComments,
+          related: MOVIE_CATALOG.filter((m) => m.id !== numId)
+            .slice(0, 6)
+            .map((m) => ({ id: m.id, title: m.title, image: m.image }))
+        });
+      } else {
+        setError("This title is not in the live catalog.");
+      }
+    }
+  }, [id, fetchCatalogMovie, fetchMovieComments]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
       <Navbar />
-      
+
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
-        <UnlockGate 
-          title="Unlock Movie Details & Taste Match" 
-          subtitle="Explore full movie details, streaming availability (JioHotstar, Netflix), reviews, cast profiles, and your personalized Taste Match score by logging in."
-          features={[
-            "Taste Match Score (e.g. 94% Match) based on your viewing history",
-            "Streaming provider availability (JioHotstar, Netflix, Amazon Prime)",
-            "Community review ratings & spoiler-protected discussions",
-            "Direct cast & crew profile exploration"
-          ]}
-        >
-          {/* Main Movie Hero Section */}
-          <MovieHero movie={movie} />
-          
-          {/* Cast section beneath overview */}
-          <CastAndCrew cast={movie.cast} />
-          
-          {/* Community Discussion forums */}
-          <Discussion comments={movie.comments} movieId={movieId} />
-          
-          {/* Related Titles */}
-          <RelatedMovies movies={movie.related} />
-        </UnlockGate>
+        {error && <p className="text-red-400 text-sm font-semibold">{error}</p>}
+        {!movie && !error && <p className="text-gray-500 text-sm font-semibold">Loading title...</p>}
+        {movie && (
+          <>
+            <MovieHero movie={movie} />
+            <CastAndCrew cast={movie.cast || []} />
+            <Discussion comments={comments} movieId={movie.id} movieTitle={movie.title} onCommentsChange={setComments} />
+            <RelatedMovies movies={movie.related || []} />
+          </>
+        )}
       </main>
 
       <Footer />

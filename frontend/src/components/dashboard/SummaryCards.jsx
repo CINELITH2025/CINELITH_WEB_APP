@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star, Film, Calendar } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
+import { formatCinephileScore } from '../../lib/mapUser';
 
 const SummaryCards = () => {
   const user = useUserStore((state) => state.user);
@@ -14,7 +15,7 @@ const SummaryCards = () => {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center justify-between group hover:border-[#F5BF26]/50 transition-colors">
           <div>
             <h3 className="text-sm font-semibold text-white mb-2">Cinephile Score</h3>
-            <p className="text-4xl font-black text-[#F5BF26]">{user?.cinephileScore?.toLocaleString() || 0}</p>
+            <p className="text-4xl font-black text-[#F5BF26]">{formatCinephileScore(user?.cinephileScore)}</p>
           </div>
           <Star className="w-10 h-10 text-white/20 group-hover:text-[#F5BF26] transition-colors" strokeWidth={1.5} />
         </div>

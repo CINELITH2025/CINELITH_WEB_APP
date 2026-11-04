@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../../store/useUserStore';
+import { formatCinephileScore } from '../../lib/mapUser';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 const Hero = () => {
@@ -28,7 +29,7 @@ const Hero = () => {
           <div className="flex items-center gap-2 bg-[#F5BF26]/10 border border-[#F5BF26]/30 px-4 py-2.5 rounded-full w-fit mb-5 shadow-lg animate-fade-in">
             <Sparkles className="w-4 h-4 text-[#F5BF26] fill-current" />
             <span className="text-[10px] md:text-xs font-black uppercase tracking-wider text-white">
-              Welcome back, <span className="text-[#F5BF26]">{user.name}</span> • Score: {user.cinephileScore?.toLocaleString()} • Streak: {user.streak}d
+              Welcome back, <span className="text-[#F5BF26]">{user.name}</span> • Score: {formatCinephileScore(user.cinephileScore)} • Streak: {user.streak || 0}d
             </span>
           </div>
         ) : (

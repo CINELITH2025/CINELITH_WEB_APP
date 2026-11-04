@@ -2,8 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
+import { formatCinephileScore } from '../lib/mapUser';
 import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
 
 const Profile = () => {
@@ -51,9 +52,13 @@ const Profile = () => {
   }
 
   // Handle Profile Save
-  const handleSaveProfile = () => {
-    updateProfile(editName, editBio, editAvatar);
-    setIsEditModalOpen(false);
+  const handleSaveProfile = async () => {
+    try {
+      await updateProfile(editName, editBio, editAvatar);
+      setIsEditModalOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Handle Custom List Creation
@@ -62,11 +67,6 @@ const Profile = () => {
     if (!newListName.trim()) return;
     createCustomList(newListName.trim());
     setNewListName("");
-  };
-
-  // Find movie details helper
-  const getMovieById = (id) => {
-    return MOVIE_CATALOG.find(m => m.id === id);
   };
 
   // Search filtered movies to add to custom list
@@ -173,16 +173,19 @@ const Profile = () => {
               user.favoriteMovies && user.favoriteMovies.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
                   {user.favoriteMovies.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative"
+                    <Link
+                      key={item.id || idx}
+                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      className="flex flex-col group"
                     >
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Heart className="w-4 h-4 text-red-500 fill-current" />
+                      <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Heart className="w-4 h-4 text-red-500 fill-current" />
+                        </div>
                       </div>
-                    </div>
+                      <span className="mt-2 text-xs font-bold text-white truncate group-hover:text-[#F5BF26]">{item.title}</span>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -197,16 +200,19 @@ const Profile = () => {
               user.watchlist && user.watchlist.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
                   {user.watchlist.map((item, idx) => (
-                    <div 
-                      key={idx} 
-                      onClick={() => navigate(`/movie/${item.id}`)}
-                      className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 group cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative"
+                    <Link
+                      key={item.id || idx}
+                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      className="flex flex-col group"
                     >
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Bookmark className="w-4 h-4 text-[#F5BF26] fill-current" />
+                      <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <div className="absolute top-2.5 right-2.5 bg-black/60 p-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Bookmark className="w-4 h-4 text-[#F5BF26] fill-current" />
+                        </div>
                       </div>
-                    </div>
+                      <span className="mt-2 text-xs font-bold text-white truncate group-hover:text-[#F5BF26]">{item.title}</span>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -220,34 +226,45 @@ const Profile = () => {
             {activeTab === "My Reviews" && (
               user.reviews && user.reviews.length > 0 ? (
                 <div className="flex flex-col gap-4 mb-12">
-                  {user.reviews.map((rev) => {
-                    const media = getMovieById(rev.movieId);
-                    const userRating = user.ratings?.find(r => r.id === rev.movieId)?.rating;
+                  {user.reviews.map((rev, idx) => {
+                    const movieId = rev.movieId || rev.id;
+                    const userRating = rev.rating || user.ratings?.find((r) => String(r.id) === String(movieId))?.rating;
+                    const dateLabel = rev.date
+                      ? new Date(rev.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                      : "";
+                    const invalidDate = !rev.date || Number.isNaN(new Date(rev.date).getTime());
                     return (
-                      <div key={rev.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 hover:border-white/20 transition-all">
-                        {media && (
-                          <div 
-                            onClick={() => navigate(`/movie/${media.id}`)}
+                      <div key={`${movieId || "review"}-${idx}`} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex gap-4 hover:border-white/20 transition-all">
+                        {rev.image && (
+                          <Link
+                            to={movieId ? `/movie/${movieId}` : "/explore"}
                             className="w-16 h-24 rounded-lg overflow-hidden shrink-0 border border-white/10 bg-white/5 cursor-pointer"
                           >
-                            <img src={media.image} alt={media.title} className="w-full h-full object-cover" />
-                          </div>
+                            <img src={rev.image} alt={rev.title} className="w-full h-full object-cover" />
+                          </Link>
                         )}
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2">
-                              <h4 className="font-extrabold text-white text-base hover:text-[#F5BF26] transition-colors cursor-pointer" onClick={() => navigate(`/movie/${rev.movieId}`)}>
-                                {media ? media.title : `Movie #${rev.movieId}`}
-                              </h4>
-                              {userRating && (
+                              <Link
+                                to={movieId ? `/movie/${movieId}` : "/explore"}
+                                className="font-extrabold text-white text-base hover:text-[#F5BF26] transition-colors cursor-pointer"
+                              >
+                                {rev.title || (movieId ? `Movie #${movieId}` : "Untitled")}
+                              </Link>
+                              {userRating ? (
                                 <div className="flex items-center gap-1 bg-[#F5BF26]/10 border border-[#F5BF26]/20 px-2 py-0.5 rounded text-xs font-black text-[#F5BF26]">
                                   <Star className="w-3.5 h-3.5 fill-current" />
                                   {userRating}/10
                                 </div>
-                              )}
+                              ) : null}
                             </div>
-                            <p className="text-xs text-gray-500 mt-0.5">{new Date(rev.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                            <p className="text-sm text-gray-300 mt-3 leading-relaxed italic">"{rev.text}"</p>
+                            {!invalidDate && (
+                              <p className="text-xs text-gray-500 mt-0.5">{dateLabel}</p>
+                            )}
+                            {rev.text ? (
+                              <p className="text-sm text-gray-300 mt-3 leading-relaxed italic">"{rev.text}"</p>
+                            ) : null}
                           </div>
                         </div>
                       </div>
@@ -315,11 +332,13 @@ const Profile = () => {
                         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 mb-6">
                           {list.movies.map((movie) => (
                             <div key={movie.id} className="relative aspect-[2/3] rounded-xl overflow-hidden bg-white/5 border border-white/5 group shadow-lg">
-                              <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
-                              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                              <Link to={movie.id ? `/movie/${movie.id}` : '/explore'} className="block w-full h-full">
+                                <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
+                              </Link>
+                              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 pointer-events-none">
                                 <button
                                   onClick={() => removeMovieFromCustomList(list.id, movie.id)}
-                                  className="p-1.5 rounded-full bg-red-500 text-white cursor-pointer hover:scale-115 transition-transform"
+                                  className="p-1.5 rounded-full bg-red-500 text-white cursor-pointer hover:scale-115 transition-transform pointer-events-auto"
                                   title="Remove from list"
                                 >
                                   <X className="w-3.5 h-3.5" strokeWidth={3} />
@@ -412,7 +431,8 @@ const Profile = () => {
 
               <div className="flex flex-col bg-white/5 p-4 rounded-xl border border-white/5">
                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cinephile Score</span>
-                <span className="text-2xl font-black text-[#F5BF26]">{user.cinephileScore?.toLocaleString() || "0"}</span>
+                <span className="text-2xl font-black text-[#F5BF26]">{formatCinephileScore(user.cinephileScore)}</span>
+                <span className="text-[10px] text-gray-500 font-bold mt-1">{user.cinephileLevel || "Newcomer"}</span>
               </div>
             </div>
           </div>

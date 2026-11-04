@@ -2,24 +2,60 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { serializeUser } from "../utils/user.serializer.js";
+import { refreshCinephileScore } from "../services/cinephile-score.service.js";
 
 const router = express.Router();
 
+const signToken = (userId) =>
+  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
 /* =====================
-   REGISTER
+   REGISTER (includes onboarding)
 ===================== */
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+router.post("/register", async (req, res, next) => {
+  try {
+    const { name, email, password, bio, username, avatar } = req.body;
 
-  const hashed = await bcrypt.hash(password, 10);
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "name, email, password required" });
+    }
 
-  await User.create({
-    name,
-    email,
-    password: hashed
-  });
+    const existing = await User.findOne({ email });
 
-  res.json({ message: "User registered" });
+    if (existing) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    if (username) {
+      const taken = await User.findOne({ username });
+      if (taken) {
+        return res.status(409).json({ message: "Username already taken" });
+      }
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashed,
+      bio: bio || "",
+      username: username || undefined,
+      avatar: avatar || null,
+      onboardingCompleted: false
+    });
+
+    const safeUser = await User.findById(user._id).select("-password").lean();
+
+    res.status(201).json({
+      message: "User registered",
+      token: signToken(user._id),
+      user: serializeUser(safeUser)
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 /* =====================
@@ -39,14 +75,17 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    await refreshCinephileScore(user).catch(() => null);
 
-    res.json({ token });
+    const safeUser = await User.findById(user._id)
+      .select("-password")
+      .populate("friends", "name email avatar bio")
+      .lean();
 
+    res.json({
+      token: signToken(user._id),
+      user: serializeUser(safeUser)
+    });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });

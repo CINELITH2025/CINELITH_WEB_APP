@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CastAndCrew = ({ cast }) => {
   const navigate = useNavigate();
+  if (!cast?.length) return null;
 
   return (
     <section className="mb-16">

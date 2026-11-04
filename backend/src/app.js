@@ -8,6 +8,10 @@ import userRoutes from "./routes/user.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import movieRoutes from "./routes/movie.routes.js";
 import waitlistRoutes from "./routes/waitlist.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
+import recommendRoutes from "./routes/recommend.routes.js";
+import catalogRoutes from "./routes/catalog.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
 
@@ -18,7 +22,7 @@ app.use(helmet({
 
 // CORS Configuration
 app.use(cors());
-app.use(express.json({ limit: '10kb' })); // Prevents Payload Denial of Service attacks
+app.use(express.json({ limit: "1mb" }));
 
 // Rate Limiter to prevent API Abuse / DDoS
 const globalLimiter = rateLimit({
@@ -43,6 +47,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/movies", movieRoutes);
 app.use("/api/waitlist", waitlistRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/recommend", recommendRoutes);
+app.use("/api/catalog", catalogRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use((err, req, res, next) => {
   console.error("GLOBAL ERROR:", err);

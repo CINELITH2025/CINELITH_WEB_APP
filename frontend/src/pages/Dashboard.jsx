@@ -4,8 +4,9 @@ import Footer from '../components/layout/Footer';
 import InteractiveActivities from '../components/dashboard/InteractiveActivities';
 import Analytics from '../components/dashboard/Analytics';
 import UnlockGate from '../components/auth/UnlockGate';
+import CinephileScoreCard from '../components/dashboard/CinephileScoreCard';
 import { Link } from 'react-router-dom';
-import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
+import useUserStore from '../store/useUserStore';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 const Dashboard = () => {
@@ -14,27 +15,31 @@ const Dashboard = () => {
 
   // Fallback demo user for guest lock preview
   const user = loggedUser || {
-    name: "Alex Mercer",
-    username: "@alex_cinephile",
+    name: "Guest",
+    username: "",
     avatar: "/images/actor_1.png",
-    bio: "Cinephile exploring sci-fi epics, Criterion classics, and film history.",
-    cinephileScore: 88,
-    streak: 14,
-    favoriteMovies: MOVIE_CATALOG.slice(0, 5),
-    watchedMovies: MOVIE_CATALOG.slice(0, 12),
-    favoriteActors: ["Timothée Chalamet", "Cillian Murphy", "Zendaya", "Emma Stone"],
-    favoriteGenres: ["Sci-Fi", "Drama", "Thriller"]
+    cinephileScore: 0,
+    cinephileLevel: "Newcomer",
+    cinephileBreakdown: { wa: 0, eg: 0, ac: 0, rq: 0, dv: 0, ct: 0, cr: 0 },
+    streak: 0,
+    favoriteMovies: [],
+    watchedMovies: [],
+    favoriteActors: [],
+    favoriteGenres: []
   };
+
+  const fetchMe = useUserStore((state) => state.fetchMe);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (isAuthenticated) fetchMe().catch(() => null);
+  }, [isAuthenticated, fetchMe]);
 
   const persona = useMemo(() => {
     return {
-      topActor: "Cillian Murphy",
-      topDirector: "Christopher Nolan",
-      topGenre: user.favoriteGenres?.[0] || "Sci-Fi"
+      topActor: user.favoriteActors?.[0] || "—",
+      topDirector: user.favoriteMovies?.[0]?.director || "—",
+      topGenre: user.favoriteGenres?.[0] || "—"
     };
   }, [user]);
 
@@ -45,7 +50,7 @@ const Dashboard = () => {
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8 space-y-10">
         <UnlockGate
           title="Unlock Personal Dashboard & Taste Analytics"
-          subtitle="Access your entire film history, viewing stats, watch streak, Cinephile score (88%), and interactive taste radar charts by logging in."
+          subtitle="Access your entire film history, viewing stats, watch streak, Cinephile Score (0–10), and interactive taste radar charts by logging in."
           features={[
             "Personalized film history & watch log diary tracking",
             "Cinephile Taste Radar charts across directors, eras, and genres",
@@ -64,17 +69,13 @@ const Dashboard = () => {
                 <p className="text-xs text-gray-500 font-bold tracking-wider mt-0.5">{user.username}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl shadow-xl">
-              <div className="flex flex-col items-center">
-                <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Cinephile Score</span>
-                <span className="text-xl font-black text-[#F5BF26]">{user.cinephileScore || 88}</span>
-              </div>
-              <div className="w-px h-8 bg-white/10" />
-              <div className="flex flex-col items-center">
-                <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Streak</span>
-                <span className="text-xl font-black text-white">{user.streak || 14}d</span>
-              </div>
-            </div>
+            <Link
+              to="/recommend"
+              className="flex items-center gap-2 bg-[#F5BF26] text-black font-black text-xs px-5 py-3 rounded-2xl hover:bg-[#F5C400] transition-colors"
+            >
+              Films For You <ArrowRight className="w-4 h-4" />
+            </Link>
+            <CinephileScoreCard user={user} />
           </div>
 
           {/* SECTION 2: PERSONA STATS & QUICK HIGHLIGHTS */}
@@ -108,7 +109,7 @@ const Dashboard = () => {
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#F5BF26]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Media Logged</span>
                 <div>
-                  <span className="text-2xl font-black text-[#F5BF26] block">{user.watchedMovies?.length || 12}</span>
+                  <span className="text-2xl font-black text-[#F5BF26] block">{user.watchedMovies?.length || 0}</span>
                   <span className="text-[10px] text-gray-500 mt-0.5 block">Watched count</span>
                 </div>
               </div>
@@ -117,7 +118,7 @@ const Dashboard = () => {
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-[#F5BF26]/30 transition-colors shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Login Streak</span>
                 <div>
-                  <span className="text-2xl font-black text-white block">{user.streak || 14}d</span>
+                  <span className="text-2xl font-black text-white block">{user?.streak || 0}d</span>
                   <span className="text-[10px] text-gray-500 mt-0.5 block">Consecutive days active</span>
                 </div>
               </div>

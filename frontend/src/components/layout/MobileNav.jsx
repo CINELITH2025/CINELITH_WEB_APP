@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Compass, MessageCircle, LayoutDashboard, User, Lock } from 'lucide-react';
+import { Home, Compass, Clapperboard, MessageCircle, LayoutDashboard, User, Lock } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 
 const MobileNav = () => {
@@ -10,6 +10,7 @@ const MobileNav = () => {
   const navItems = [
     { label: 'Home', path: '/app', icon: Home, protected: false },
     { label: 'Explore', path: '/explore', icon: Compass, protected: false },
+    { label: 'For You', path: '/recommend', icon: Clapperboard, protected: false },
     { label: 'Discussions', path: '/people', icon: MessageCircle, protected: true },
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, protected: true },
     { label: 'Profile', path: '/profile', icon: User, protected: true }
