@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import useUserStore from '../store/useUserStore';
+import MoviePoster from '../components/ui/MoviePoster';
 import { Star, Clapperboard, ChevronDown, X, ArrowUpDown, Search } from 'lucide-react';
 
 const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
@@ -180,7 +181,13 @@ const Explore = () => {
             {movies.map((item) => (
               <div key={item.id} className="flex flex-col group cursor-pointer" onClick={() => navigate(`/movie/${item.id}`)}>
                 <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#F5BF26]/40 transition-all">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <MoviePoster
+                    src={item.image || item.poster}
+                    alt={item.title}
+                    id={item.id}
+                    size="w185"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
                 </div>
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <h3 className="font-bold text-white text-sm group-hover:text-[#F5BF26] truncate flex-1">{item.title}</h3>

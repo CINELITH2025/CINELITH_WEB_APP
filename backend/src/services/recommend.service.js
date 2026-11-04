@@ -31,16 +31,24 @@ const loadIndex = () => {
   return index;
 };
 
+const optimizePosterUrl = (url) => {
+  if (typeof url === "string" && url.includes("image.tmdb.org/t/p/w342")) {
+    return url.replace("/t/p/w342", "/t/p/w185");
+  }
+  return url;
+};
+
 const hydrate = (movie, extra = {}) => {
   if (!movie) return null;
+  const poster = optimizePosterUrl(movie.poster);
   return {
     movieId: movie.movieId,
     tmdbId: movie.tmdbId,
     title: movie.title,
     year: movie.year,
     overview: movie.overview,
-    poster: movie.poster,
-    image: movie.poster || "/images/poster_1.png",
+    poster,
+    image: poster || "/images/poster_1.png",
     genres: movie.genres || [],
     ...extra
   };

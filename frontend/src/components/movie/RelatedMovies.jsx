@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import MoviePoster from '../ui/MoviePoster';
 
 const RelatedMovies = ({ movies }) => {
   const navigate = useNavigate();
@@ -12,9 +13,11 @@ const RelatedMovies = ({ movies }) => {
         {movies.map((movie, idx) => (
           <div key={movie.id || idx} className="flex flex-col group cursor-pointer" onClick={() => movie.id && navigate(`/movie/${movie.id}`)}>
             <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/5">
-              <img 
-                src={movie.image} 
-                alt={movie.title} 
+              <MoviePoster 
+                src={movie.image || movie.poster} 
+                alt={movie.title}
+                id={movie.id}
+                size="w185"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
               />
             </div>

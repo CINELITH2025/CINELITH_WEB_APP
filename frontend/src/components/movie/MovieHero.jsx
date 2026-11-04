@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Bookmark, Award, Check, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
+import MoviePoster from '../ui/MoviePoster';
 import ShareToChat from '../chat/ShareToChat';
 import { buildSharePayload } from '../../lib/share';
 
@@ -50,7 +51,14 @@ const MovieHero = ({ movie }) => {
       <div className="w-full lg:w-[320px] shrink-0">
         <div className="bg-white/5 border border-white/10 p-3 rounded-2xl shadow-2xl">
           <div className="aspect-[2/3] w-full rounded-xl overflow-hidden bg-white/5">
-            <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
+            <MoviePoster 
+              src={movie.image || movie.poster} 
+              alt={movie.title}
+              id={movie.id}
+              size="w342"
+              priority={true}
+              className="w-full h-full object-cover" 
+            />
           </div>
         </div>
       </div>

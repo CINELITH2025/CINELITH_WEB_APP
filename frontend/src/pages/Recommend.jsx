@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import useUserStore from '../store/useUserStore';
+import MoviePoster from '../components/ui/MoviePoster';
 import { apiErrorMessage } from '../lib/api';
 import { Search, Sparkles, Check, Clapperboard } from 'lucide-react';
 
@@ -166,13 +167,13 @@ const Recommend = () => {
                   }`}
                 >
                   <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5">
-                    {movie.poster ? (
-                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-600">
-                        <Clapperboard className="w-8 h-8" />
-                      </div>
-                    )}
+                    <MoviePoster 
+                      src={movie.poster || movie.image} 
+                      alt={movie.title}
+                      id={movie.movieId}
+                      size="w185"
+                      className="w-full h-full object-cover" 
+                    />
                     {isSelected && (
                       <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                         <div className="w-10 h-10 rounded-full bg-[#F5BF26] flex items-center justify-center text-black">
@@ -196,13 +197,13 @@ const Recommend = () => {
               {recommendations.map((movie) => (
                 <article key={movie.movieId} className="flex flex-col border border-white/10 rounded-2xl p-2 bg-white/[0.02]">
                   <div className="aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5">
-                    {movie.poster ? (
-                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-600">
-                        <Clapperboard className="w-8 h-8" />
-                      </div>
-                    )}
+                    <MoviePoster 
+                      src={movie.poster || movie.image} 
+                      alt={movie.title}
+                      id={movie.movieId}
+                      size="w185"
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                   <span className="font-bold text-xs text-white leading-tight">{movie.title}</span>
                   <span className="text-[10px] text-gray-500 mt-1">

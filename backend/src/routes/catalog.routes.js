@@ -98,13 +98,16 @@ const nestComments = (rows) => {
 
 router.get("/movies/:id/comments", async (req, res, next) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.json({ comments: [] });
+    }
     const comments = await MovieComment.find({ movieId: Number(req.params.id) })
       .sort({ createdAt: -1 })
       .limit(200)
       .lean();
     res.json({ comments: nestComments(comments) });
   } catch (err) {
-    next(err);
+    res.json({ comments: [] });
   }
 });
 

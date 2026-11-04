@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import MoviePoster from '../ui/MoviePoster';
 
 const MovieSection = ({ title, movies }) => {
   const navigate = useNavigate();
@@ -20,9 +21,11 @@ const MovieSection = ({ title, movies }) => {
             onClick={() => navigate(`/movie/${movie.id || (idx + 1)}`)}
           >
             <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-xl group-hover:border-[#F5BF26]/40 transition-all duration-300">
-              <img 
-                src={movie.image} 
-                alt={movie.title} 
+              <MoviePoster 
+                src={movie.image || movie.poster} 
+                alt={movie.title}
+                id={movie.id}
+                size="w185"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               {/* Subtle overlay */}
