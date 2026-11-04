@@ -61,23 +61,34 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/auth" element={<PublicAuthRoute><Auth /></PublicAuthRoute>} />
+      {/* Primary Web Application Entry */}
+      <Route path="/" element={<Home />} />
+      <Route path="/app" element={<Navigate to="/" replace />} />
 
+      {/* Pre-Launch / Early Access Landing Page */}
+      <Route path="/landing" element={<Landing />} />
+      <Route path="/prelaunch" element={<Landing />} />
+
+      {/* Authentication & Onboarding */}
+      <Route path="/auth" element={<PublicAuthRoute><Auth /></PublicAuthRoute>} />
       <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-      <Route path="/app" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-      <Route path="/actor/:id" element={<ActorProfile />} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
+      {/* Discovery & Movies */}
       <Route path="/explore" element={<Explore />} />
       <Route path="/recommend" element={<Recommend />} />
-      <Route path="/movies" element={<Navigate to="/" replace />} />
+      <Route path="/movies" element={<Navigate to="/explore" replace />} />
       <Route path="/movie/:id" element={<MovieDetails />} />
+      <Route path="/actor/:id" element={<ActorProfile />} />
+
+      {/* Social & Community */}
       <Route path="/people" element={<ProtectedRoute><People /></ProtectedRoute>} />
-      <Route path="/community" element={<Navigate to="/" replace />} />
+      <Route path="/community" element={<Navigate to="/people" replace />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
 
+      {/* Catch-all fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

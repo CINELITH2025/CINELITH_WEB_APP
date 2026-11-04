@@ -175,18 +175,43 @@ const useUserStore = create(
       },
 
       fetchCatalog: async (params = {}) => {
-        const { data } = await api.get("/catalog/movies", { params });
-        return data;
+        try {
+          const { data } = await api.get("/catalog/movies", { params });
+          if (data && data.movies && data.movies.length > 0) return data;
+        } catch {}
+        let list = [...MOVIE_CATALOG];
+        if (params.q) {
+          const q = params.q.toLowerCase();
+          list = list.filter(m => m.title.toLowerCase().includes(q) || m.genre?.toLowerCase().includes(q));
+        }
+        if (params.genre) {
+          list = list.filter(m => m.genre?.toLowerCase().includes(params.genre.toLowerCase()));
+        }
+        if (params.year) {
+          list = list.filter(m => String(m.year) === String(params.year));
+        }
+        return { movies: list, total: list.length };
       },
 
       fetchCatalogFilters: async () => {
-        const { data } = await api.get("/catalog/filters");
-        return data;
+        try {
+          const { data } = await api.get("/catalog/filters");
+          if (data?.genres?.length) return data;
+        } catch {}
+        const genres = Array.from(new Set(MOVIE_CATALOG.flatMap(m => m.genre?.split(",").map(s => s.trim()) || []))).filter(Boolean);
+        const years = Array.from(new Set(MOVIE_CATALOG.map(m => m.year))).filter(Boolean).sort().reverse();
+        return { genres, years };
       },
 
       fetchHomeCatalog: async () => {
-        const { data } = await api.get("/catalog/home");
-        return data;
+        try {
+          const { data } = await api.get("/catalog/home");
+          if (data && (data.trending?.length || data.classics?.length)) return data;
+        } catch {}
+        return {
+          trending: MOVIE_CATALOG.slice(0, 10),
+          classics: MOVIE_CATALOG.slice(10, 20)
+        };
       },
 
       fetchCatalogMovie: async (id) => {

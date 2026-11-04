@@ -8,7 +8,7 @@ const MobileNav = () => {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
   const navItems = [
-    { label: 'Home', path: '/app', icon: Home, protected: false },
+    { label: 'Home', path: '/', icon: Home, protected: false },
     { label: 'Explore', path: '/explore', icon: Compass, protected: false },
     { label: 'For You', path: '/recommend', icon: Clapperboard, protected: false },
     { label: 'Discussions', path: '/people', icon: MessageCircle, protected: true },
