@@ -9,8 +9,16 @@ export const setToken = (token) => {
   else localStorage.removeItem(TOKEN_KEY);
 };
 
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    return envUrl.endsWith("/api") ? envUrl : `${envUrl.replace(/\/+$/, "")}/api`;
+  }
+  return "/api";
+};
+
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: getBaseUrl(),
   headers: { "Content-Type": "application/json" }
 });
 

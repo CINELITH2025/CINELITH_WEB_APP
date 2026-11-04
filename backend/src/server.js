@@ -1,13 +1,14 @@
 import http from "http";
-import dotenv from "dotenv";
 import app from "./app.js";
+import { validateEnv } from "./config/env.js";
 import { connectDB } from "./config/db.js";
 import { initSocket } from "./sockets/chat.socket.js";
 import { rebuildKnnIndex } from "./services/knn-rebuild.service.js";
 
-dotenv.config();
+// Validate environment variables on startup
+validateEnv();
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason, _promise) => {
   console.error("UNHANDLED REJECTION:", reason);
 });
 
@@ -22,6 +23,8 @@ connectDB().then(() => {
 const server = http.createServer(app);
 initSocket(server);
 
-server.listen(process.env.PORT, () => {
-  console.log(`🚀 Server running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 5050;
+
+server.listen(PORT, () => {
+  console.log(`🚀 CINELITH Server running on port ${PORT}`);
 });

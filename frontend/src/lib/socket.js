@@ -17,9 +17,14 @@ export const connectSocket = (userId, handleMessage) => {
     socket.disconnect();
   }
 
-  socket = io({
+  const socketUrl = import.meta.env.VITE_SOCKET_URL ||
+    (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "") : undefined);
+
+  socket = io(socketUrl, {
     auth: { token: getToken() },
-    transports: ["websocket", "polling"]
+    transports: ["websocket", "polling"],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
   });
 
   const join = () => {

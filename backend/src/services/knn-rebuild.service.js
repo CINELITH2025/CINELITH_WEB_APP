@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 import KnnRating from "../models/KnnRating.js";
 import { invalidateRecommendIndex } from "./recommend.service.js";
 
@@ -67,6 +68,10 @@ const cosineNeighbors = (ratings, k) => {
 export const rebuildKnnIndex = async () => {
   if (!fs.existsSync(INDEX_PATH) || !fs.existsSync(RATINGS_PATH)) {
     console.warn("KNN base files missing; skip live rebuild");
+    return null;
+  }
+
+  if (mongoose.connection.readyState !== 1) {
     return null;
   }
 
