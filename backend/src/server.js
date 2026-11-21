@@ -16,15 +16,23 @@ process.on("uncaughtException", (err) => {
   console.error("UNCAUGHT EXCEPTION:", err);
 });
 
-connectDB().then(() => {
-  rebuildKnnIndex().catch((err) => console.error("KNN startup rebuild failed", err));
-});
-
 const server = http.createServer(app);
 initSocket(server);
 
 const PORT = process.env.PORT || 5050;
 
-server.listen(PORT, () => {
-  console.log(`🚀 CINELITH Server running on port ${PORT}`);
-});
+connectDB()
+  .then((conn) => {
+    if (!conn) {
+      console.error("❌ MongoDB connection failed — server will NOT start.");
+      process.exit(1);
+    }
+    rebuildKnnIndex().catch((err) => console.error("KNN startup rebuild failed", err));
+    server.listen(PORT, () => {
+      console.log(`🚀 CINELITH Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Fatal startup error:", err);
+    process.exit(1);
+  });

@@ -73,11 +73,13 @@ const userSchema = new mongoose.Schema(
   {
     // Basic Information
     name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     username: { type: String, unique: true, sparse: true, default: null },
     password: { type: String, required: true },
     avatar: { type: String, default: null },
     bio: { type: String, default: "" },
     location: { type: String, default: "" },
+
 
     // Onboarding Preferences
     topGenres: { type: [String], default: [] },
