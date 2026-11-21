@@ -50,7 +50,9 @@ const MovieHero = ({ movie }) => {
       <div className="w-full lg:w-[320px] shrink-0">
         <div className="bg-white/5 border border-white/10 p-3 rounded-2xl shadow-2xl">
           <div className="aspect-[2/3] w-full rounded-xl overflow-hidden bg-white/5">
-            <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
+            {movie.image ? (
+              <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            ) : null}
           </div>
         </div>
       </div>

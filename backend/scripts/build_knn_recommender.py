@@ -92,12 +92,10 @@ def load_metadata(path: Path):
             if not title:
                 continue
             release = (row.get("release_date") or "")[:4]
-            poster = (row.get("poster_path") or "").strip()
             meta[tmdb_id] = {
                 "title": title,
                 "year": release if release.isdigit() else "",
                 "overview": (row.get("overview") or "").strip(),
-                "poster": f"https://image.tmdb.org/t/p/w342{poster}" if poster else "",
                 "genres": parse_genres(row.get("genres") or ""),
             }
     return meta
@@ -173,7 +171,7 @@ def main():
             "title": title,
             "year": info["year"] if info else "",
             "overview": info["overview"] if info else "",
-            "poster": info["poster"] if info else "",
+            "poster": "",
             "genres": info["genres"] if info else [],
         }
         catalog.append(record)
@@ -203,6 +201,7 @@ def main():
     )
     print(f"Wrote {out_path} ({out_path.stat().st_size / 1_048_576:.2f} MB)")
     print(f"Wrote {ratings_path_out} ({ratings_path_out.stat().st_size / 1_048_576:.2f} MB)")
+    print("Bake TVDB posters with: node scripts/fill_catalog_posters.js")
 
 
 if __name__ == "__main__":

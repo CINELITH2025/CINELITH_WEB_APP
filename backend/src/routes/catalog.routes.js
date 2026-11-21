@@ -3,39 +3,68 @@ import { protect } from "../middleware/auth.middleware.js";
 import MovieComment from "../models/MovieComment.js";
 import User from "../models/User.js";
 import {
-  getCatalogFilters,
-  getCatalogMovie,
-  getHomeCatalog,
-  listCatalogMovies
+  findCatalogMovie,
+  knnIdForTvdb,
+  relatedForTvdb
 } from "../services/recommend.service.js";
+import { resolvePoster } from "../services/poster.service.js";
+import {
+  getTvdbHomeCatalog,
+  getTvdbMovieDetails,
+  listTvdbMovies,
+  tvdbCatalogFilters
+} from "../services/tvdb.service.js";
 import { attachScores, attachScoresMany } from "../services/rating.service.js";
 import { applyStreak, refreshCinephileScore } from "../services/cinephile-score.service.js";
 
 const router = express.Router();
 
+const withKnnScores = async (movies) => {
+  const mapped = (movies || []).map((movie) => ({
+    ...movie,
+    movieId: knnIdForTvdb(movie.tvdbId) || movie.movieId || movie.tvdbId
+  }));
+  return attachScoresMany(mapped);
+};
+
 router.get("/home", async (_req, res) => {
   try {
-    const home = getHomeCatalog();
+    const home = await getTvdbHomeCatalog();
     res.json({
-      trending: await attachScoresMany(home.trending),
-      classics: await attachScoresMany(home.classics)
+      trending: await withKnnScores(home.trending),
+      classics: await withKnnScores(home.classics)
     });
   } catch (err) {
-    res.status(503).json({ message: err.message });
+    res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
   }
 });
 
-router.get("/filters", (_req, res) => {
+router.get("/filters", async (_req, res) => {
   try {
-    res.json(getCatalogFilters());
+    res.json(await tvdbCatalogFilters());
   } catch (err) {
-    res.status(503).json({ message: err.message });
+    res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
+  }
+});
+
+router.get("/poster/:id", async (req, res) => {
+  try {
+    const result = await resolvePoster(req.params.id);
+    res.set("Cache-Control", "public, max-age=86400");
+    if (result.type === "url") {
+      return res.redirect(result.value);
+    }
+    res.type("image/svg+xml").send(result.value);
+  } catch (err) {
+    res.status(404).type("image/svg+xml").send(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600"><rect width="400" height="600" fill="#08060d"/></svg>`
+    );
   }
 });
 
 router.get("/movies", async (req, res) => {
   try {
-    const result = listCatalogMovies({
+    const result = await listTvdbMovies({
       q: req.query.q,
       genre: req.query.genre,
       year: req.query.year,
@@ -43,25 +72,30 @@ router.get("/movies", async (req, res) => {
       limit: req.query.limit,
       offset: req.query.offset
     });
-    const movies = await attachScoresMany(result.movies);
+    const movies = await withKnnScores(result.movies);
     if (req.query.sort === "rating") {
       movies.sort((a, b) => (b.clScore || 0) - (a.clScore || 0));
     }
     res.json({ ...result, movies });
   } catch (err) {
-    res.status(503).json({ message: err.message });
+    res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
   }
 });
 
 router.get("/movies/:id", async (req, res) => {
   try {
-    const movie = getCatalogMovie(req.params.id);
+    const byTvdb = findCatalogMovie({ tvdbId: req.params.id });
+    const byMl = findCatalogMovie({ movieId: req.params.id });
+    const local = byTvdb || byMl;
+    const tvdbId = byTvdb ? req.params.id : local?.tvdbId || req.params.id;
+    const movie = await getTvdbMovieDetails(tvdbId);
     if (!movie) return res.status(404).json({ message: "Movie not found" });
-    const scored = await attachScores(movie);
-    scored.related = await attachScoresMany(movie.related || []);
+    const knnMovieId = knnIdForTvdb(movie.tvdbId) || local?.movieId;
+    const scored = await attachScores({ ...movie, movieId: knnMovieId || movie.tvdbId });
+    scored.related = await withKnnScores(relatedForTvdb(movie.tvdbId));
     res.json(scored);
   } catch (err) {
-    res.status(503).json({ message: err.message });
+    res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
   }
 });
 

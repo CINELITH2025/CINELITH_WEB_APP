@@ -11,6 +11,7 @@ backend/node_modules/
 .env.production.local
 backend/.env
 frontend/.env
+backend/data/poster-cache.json
 
 # Build outputs
 dist/

@@ -123,7 +123,9 @@ const Recommend = () => {
         {selected && (
           <section className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-3 bg-[#F5BF26]/10 border border-[#F5BF26]/30 rounded-2xl pl-2 pr-4 py-2">
-              <img src={selected.image || selected.poster} alt="" className="w-10 h-14 rounded-lg object-cover" />
+              {selected.image || selected.poster ? (
+                <img src={selected.image || selected.poster} alt="" className="w-10 h-14 rounded-lg object-cover" referrerPolicy="no-referrer" />
+              ) : null}
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Selected title</p>
                 <p className="text-sm font-black text-white">{selected.title}</p>
@@ -166,8 +168,8 @@ const Recommend = () => {
                   }`}
                 >
                   <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5">
-                    {movie.poster ? (
-                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
+                    {movie.image || movie.poster ? (
+                      <img src={movie.image || movie.poster} alt={movie.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-600">
                         <Clapperboard className="w-8 h-8" />
@@ -196,8 +198,8 @@ const Recommend = () => {
               {recommendations.map((movie) => (
                 <article key={movie.movieId} className="flex flex-col border border-white/10 rounded-2xl p-2 bg-white/[0.02]">
                   <div className="aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5">
-                    {movie.poster ? (
-                      <img src={movie.poster} alt={movie.title} className="w-full h-full object-cover" />
+                    {movie.image || movie.poster ? (
+                      <img src={movie.image || movie.poster} alt={movie.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-600">
                         <Clapperboard className="w-8 h-8" />

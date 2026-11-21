@@ -20,11 +20,14 @@ const MovieSection = ({ title, movies }) => {
             onClick={() => navigate(`/movie/${movie.id || (idx + 1)}`)}
           >
             <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-white/5 border border-white/10 shadow-xl group-hover:border-[#F5BF26]/40 transition-all duration-300">
-              <img 
-                src={movie.image} 
-                alt={movie.title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+              {movie.image ? (
+                <img
+                  src={movie.image}
+                  alt={movie.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
+              ) : null}
               {/* Subtle overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                 <span className="text-white text-xs font-bold bg-[#F5BF26]/20 border border-[#F5BF26]/30 px-3 py-1.5 rounded-md backdrop-blur-md">

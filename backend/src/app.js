@@ -27,8 +27,9 @@ app.use(express.json({ limit: "1mb" }));
 // Rate Limiter to prevent API Abuse / DDoS
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: { message: "Too many requests from this IP, please try again after 15 minutes." }
+  max: 400,
+  message: { message: "Too many requests from this IP, please try again after 15 minutes." },
+  skip: (req) => req.method === "GET" && String(req.path || req.originalUrl || "").includes("/catalog/poster/")
 });
 
 // Strict Rate Limiter for OTP Endpoints (Brute-force protection)
