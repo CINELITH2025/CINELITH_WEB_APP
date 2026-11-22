@@ -53,14 +53,19 @@ const MoviePoster = ({
   const [loaded, setLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // If local high-res asset exists for this ID, use it for 0ms load
-  const candidateUrl = (id && LOCAL_POSTERS[id]) || getOptimizedImageUrl(src, size);
+  // If external poster provided, use it (and optimize TMDb URLs); otherwise fall back to local poster for ID
+  const candidateUrl = src ? getOptimizedImageUrl(src, size) : ((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg");
   const [currentSrc, setCurrentSrc] = useState(candidateUrl);
 
+  React.useEffect(() => {
+    setCurrentSrc(src ? getOptimizedImageUrl(src, size) : ((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg"));
+    setHasError(false);
+  }, [src, id, size]);
+
   const handleError = () => {
-    // If external TMDB image failed or is slow/blocked, fall back to safe local poster
+    // If external TMDB/TVDB image failed or is slow/blocked, fall back to safe local poster
     if (currentSrc !== "/images/poster_1.jpg") {
-      setCurrentSrc("/images/poster_1.jpg");
+      setCurrentSrc((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg");
     } else {
       setHasError(true);
     }
@@ -86,6 +91,7 @@ const MoviePoster = ({
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
+          referrerPolicy="no-referrer"
           onLoad={() => setLoaded(true)}
           onError={handleError}
           className={`${className} transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}

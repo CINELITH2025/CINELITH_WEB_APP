@@ -31,8 +31,10 @@ const loadIndex = () => {
   return index;
 };
 
-const optimizePosterUrl = (url) => {
-  if (typeof url === "string" && url.includes("image.tmdb.org/t/p/w342")) {
+const resolvePosterUrl = (url) => {
+  if (!url || typeof url !== "string") return "";
+  if (url.includes("artworks.thetvdb.com")) return url;
+  if (url.includes("image.tmdb.org/t/p/w342")) {
     return url.replace("/t/p/w342", "/t/p/w185");
   }
   return url;
@@ -40,10 +42,11 @@ const optimizePosterUrl = (url) => {
 
 const hydrate = (movie, extra = {}) => {
   if (!movie) return null;
-  const poster = optimizePosterUrl(movie.poster);
+  const poster = resolvePosterUrl(movie.poster);
   return {
     movieId: movie.movieId,
     tmdbId: movie.tmdbId,
+    tvdbId: movie.tvdbId || null,
     title: movie.title,
     year: movie.year,
     overview: movie.overview,
@@ -64,14 +67,44 @@ const matchMovie = (query) => {
   return contains ? byId.get(contains.movieId) : null;
 };
 
-export const findCatalogMovie = ({ title, movieId } = {}) => {
-  const { byId } = loadIndex();
+export const findCatalogMovie = ({ title, movieId, tvdbId } = {}) => {
+  const { raw, byId } = loadIndex();
+  if (tvdbId != null) {
+    const byTvdb = (raw.movies || []).find((movie) => Number(movie.tvdbId) === Number(tvdbId));
+    if (byTvdb) return byTvdb;
+  }
   if (movieId != null) {
     const byMovieId = byId.get(Number(movieId));
     if (byMovieId) return byMovieId;
   }
   if (title) return matchMovie(title);
   return null;
+};
+
+export const knnIdForTvdb = (tvdbId) => {
+  const found = findCatalogMovie({ tvdbId });
+  return found ? Number(found.movieId) : null;
+};
+
+export const relatedForTvdb = (tvdbId) => {
+  const local = findCatalogMovie({ tvdbId });
+  if (!local) return [];
+  const { raw, byId } = loadIndex();
+  return (raw.neighbors[String(local.movieId)] || [])
+    .slice(0, 6)
+    .map((row) => {
+      const neighbor = byId.get(row.movieId);
+      if (!neighbor) return null;
+      const client = toClientMovie(neighbor);
+      return {
+        ...client,
+        id: neighbor.tvdbId || neighbor.movieId,
+        tvdbId: neighbor.tvdbId || null,
+        image: tvdbArtwork(neighbor.poster) || client.image,
+        poster: tvdbArtwork(neighbor.poster) || client.poster
+      };
+    })
+    .filter(Boolean);
 };
 
 /** Attach catalog poster + canonical movieId so library clicks open /movie/:id. */
@@ -88,11 +121,12 @@ export const hydrateLibraryMovie = (item = {}) => {
     if (!found) return item;
     return {
       ...item,
-      tvdbId: found.movieId,
+      tvdbId: found.tvdbId || found.movieId,
       movieId: found.movieId,
+      id: found.tvdbId || found.movieId,
       title: found.title || title,
-      image: found.poster || item.image,
-      poster: found.poster || item.poster,
+      image: tvdbArtwork(found.poster) || item.image,
+      poster: tvdbArtwork(found.poster) || item.poster,
       year: found.year || item.year,
       genres: found.genres || item.genres
     };
@@ -193,7 +227,9 @@ export const getCatalogFilters = () => {
 
 export const getCatalogMovie = (movieId) => {
   const { raw, byId } = loadIndex();
-  const movie = byId.get(Number(movieId));
+  const movie =
+    findCatalogMovie({ tvdbId: movieId }) ||
+    byId.get(Number(movieId));
   if (!movie) return null;
   const related = (raw.neighbors[String(movie.movieId)] || [])
     .slice(0, 6)

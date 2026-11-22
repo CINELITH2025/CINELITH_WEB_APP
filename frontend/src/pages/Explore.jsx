@@ -93,7 +93,8 @@ const Explore = () => {
   }, [fetchCatalogFilters]);
 
   useEffect(() => {
-    const sort = sortBy === "Alpha" ? "alpha" : sortBy === "Rating" ? "rating" : "year";
+    const sort =
+      sortBy === "Alpha" ? "alpha" : sortBy === "Rating" ? "rating" : sortBy === "Year" ? "year" : "popular";
     const timer = setTimeout(() => {
       fetchCatalog({
         q: searchQuery,
@@ -130,7 +131,7 @@ const Explore = () => {
       <main className="flex-1 w-full max-w-[1200px] mx-auto pb-16 px-4 md:px-8 pt-8">
         <div className="flex flex-col items-center mb-10">
           <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight text-center">Explore Cinema</h1>
-          <p className="text-sm text-gray-400 mt-2 text-center">Live catalog from the ratings dataset — not demo posters.</p>
+          <p className="text-sm text-gray-400 mt-2 text-center">Live titles from TheTVDB — posters, plot, and credits included.</p>
         </div>
 
         <div className="relative w-full group mb-8">
@@ -166,7 +167,7 @@ const Explore = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="appearance-none bg-white/5 border border-white/10 text-xs md:text-sm font-bold text-white pl-10 pr-8 py-2.5 rounded-lg focus:outline-none cursor-pointer"
               >
-                <option value="Popular" className="bg-[#121016]">Sort by: Year</option>
+                <option value="Popular" className="bg-[#121016]">Sort by: Popular</option>
                 <option value="Rating" className="bg-[#121016]">Sort by: CL Score</option>
                 <option value="Year" className="bg-[#121016]">Sort by: Release Year</option>
                 <option value="Alpha" className="bg-[#121016]">Sort by: Alphabetical</option>
@@ -206,7 +207,7 @@ const Explore = () => {
           <div className="w-full flex flex-col items-center justify-center p-16 rounded-3xl bg-white/5 border border-white/10 text-center max-w-lg mx-auto">
             <Clapperboard className="w-12 h-12 text-[#F5BF26] mb-6" strokeWidth={1.5} />
             <h3 className="text-lg font-black text-white mb-2">No results found</h3>
-            <p className="text-xs text-gray-400">Try a different title, genre, or year from the ratings catalog.</p>
+            <p className="text-xs text-gray-400">Try a different title, genre, or year on TheTVDB.</p>
           </div>
         )}
       </main>

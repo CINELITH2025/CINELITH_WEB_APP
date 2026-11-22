@@ -56,7 +56,8 @@ const globalLimiter = rateLimit({
   max: 1000,
   message: { message: "Too many requests. Please wait a moment and try again." },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skip: (req) => req.method === "GET" && String(req.path || req.originalUrl || "").includes("/catalog/poster/")
 });
 
 // Strict Rate Limiter for Authentication endpoints (brute force protection)

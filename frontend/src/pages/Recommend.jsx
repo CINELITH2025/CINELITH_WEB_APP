@@ -124,7 +124,9 @@ const Recommend = () => {
         {selected && (
           <section className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-3 bg-[#F5BF26]/10 border border-[#F5BF26]/30 rounded-2xl pl-2 pr-4 py-2">
-              <img src={selected.image || selected.poster} alt="" className="w-10 h-14 rounded-lg object-cover" />
+              {selected.image || selected.poster ? (
+                <img src={selected.image || selected.poster} alt="" className="w-10 h-14 rounded-lg object-cover" referrerPolicy="no-referrer" />
+              ) : null}
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Selected title</p>
                 <p className="text-sm font-black text-white">{selected.title}</p>
