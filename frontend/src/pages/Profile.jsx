@@ -2,13 +2,14 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { Link, useNavigate } from 'react-router-dom';
-import useUserStore, { MOVIE_CATALOG } from '../store/useUserStore';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import useUserStore from '../store/useUserStore';
 import { formatCinephileScore } from '../lib/mapUser';
 import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const user = useUserStore((state) => state.user);
   const updateProfile = useUserStore((state) => state.updateProfile);
@@ -16,8 +17,10 @@ const Profile = () => {
   const deleteCustomList = useUserStore((state) => state.deleteCustomList);
   const addMovieToCustomList = useUserStore((state) => state.addMovieToCustomList);
   const removeMovieFromCustomList = useUserStore((state) => state.removeMovieFromCustomList);
+  const searchRecommendMovies = useUserStore((state) => state.searchRecommendMovies);
 
-  const [activeTab, setActiveTab] = useState("Liked Movies");
+
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") === "Wishlist" ? "Wishlist" : "Liked Movies");
   
   // Edit Profile modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -29,6 +32,7 @@ const Profile = () => {
   const [newListName, setNewListName] = useState("");
   const [addingMovieToListId, setAddingMovieToListId] = useState(null);
   const [movieSearchQuery, setMovieSearchQuery] = useState("");
+  const [listMovieOptions, setListMovieOptions] = useState([]);
 
   // Mock avatar options for editing
   const avatarOptions = [
@@ -40,12 +44,28 @@ const Profile = () => {
     window.scrollTo(0, 0);
     if (!isAuthenticated || !user) {
       navigate('/auth');
-    } else {
-      setEditName(user.name || "");
-      setEditBio(user.bio || "");
-      setEditAvatar(user.avatar || "");
     }
   }, [isAuthenticated, user, navigate]);
+
+  useEffect(() => {
+    if (!addingMovieToListId) return undefined;
+
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      searchRecommendMovies(movieSearchQuery.trim())
+        .then((movies) => {
+          if (!cancelled) setListMovieOptions(movies);
+        })
+        .catch(() => {
+          if (!cancelled) setListMovieOptions([]);
+        });
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [addingMovieToListId, movieSearchQuery, searchRecommendMovies]);
 
   if (!isAuthenticated || !user) {
     return null;
@@ -68,11 +88,6 @@ const Profile = () => {
     createCustomList(newListName.trim());
     setNewListName("");
   };
-
-  // Search filtered movies to add to custom list
-  const filteredCatalogForList = MOVIE_CATALOG.filter(m => 
-    m.title.toLowerCase().includes(movieSearchQuery.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
@@ -368,11 +383,11 @@ const Profile = () => {
                               autoFocus
                             />
                             <div className="max-h-48 overflow-y-auto flex flex-col gap-1.5 custom-scrollbar">
-                              {filteredCatalogForList.map((m) => (
+                              {listMovieOptions.map((m) => (
                                 <button
                                   key={m.id}
                                   onClick={() => {
-                                    addMovieToCustomList(list.id, m);
+                                    addMovieToCustomList(list.id, m).catch((error) => console.error("Could not add title", error));
                                     setAddingMovieToListId(null);
                                     setMovieSearchQuery("");
                                   }}
@@ -387,7 +402,7 @@ const Profile = () => {
                                   </div>
                                 </button>
                               ))}
-                              {filteredCatalogForList.length === 0 && <span className="text-[10px] text-gray-600 text-center py-2">No movies found</span>}
+                              {listMovieOptions.length === 0 && <span className="text-[10px] text-gray-600 text-center py-2">No movies found</span>}
                             </div>
                           </div>
                         ) : null}
