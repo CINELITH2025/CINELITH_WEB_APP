@@ -17,8 +17,8 @@ const Footer = () => {
         <Link to="/" className="hover:text-primary transition-colors">About Us</Link>
         <a href="mailto:team@cinelith.com" className="hover:text-primary transition-colors">Contact (team@cinelith.com)</a>
         <a href="https://www.instagram.com/cinelithofficial" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Instagram</a>
-        <Link to="#" className="hover:text-primary transition-colors">Terms of Service</Link>
-        <Link to="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
+        <Link to="/landing?policy=terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+        <Link to="/landing?policy=privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
       </div>
 
       <div className="flex items-center justify-center gap-6 mb-8">

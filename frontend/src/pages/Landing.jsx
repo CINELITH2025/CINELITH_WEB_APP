@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, Sparkles, Trophy, Award, Lock,
@@ -87,6 +88,8 @@ const POSTERS = [
 ];
 
 const Landing = () => {
+  const [searchParams] = useSearchParams();
+  const requestedPolicy = searchParams.get('policy');
   // Waitlist form states
   const [formData, setFormData] = useState({ name: '', email: '', country: '', favoriteMovie: '' });
   const [loading, setLoading] = useState(false);
@@ -117,7 +120,9 @@ const Landing = () => {
   const [activePreviewTab, setActivePreviewTab] = useState('Home Page');
 
   // Policy Modal state ('privacy' | 'terms' | null)
-  const [activePolicyModal, setActivePolicyModal] = useState(null);
+  const [activePolicyModal, setActivePolicyModal] = useState(() =>
+    ['privacy', 'terms'].includes(requestedPolicy) ? requestedPolicy : null
+  );
 
   // Fetch waitlist count on mount
   useEffect(() => {
