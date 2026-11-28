@@ -2,7 +2,7 @@ export const toBackendMovieType = (type) =>
   type === "tv" || type === "series" ? "series" : "movie";
 
 export const toBackendMovie = (movie) => ({
-  tvdbId: Number(movie.tvdbId || movie.movieId || movie.id) || 0,
+  tvdbId: Number(movie.tvdbId) || 0,
   title: movie.title || movie.name,
   type: toBackendMovieType(movie.type)
 });
