@@ -199,7 +199,7 @@ const Explore = () => {
                     </div>
                   ) : null}
                 </div>
-                <p className="text-xs text-gray-500 font-medium">{item.year} • {item.genre || "Film"}</p>
+                <p className="text-xs text-gray-500 font-medium">{item.year} • {item.genre || (item.type === "series" ? "TV Series" : "Film")}</p>
               </div>
             ))}
           </div>
