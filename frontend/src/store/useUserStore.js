@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { api, getToken, setToken } from '../lib/api';
 import { mapUser, mapMovie, mapChatMessage, toBackendMovie, toBackendActor } from '../lib/mapUser';
-import { connectSocket, disconnectSocket, sendChatMessage } from '../lib/socket';
+import { connectSocket, disconnectSocket, getSocket, sendChatMessage } from '../lib/socket';
 
 // Curated movie & TV show data helper to populate onboarding and explore
 export const MOVIE_CATALOG = [
@@ -59,7 +59,7 @@ const useUserStore = create(
           error: null
         });
         if (user?._id) {
-          connectSocket(user._id, (msg) => get().receiveMessage(msg));
+          connectSocket((msg) => get().receiveMessage(msg));
         }
         return user;
       };
@@ -290,23 +290,35 @@ const useUserStore = create(
         return messages;
       },
 
-      sendMessage: (friendId, text, share = null) => {
+      sendMessage: async (friendId, text, share = null) => {
         const user = get().user;
         if (!user) return;
-        sendChatMessage({
+        const message = {
           senderId: user._id,
           senderName: user.name,
           receiverId: String(friendId),
           text,
           share
-        });
+        };
+        let savedMessage = null;
+        if (getSocket()?.connected) {
+          try {
+            sendChatMessage(message);
+          } catch {
+            const { data } = await api.post(`/chats/${friendId}`, { text, share });
+            savedMessage = mapChatMessage(data, user._id);
+          }
+        } else {
+          const { data } = await api.post(`/chats/${friendId}`, { text, share });
+          savedMessage = mapChatMessage(data, user._id);
+        }
         const current = get().chats[String(friendId)] || [];
         set({
           chats: {
             ...get().chats,
             [String(friendId)]: [
               ...current,
-              {
+              savedMessage || {
                 sender: "You",
                 senderId: user._id,
                 senderName: user.name,

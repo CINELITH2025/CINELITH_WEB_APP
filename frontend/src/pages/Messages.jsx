@@ -33,7 +33,10 @@ const Messages = () => {
 
   useEffect(() => {
     if (activeContactId) {
-      useUserStore.getState().loadChat(activeContactId).catch(() => null);
+      const refreshChat = () => useUserStore.getState().loadChat(activeContactId).catch(() => null);
+      refreshChat();
+      const timer = window.setInterval(refreshChat, 5000);
+      return () => window.clearInterval(timer);
     }
   }, [activeContactId]);
 
@@ -41,11 +44,17 @@ const Messages = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chats, activeContactId]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!inputText.trim() || !activeContactId) return;
-    sendMessage(activeContactId, inputText.trim());
-    setInputText("");
+    try {
+      await sendMessage(activeContactId, inputText.trim());
+      setInputText("");
+    } catch (error) {
+      setNotificationMsg(error.response?.data?.message || "Message could not be sent. Please try again.");
+      setShowNotification(true);
+      window.setTimeout(() => setShowNotification(false), 3000);
+    }
   };
 
   const contactsList = friends.map((friend) => {

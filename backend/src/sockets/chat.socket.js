@@ -1,4 +1,6 @@
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import Message, { conversationKeyFor, serializeMessage } from "../models/Message.js";
 import { createNotification } from "../services/notification.service.js";
 import { applyStreak, refreshCinephileScore } from "../services/cinephile-score.service.js";
@@ -11,28 +13,39 @@ export const initSocket = (server) => {
 
   const userRoom = (userId) => `user:${String(userId)}`;
 
+  io.use((socket, next) => {
+    try {
+      const token = socket.handshake.auth?.token;
+      if (!token) return next(new Error("Authentication required"));
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      if (!decoded.id) return next(new Error("Invalid authentication token"));
+      socket.data.userId = String(decoded.id);
+      next();
+    } catch {
+      next(new Error("Invalid authentication token"));
+    }
+  });
+
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
-
-    socket.on("join", (userId) => {
-      const uid = String(userId);
-      if (socket.data.userId && socket.data.userId !== uid) {
-        socket.leave(userRoom(socket.data.userId));
-      }
-      socket.data.userId = uid;
-      socket.join(userRoom(uid));
-      console.log("User joined chat:", uid, socket.id);
-    });
+    socket.join(userRoom(socket.data.userId));
 
     socket.on("send_message", async (msg) => {
       try {
-        const senderId = String(msg.senderId || socket.data.userId || "");
+        const senderId = socket.data.userId;
         const receiverId = String(msg.receiverId || "");
         const text = String(msg.text || "").trim();
         const share = msg.share && typeof msg.share === "object" ? msg.share : null;
 
-        if (!senderId || !receiverId || !text) {
+        if (!senderId || !mongoose.isValidObjectId(receiverId) || senderId === receiverId || !text) {
           socket.emit("message_error", { message: "Invalid message" });
+          return;
+        }
+
+        const sender = await User.findById(senderId);
+        const receiver = await User.findById(receiverId).select("_id");
+        if (!sender || !receiver) {
+          socket.emit("message_error", { message: "Conversation user not found" });
           return;
         }
 
@@ -40,7 +53,7 @@ export const initSocket = (server) => {
           conversationKey: conversationKeyFor(senderId, receiverId),
           sender: senderId,
           receiver: receiverId,
-          senderName: msg.senderName || "User",
+          senderName: sender.name || "User",
           text,
           ...(share?.kind
             ? {
@@ -71,11 +84,8 @@ export const initSocket = (server) => {
             : `${payload.senderName || "Someone"} sent you a message.`
         }).catch(() => null);
 
-        const sender = await User.findById(senderId);
-        if (sender) {
-          applyStreak(sender);
-          await refreshCinephileScore(sender).catch(() => null);
-        }
+        applyStreak(sender);
+        await refreshCinephileScore(sender).catch(() => null);
       } catch (err) {
         console.error("CHAT SAVE ERROR:", err);
         socket.emit("message_error", { message: "Failed to save message" });
