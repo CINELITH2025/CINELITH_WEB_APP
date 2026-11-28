@@ -17,8 +17,11 @@ export const validateEnv = () => {
       process.env.JWT_SECRET = "cinelith_dev_jwt_secret_insecure_local_only";
       warnings.push("JWT_SECRET is not set. Using dev fallback. Set a secure 64-char secret in production.");
     }
-  } else if (process.env.JWT_SECRET === "secret_key" && isProd) {
-    errors.push("JWT_SECRET is set to the default insecure value ('secret_key'). Generate a secure secret for production.");
+  } else if (isProd && (
+    process.env.JWT_SECRET.length < 32 ||
+    /^(secret_key|your_|replace_|example|cinelith_.*2025)/i.test(process.env.JWT_SECRET)
+  )) {
+    errors.push("JWT_SECRET is too short or looks like a placeholder. Set a random secret with at least 32 characters in production.");
   }
 
   if (!process.env.MONGO_URI) {

@@ -40,7 +40,7 @@ const corsOptions = {
     ) {
       return callback(null, true);
     }
-    return callback(null, true); // Fallback gracefully if origin is dynamic dev
+    return callback(new Error("Origin not allowed by CORS"));
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
