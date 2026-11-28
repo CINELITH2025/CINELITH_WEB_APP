@@ -143,11 +143,11 @@ const Profile = () => {
               {/* Followers metric */}
               <div className="flex items-center justify-center md:justify-start gap-6 font-bold">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg text-white font-black">1,234</span>
+                  <span className="text-lg text-white font-black">{user.following?.length || 0}</span>
                   <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Following</span>
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg text-white font-black">5,678</span>
+                  <span className="text-lg text-white font-black">{user.followers?.length || 0}</span>
                   <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Followers</span>
                 </div>
               </div>
