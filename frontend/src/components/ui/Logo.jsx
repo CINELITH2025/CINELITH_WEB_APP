@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Logo = ({ className = "h-14 md:h-16 w-auto" }) => {
   return (
     <img 

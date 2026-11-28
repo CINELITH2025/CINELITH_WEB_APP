@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sparkles, User, Mail, Lock, ArrowLeft, ArrowRight } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 import { apiErrorMessage } from '../lib/api';
-import Logo from '../components/ui/Logo';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);

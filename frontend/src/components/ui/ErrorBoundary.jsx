@@ -44,7 +44,7 @@ class ErrorBoundary extends React.Component {
               An unexpected error occurred while rendering this frame. Our projectionists have been notified.
             </p>
 
-            {this.state.error && process.env.NODE_ENV !== 'production' && (
+            {this.state.error && import.meta.env.DEV && (
               <div className="mb-6 p-3 rounded-xl bg-black/40 border border-white/5 text-left overflow-x-auto max-h-32 text-xs font-mono text-red-300">
                 {this.state.error.toString()}
               </div>

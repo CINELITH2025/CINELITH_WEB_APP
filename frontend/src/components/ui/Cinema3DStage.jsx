@@ -1,7 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Sparkles, Film, Star, Play, Layers, Compass, Eye } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
 
 const CAROUSEL_MOVIES = [
   { id: 1, title: "Dune: Part Two", director: "Denis Villeneuve", rating: "8.8", match: "98%", genre: "Sci-Fi / Epic", image: "/images/poster_4.jpg" },
@@ -13,12 +11,10 @@ const CAROUSEL_MOVIES = [
 ];
 
 const Cinema3DStage = () => {
-  const navigate = useNavigate();
   const [rotationY, setRotationY] = useState(0);
   const [rotationX, setRotationX] = useState(10);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const containerRef = useRef(null);
 
@@ -36,9 +32,7 @@ const Cinema3DStage = () => {
   const handleMouseMove = (e) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
     const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-    setMousePos({ x, y });
     setRotationX(12 - y * 15);
   };
 

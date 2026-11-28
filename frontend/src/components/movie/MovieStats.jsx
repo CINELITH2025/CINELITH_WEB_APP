@@ -1,4 +1,3 @@
-import React from 'react';
 import { Eye, ThumbsUp, Share2 } from 'lucide-react';
 
 const MovieStats = ({ stats }) => {

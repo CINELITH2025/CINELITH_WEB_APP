@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FanBanner = ({ percentage, name }) => {
   return (
     <section className="relative w-full max-w-4xl mx-auto my-16 py-12 rounded-3xl border border-white/5 bg-gradient-to-b from-[#1a1712] to-background overflow-hidden flex flex-col items-center justify-center text-center px-4">

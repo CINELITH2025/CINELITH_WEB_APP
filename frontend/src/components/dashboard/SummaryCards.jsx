@@ -1,4 +1,3 @@
-import React from 'react';
 import { Star, Film, Calendar } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 import { formatCinephileScore } from '../../lib/mapUser';

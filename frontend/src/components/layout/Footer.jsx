@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, Video, Film } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 const Instagram = (props) => (
   <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>

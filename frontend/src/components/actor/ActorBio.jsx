@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ActorBio = ({ bio, facts }) => {
   return (
     <section className="flex flex-col lg:flex-row gap-12 my-16 px-4 md:px-6">

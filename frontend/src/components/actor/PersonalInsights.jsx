@@ -1,5 +1,3 @@
-import React from 'react';
-
 const PersonalInsights = ({ insights }) => {
   return (
     <section className="my-12 px-2">

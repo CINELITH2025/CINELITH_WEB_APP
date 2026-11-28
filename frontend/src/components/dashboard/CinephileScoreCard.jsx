@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatCinephileScore } from '../../lib/mapUser';
 
 const SIGNALS = [

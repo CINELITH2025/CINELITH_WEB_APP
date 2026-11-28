@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MessageSquare, Sparkles, Trophy, Award, Lock,
+  MessageSquare, Trophy,
   Check, X, ChevronDown, ChevronUp, Loader2, Mail, 
   ShieldCheck, Star, ArrowUpRight, Compass, Activity,
-  ChevronLeft, ChevronRight, Film, Globe, User
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import Cinema3DStage from '../components/ui/Cinema3DStage';
 
@@ -43,7 +43,7 @@ const safeFetchJson = async (url, options = {}) => {
       status: res.status, 
       data: { message: "Connection issue. Please check that backend server is running on port 5050." } 
     };
-  } catch (err) {
+  } catch {
     return { 
       ok: false, 
       status: 500, 
@@ -102,7 +102,6 @@ const Landing = () => {
   const [otpStep, setOtpStep] = useState('form');
   const [otpCode, setOtpCode] = useState('');
   const [demoOtpHint, setDemoOtpHint] = useState('');
-  const [otpNotice, setOtpNotice] = useState('');
 
   // FAQ states
   const [openFaq, setOpenFaq] = useState(null);
@@ -145,7 +144,6 @@ const Landing = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setOtpNotice('');
 
     if (!formData.name.trim() || !formData.email.trim()) {
       setError('Name and Email Address are required.');
@@ -166,7 +164,6 @@ const Landing = () => {
     }
 
     setDemoOtpHint(data.demoOtp || '');
-    setOtpNotice(data.message);
     setOtpStep('otp');
     setLoading(false);
   };
@@ -371,9 +368,6 @@ const Landing = () => {
                     if (!isVisible) return null;
 
                     let transformClass = "";
-                    let zIndexClass = 0;
-                    let opacityClass = 0;
-                    let scaleClass = 1;
                     let borderClass = "border-white/10";
                     let shadowClass = "shadow-2xl";
 

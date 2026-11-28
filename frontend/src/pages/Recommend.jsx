@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import useUserStore from '../store/useUserStore';
 import MoviePoster from '../components/ui/MoviePoster';
 import { apiErrorMessage } from '../lib/api';
-import { Search, Sparkles, Check, Clapperboard } from 'lucide-react';
+import { Search, Sparkles, Check } from 'lucide-react';
 
 const Recommend = () => {
   const user = useUserStore((state) => state.user);
