@@ -211,6 +211,27 @@ export const getTvdbMovieDetails = async (tvdbId) => {
   }
 };
 
+const matchesSearchTerms = (title, query) => {
+  const normalize = (value) => String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const normalizedTitle = normalize(title);
+  const normalizedQuery = normalize(query);
+  if (!normalizedQuery) return true;
+  if (normalizedTitle.includes(normalizedQuery)) return true;
+
+  const ignored = new Set(["a", "an", "and", "for", "in", "of", "on", "or", "the", "to"]);
+  const queryTerms = normalizedQuery.split(/\s+/).filter((term) => term.length > 1 && !ignored.has(term));
+  if (!queryTerms.length) return normalizedTitle.includes(normalizedQuery);
+
+  const titleTerms = new Set(normalizedTitle.split(/\s+/));
+  const matches = queryTerms.filter((term) => titleTerms.has(term)).length;
+  return matches >= Math.max(1, Math.ceil(queryTerms.length * 0.6));
+};
+
 export const listTvdbMovies = async ({
   q = "",
   genre = "",
@@ -230,7 +251,9 @@ export const listTvdbMovies = async ({
       limit: 50,
       ...(year ? { year: String(year) } : {})
     });
-    let hits = res?.data?.data || [];
+    let hits = (res?.data?.data || []).filter((hit) =>
+      matchesSearchTerms(hit.name || hit.title, needle)
+    );
     const genreNeedle = String(genre || "").trim().toLowerCase();
     if (genreNeedle) {
       hits = hits.filter((hit) =>
