@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import ActorBanner from '../components/actor/ActorBanner';
@@ -154,7 +154,12 @@ const ActorProfile = () => {
   const { id } = useParams();
   const actorId = parseInt(id, 10);
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const passedActor = location.state?.actor;
+  const actorName = passedActor?.name
+    || searchParams.get('name')
+    || ACTOR_CATALOG.find((entry) => entry.id === actorId)?.name
+    || '';
   const searchCatalogPeople = useUserStore((state) => state.searchCatalogPeople);
   const [catalogImage, setCatalogImage] = useState("");
 
@@ -164,9 +169,9 @@ const ActorProfile = () => {
 
   useEffect(() => {
     let cancelled = false;
-    searchCatalogPeople(passedActor?.name || ACTOR_CATALOG.find((entry) => entry.id === actorId)?.name || "")
+    searchCatalogPeople(actorName)
       .then((people) => {
-        const expectedName = (passedActor?.name || ACTOR_CATALOG.find((entry) => entry.id === actorId)?.name || "").trim().toLowerCase();
+        const expectedName = actorName.trim().toLowerCase();
         const exactMatch = people.find((person) => person.name?.trim().toLowerCase() === expectedName);
         if (!cancelled) setCatalogImage(exactMatch?.image || "");
       })
@@ -174,7 +179,7 @@ const ActorProfile = () => {
         if (!cancelled) setCatalogImage("");
       });
     return () => { cancelled = true; };
-  }, [actorId, passedActor?.name, searchCatalogPeople]);
+  }, [actorName, searchCatalogPeople]);
 
   // Retrieve actor catalog entry and details
   const actor = useMemo(() => {
@@ -184,15 +189,16 @@ const ActorProfile = () => {
     if (!catalogEntry) {
       // Dynamic fallback for any actor navigated from Cast & Crew
       return {
-        name: passedActor?.name || "Featured Actor",
+        name: actorName || "Featured Actor",
         image: passedActor?.image || "/images/actor_hero_bg.png",
             bio: [
-          `${passedActor?.name || "This artist"} is featured in the CINELITH cinematic catalog. Additional filmography and bio details are being aggregated.`
+          `${actorName || "This artist"} is featured in the CINELITH cinematic catalog. Additional filmography and bio details are being aggregated.`
         ],
         facts: [
           { label: "Role", value: passedActor?.role || "Cast" },
           { label: "Status", value: "Verified Artist" }
         ],
+        stats: { movies: 0, awards: 0 },
         filmography: [],
         awards: []
       };
@@ -217,7 +223,7 @@ const ActorProfile = () => {
       filmography,
       awards: details?.awards || []
     };
-  }, [actorId, passedActor?.image, passedActor?.name, passedActor?.role]);
+  }, [actorId, actorName, passedActor?.image, passedActor?.role]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden font-sans">
