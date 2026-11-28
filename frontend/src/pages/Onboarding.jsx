@@ -1,15 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserStore, { ACTOR_CATALOG, GENRE_CATALOG } from '../store/useUserStore';
-import { Search, Film, Star, Check, Sparkles, User, Bookmark } from 'lucide-react';
+import { Search, Check, Bookmark } from 'lucide-react';
 import Logo from '../components/ui/Logo';
+
+const ActorPhoto = ({ actor }) => {
+  const [failed, setFailed] = useState(false);
+  const initials = actor.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase();
+
+  if (!actor.image || failed) {
+    return (
+      <div className="w-full h-full rounded-full bg-gradient-to-br from-[#F5BF26]/30 to-violet-500/30 flex items-center justify-center text-white text-2xl font-black" aria-label={`${actor.name} photo unavailable`}>
+        {initials}
+      </div>
+    );
+  }
+
+  return <img src={actor.image} alt={actor.name} onError={() => setFailed(true)} className="w-full h-full object-cover object-center rounded-full" />;
+};
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const saveOnboarding = useUserStore((state) => state.saveOnboarding);
   const searchRecommendMovies = useUserStore((state) => state.searchRecommendMovies);
+  const searchCatalogPeople = useUserStore((state) => state.searchCatalogPeople);
   const user = useUserStore((state) => state.user);
   const [catalogMovies, setCatalogMovies] = useState([]);
+  const [catalogActors, setCatalogActors] = useState([]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
@@ -52,7 +69,7 @@ const Onboarding = () => {
       }, 800);
       return () => clearInterval(interval);
     }
-  }, [currentStep]);
+  }, [currentStep, loaderMessages.length]);
 
   // Once loading completes, save to Zustand and redirect to dashboard
   useEffect(() => {
@@ -68,7 +85,7 @@ const Onboarding = () => {
       };
       persist();
     }
-  }, [loadingComplete, navigate]);
+  }, [loadingComplete, navigate, saveOnboarding, favoriteMovies, watchlist, watchedMovies, favoriteActors, favoriteGenres]);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,12 +104,34 @@ const Onboarding = () => {
     };
   }, [searchQuery, searchRecommendMovies, currentStep]);
 
+  useEffect(() => {
+    if (currentStep !== 3) return;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      const query = searchQuery.trim();
+      if (!query) {
+        Promise.all(ACTOR_CATALOG.map(async (actor) => {
+          const matches = await searchCatalogPeople(actor.name).catch(() => []);
+          const exactMatch = matches.find((person) => person.name.toLowerCase() === actor.name.toLowerCase());
+          return { ...actor, image: exactMatch?.image || "" };
+        })).then((actors) => {
+          if (!cancelled) setCatalogActors(actors);
+        });
+        return;
+      }
+      searchCatalogPeople(query).then((people) => {
+        if (!cancelled) setCatalogActors(people);
+      }).catch(() => {
+        if (!cancelled) setCatalogActors([]);
+      });
+    }, 180);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [currentStep, searchQuery, searchCatalogPeople]);
+
   const filteredCatalog = catalogMovies;
 
   // Filter Catalog Actors
-  const filteredActors = ACTOR_CATALOG.filter((actor) =>
-    actor.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredActors = catalogActors;
 
   const toggleFavoriteMovie = (movie) => {
     if (favoriteMovies.some(m => m.id === movie.id)) {
@@ -152,7 +191,7 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-[#08060d] text-white flex flex-col justify-between font-sans">
-      
+
       {/* Upper Navigation Indicator bar */}
       {currentStep < 5 && (
         <header className="w-full border-b border-white/5 py-4 px-6 bg-black/40 backdrop-blur-md sticky top-0 z-40">
@@ -161,16 +200,16 @@ const Onboarding = () => {
               <Logo className="h-5 w-auto" />
               <span className="text-sm font-black tracking-wider border-l border-white/20 pl-3">ONBOARDING</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               {[1, 2, 3, 4].map((step) => (
                 <div
                   key={step}
                   className={`w-8 h-2 rounded-full transition-all duration-300 ${
-                    currentStep === step 
-                      ? 'bg-[#F5BF26] w-12' 
-                      : currentStep > step 
-                        ? 'bg-[#F5BF26]/40' 
+                    currentStep === step
+                      ? 'bg-[#F5BF26] w-12'
+                      : currentStep > step
+                        ? 'bg-[#F5BF26]/40'
                         : 'bg-white/10'
                   }`}
                 />
@@ -182,7 +221,7 @@ const Onboarding = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 w-full max-w-[1000px] mx-auto py-10 px-6 flex flex-col justify-center">
-        
+
         {/* STEP 1: TOP 5 FAVORITE MOVIES */}
         {currentStep === 1 && (
           <div className="flex flex-col gap-6">
@@ -211,8 +250,8 @@ const Onboarding = () => {
                     key={movie.id}
                     onClick={() => toggleFavoriteMovie(movie)}
                     className={`flex flex-col group cursor-pointer border rounded-2xl p-2 bg-white/[0.02] transition-all duration-300 ${
-                      isSelected 
-                        ? 'border-[#F5BF26] bg-[#F5BF26]/5' 
+                      isSelected
+                        ? 'border-[#F5BF26] bg-[#F5BF26]/5 shadow-[0_0_24px_rgba(245,191,38,0.28)] scale-[1.02]'
                         : 'border-white/10 hover:border-white/20'
                     }`}
                   >
@@ -265,10 +304,10 @@ const Onboarding = () => {
                   <div
                     key={movie.id}
                     className={`flex flex-col border rounded-2xl p-3 bg-white/[0.02] transition-all duration-300 ${
-                      isWatched 
-                        ? 'border-emerald-500/50 bg-emerald-500/5' 
-                        : isWatchlist 
-                          ? 'border-[#F5BF26]/50 bg-[#F5BF26]/5' 
+                      isWatched
+                        ? 'border-emerald-500/50 bg-emerald-500/5'
+                        : isWatchlist
+                          ? 'border-[#F5BF26]/50 bg-[#F5BF26]/5'
                           : 'border-white/10'
                     }`}
                   >
@@ -285,15 +324,15 @@ const Onboarding = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <span className="font-bold text-xs truncate text-white leading-tight mb-2">{movie.title}</span>
-                    
+
                     <div className="flex gap-2 mt-auto">
                       <button
                         onClick={() => toggleWatched(movie)}
                         className={`flex-1 py-2 rounded-lg font-bold text-[10px] uppercase transition-all tracking-wider cursor-pointer ${
-                          isWatched 
-                            ? 'bg-emerald-500 text-black' 
+                          isWatched
+                            ? 'bg-emerald-500 text-black'
                             : 'bg-white/5 text-gray-300 hover:bg-white/10'
                         }`}
                       >
@@ -302,8 +341,8 @@ const Onboarding = () => {
                       <button
                         onClick={() => toggleWatchlist(movie)}
                         className={`py-2 px-2.5 rounded-lg transition-all cursor-pointer ${
-                          isWatchlist 
-                            ? 'bg-[#F5BF26] text-black' 
+                          isWatchlist
+                            ? 'bg-[#F5BF26] text-black'
                             : 'bg-white/5 text-gray-300 hover:bg-white/10'
                         }`}
                         title="Add to Watchlist"
@@ -323,7 +362,7 @@ const Onboarding = () => {
               >
                 Back
               </button>
-              
+
               <div className="flex gap-4 text-xs font-semibold text-gray-400">
                 <span>Watched: <span className="text-white font-bold">{watchedMovies.length}</span></span>
                 <span>Watchlist: <span className="text-white font-bold">{watchlist.length}</span></span>
@@ -367,15 +406,15 @@ const Onboarding = () => {
                     key={actor.id}
                     onClick={() => toggleFavoriteActor(actor.name)}
                     className={`flex flex-col items-center p-4 rounded-2xl cursor-pointer bg-white/[0.01] border transition-all duration-300 ${
-                      isSelected 
-                        ? 'border-[#F5BF26] bg-[#F5BF26]/5' 
+                      isSelected
+                        ? 'border-[#F5BF26] bg-[#F5BF26]/5'
                         : 'border-white/5 hover:border-white/10'
                     }`}
                   >
                     <div className={`w-20 h-20 rounded-full overflow-hidden mb-3 border-2 transition-all p-1 bg-white/5 relative ${
                       isSelected ? 'border-[#F5BF26]' : 'border-transparent'
                     }`}>
-                      <img src={actor.image} alt={actor.name} className="w-full h-full object-cover rounded-full" />
+                      <ActorPhoto actor={actor} />
                       {isSelected && (
                         <div className="absolute inset-0 bg-[#F5BF26]/20 rounded-full flex items-center justify-center">
                           <div className="w-6 h-6 rounded-full bg-[#F5BF26] flex items-center justify-center text-black shadow-lg">
@@ -385,7 +424,7 @@ const Onboarding = () => {
                       )}
                     </div>
                     <span className="font-bold text-xs text-center text-gray-300 leading-tight">{actor.name}</span>
-                    <span className="text-[9px] text-gray-500 mt-1">{actor.facts.nationality}</span>
+                    <span className="text-[9px] text-gray-500 mt-1">{actor.facts?.nationality || ''}</span>
                   </div>
                 );
               })}
@@ -398,7 +437,7 @@ const Onboarding = () => {
               >
                 Back
               </button>
-              
+
               <span className="text-xs text-gray-500 font-semibold">
                 Selected: <span className="text-white font-bold">{favoriteActors.length} / 5</span>
               </span>
@@ -454,7 +493,7 @@ const Onboarding = () => {
               >
                 Back
               </button>
-              
+
               <span className="text-xs text-gray-500 font-semibold">
                 Selected: <span className="text-white font-bold">{favoriteGenres.length} / 5</span>
               </span>
