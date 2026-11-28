@@ -195,7 +195,7 @@ const Profile = () => {
                   {user.favoriteMovies.map((item, idx) => (
                     <Link
                       key={item.id || idx}
-                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      to={item.id ? `/${['series', 'tv'].includes(item.type) ? 'series' : 'movie'}/${item.id}` : '/explore'}
                       className="flex flex-col group"
                     >
                       <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
@@ -222,7 +222,7 @@ const Profile = () => {
                   {user.watchlist.map((item, idx) => (
                     <Link
                       key={item.id || idx}
-                      to={item.id ? `/movie/${item.id}` : '/explore'}
+                      to={item.id ? `/${['series', 'tv'].includes(item.type) ? 'series' : 'movie'}/${item.id}` : '/explore'}
                       className="flex flex-col group"
                     >
                       <div className="aspect-[2/3] rounded-xl overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-xl hover:border-[#F5BF26]/40 transition-all duration-300 relative">
