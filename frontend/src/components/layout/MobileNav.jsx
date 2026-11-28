@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Compass, Clapperboard, MessageCircle, LayoutDashboard, User, Lock } from 'lucide-react';
+import { Home, Compass, Tv, MessageCircle, LayoutDashboard, User, Lock } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 
 const MobileNav = () => {
@@ -10,7 +9,7 @@ const MobileNav = () => {
   const navItems = [
     { label: 'Home', path: '/', icon: Home, protected: false },
     { label: 'Explore', path: '/explore', icon: Compass, protected: false },
-    { label: 'For You', path: '/recommend', icon: Clapperboard, protected: false },
+    { label: 'TV Shows', path: '/explore?type=series', icon: Tv, protected: false },
     { label: 'Discussions', path: '/people', icon: MessageCircle, protected: true },
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, protected: true },
     { label: 'Profile', path: '/profile', icon: User, protected: true }
@@ -21,7 +20,14 @@ const MobileNav = () => {
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path || (item.path === '/explore' && location.pathname.startsWith('/movie/'));
+          const itemPath = item.path.split('?')[0];
+          const isExploreItem = itemPath === '/explore';
+          const isSeriesItem = item.path.includes('type=series');
+          const isActive = isExploreItem
+            ? (location.pathname === '/explore' && isSeriesItem === location.search.includes('type=series'))
+              || (isSeriesItem && location.pathname.startsWith('/series/'))
+              || (!isSeriesItem && location.pathname.startsWith('/movie/'))
+            : location.pathname === itemPath;
           const isLocked = item.protected && !isAuthenticated;
 
           return (

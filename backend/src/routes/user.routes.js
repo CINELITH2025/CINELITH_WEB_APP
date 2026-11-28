@@ -441,12 +441,40 @@ router.post("/collections", protect, async (req, res, next) => {
       movies: movies || []
     });
 
+    await user.save();
+
     await recordActivity(user);
 
     res.status(201).json({ message: "Collection created", name });
   } catch (err) {
     next(err);
   }
+});
+
+router.patch("/collections/:collectionId", protect, async (req, res, next) => {
+  try {
+    const user = await getUserOr404(req.user.id, res);
+    if (!user) return;
+    const collection = user.collections.id(req.params.collectionId);
+    if (!collection) return res.status(404).json({ message: "Collection not found" });
+    if (req.body.name !== undefined) collection.name = String(req.body.name).trim();
+    if (req.body.description !== undefined) collection.description = String(req.body.description);
+    if (req.body.movies !== undefined) collection.movies = req.body.movies;
+    await user.save();
+    res.json(serializeUser(user));
+  } catch (err) { next(err); }
+});
+
+router.delete("/collections/:collectionId", protect, async (req, res, next) => {
+  try {
+    const user = await getUserOr404(req.user.id, res);
+    if (!user) return;
+    const collection = user.collections.id(req.params.collectionId);
+    if (!collection) return res.status(404).json({ message: "Collection not found" });
+    await collection.deleteOne();
+    await user.save();
+    res.json(serializeUser(user));
+  } catch (err) { next(err); }
 });
 
 /**

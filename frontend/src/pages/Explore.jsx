@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -9,7 +9,7 @@ import { Star, Clapperboard, ChevronDown, X, ArrowUpDown, Search } from 'lucide-
 const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const containerRef = React.useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -73,11 +73,12 @@ const SearchableSelect = ({ label, value, onChange, options, placeholder }) => {
 
 const Explore = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const fetchCatalog = useUserStore((state) => state.fetchCatalog);
   const fetchCatalogFilters = useUserStore((state) => state.fetchCatalogFilters);
 
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const mediaType = searchParams.get("type") === "series" ? "series" : "movie";
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [sortBy, setSortBy] = useState("Popular");
@@ -92,12 +93,20 @@ const Explore = () => {
       .catch(() => setFilterOptions({ genres: [], years: [] }));
   }, [fetchCatalogFilters]);
 
+  const changeMediaType = (type) => {
+    const next = new URLSearchParams(searchParams);
+    if (type === "series") next.set("type", "series");
+    else next.delete("type");
+    setSearchParams(next, { replace: true });
+  };
+
   useEffect(() => {
     const sort =
       sortBy === "Alpha" ? "alpha" : sortBy === "Rating" ? "rating" : sortBy === "Year" ? "year" : "popular";
     const timer = setTimeout(() => {
       fetchCatalog({
         q: searchQuery,
+        type: mediaType,
         genre: selectedGenre === "All" ? "" : selectedGenre,
         year: selectedYear === "All" ? "" : selectedYear,
         sort,
@@ -113,7 +122,7 @@ const Explore = () => {
         });
     }, 200);
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedGenre, selectedYear, sortBy, fetchCatalog]);
+  }, [mediaType, searchQuery, selectedGenre, selectedYear, sortBy, fetchCatalog]);
 
   const handleReset = () => {
     setSelectedGenre("All");
@@ -134,13 +143,21 @@ const Explore = () => {
           <p className="text-sm text-gray-400 mt-2 text-center">Live titles from TheTVDB — posters, plot, and credits included.</p>
         </div>
 
+        <div className="flex justify-center gap-3 mb-6" role="tablist" aria-label="Catalog type">
+          {[['movie', 'Movies'], ['series', 'TV Shows']].map(([type, label]) => (
+            <button key={type} type="button" role="tab" aria-selected={mediaType === type} onClick={() => changeMediaType(type)}
+              className={`rounded-full px-5 py-2 text-sm font-bold transition ${mediaType === type ? 'bg-[#F5BF26] text-black shadow-lg shadow-[#F5BF26]/20' : 'border border-white/10 text-gray-300 hover:bg-white/5'}`}>
+              {label}
+            </button>
+          ))}
+        </div>
         <div className="relative w-full group mb-8">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-[#F5BF26] transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search movies by title..."
+            placeholder={`Search ${mediaType === "series" ? "TV shows" : "movies"} by title...`}
             className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:border-[#F5BF26]/40 focus:bg-white/10 transition-all text-base placeholder:text-gray-600 text-white shadow-2xl"
           />
         </div>
@@ -180,7 +197,7 @@ const Explore = () => {
         {movies.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-6 gap-y-10">
             {movies.map((item) => (
-              <div key={item.id} className="flex flex-col group cursor-pointer" onClick={() => navigate(`/movie/${item.id}`)}>
+              <div key={item.id} className="flex flex-col group cursor-pointer" onClick={() => navigate(`/${item.type === "series" ? "series" : "movie"}/${item.id}`)}>
                 <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 bg-white/5 border border-white/10 shadow-2xl group-hover:border-[#F5BF26]/40 transition-all">
                   <MoviePoster
                     src={item.image || item.poster}

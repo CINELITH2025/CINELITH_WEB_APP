@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ThumbsUp, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
 
-const Discussion = ({ comments: initialComments, movieId, movieTitle, onCommentsChange }) => {
+const Discussion = ({ comments = [], movieId, movieTitle, onCommentsChange }) => {
   const [activeTab, setActiveTab] = useState("Newest");
-  const [comments, setComments] = useState(initialComments || []);
   const [newCommentText, setNewCommentText] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const [replyText, setReplyText] = useState("");
@@ -17,12 +16,7 @@ const Discussion = ({ comments: initialComments, movieId, movieTitle, onComments
   const likeMovieComment = useUserStore((state) => state.likeMovieComment);
   const friendIds = (user?.friends || []).map((friend) => String(friend._id || friend));
 
-  useEffect(() => {
-    setComments(initialComments || []);
-  }, [initialComments]);
-
   const publish = (next) => {
-    setComments(next);
     onCommentsChange?.(next);
   };
 

@@ -3,6 +3,8 @@ import axios from "axios";
 let token = null;
 const BASE = "https://api4.thetvdb.com/v4";
 const ARTWORK = "https://artworks.thetvdb.com";
+const peopleSearchCache = new Map();
+const PEOPLE_SEARCH_TTL = 24 * 60 * 60 * 1000;
 
 const absArtwork = (url) => {
   const value = String(url || "").trim();
@@ -66,6 +68,31 @@ export const tvdbSearch = async (query) => {
   }
 };
 
+export const tvdbSearchPeople = async (query) => {
+  const needle = String(query || "").trim();
+  if (!needle) return [];
+  const cacheKey = needle.toLowerCase();
+  const cached = peopleSearchCache.get(cacheKey);
+  if (cached && Date.now() - cached.at < PEOPLE_SEARCH_TTL) return cached.people;
+  try {
+    const res = await tvdbGet("/search", { query: needle, type: "people", limit: 12 });
+    const people = (res?.data?.data || [])
+      .filter((person) => !person.type || ["person", "people"].includes(String(person.type).toLowerCase()))
+      .map((person) => ({
+        id: Number(person.tvdb_id || person.id) || null,
+        name: person.name || person.title || needle,
+        image: artworkUrl(person.image_url || person.image || person.thumbnail || "")
+      }))
+      .filter((person) => person.name);
+    if (peopleSearchCache.size >= 100) peopleSearchCache.delete(peopleSearchCache.keys().next().value);
+    peopleSearchCache.set(cacheKey, { at: Date.now(), people });
+    return people;
+  } catch (err) {
+    console.error("TVDB PEOPLE SEARCH ERROR:", err.message);
+    return [];
+  }
+};
+
 const scoreHit = (hit, title, year) => {
   const name = String(hit?.name || hit?.title || "").toLowerCase();
   const needle = String(title || "").toLowerCase();
@@ -115,7 +142,7 @@ export const toClientTvdbMovie = (hit = {}, extra = {}) => {
     image,
     genres: genreNames,
     genre: genreNames.join(", "),
-    type: "movie",
+    type: extra.type || "movie",
     rating: 0,
     director: extra.director || "",
     writer: extra.writer || "",
@@ -159,31 +186,37 @@ const peopleOfType = (characters, type) =>
     .map((row) => row.personName || row.name)
     .filter(Boolean);
 
-export const getTvdbMovieDetails = async (tvdbId) => {
+const peopleOfRole = (characters, role) =>
+  (characters || [])
+    .filter((row) => row.peopleType === role)
+    .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured) || Number(a.sort || 0) - Number(b.sort || 0))
+    .slice(0, 12)
+    .map((row) => ({
+      id: row.personId || row.peopleId || row.id,
+      name: row.personName || row.name,
+      role: row.name || "",
+      image: artworkUrl(row.personImgURL || row.image || row.peopleImage || row.personImage || "")
+    }))
+    .filter((row) => row.name);
+
+const getTvdbTitleDetails = async (mediaType, tvdbId) => {
   const id = Number(tvdbId);
   if (!id) return null;
-  const cached = detailCache.get(id);
+  const cacheKey = `${mediaType}:${id}`;
+  const cached = detailCache.get(cacheKey);
   if (cached && Date.now() - cached.at < DETAIL_TTL) return cached.movie;
 
   try {
+    const endpoint = mediaType === "series" ? "series" : "movies";
     const [extRes, trRes] = await Promise.all([
-      tvdbGet(`/movies/${id}/extended`),
-      tvdbGet(`/movies/${id}/translations/eng`).catch(() => null)
+      tvdbGet(`/${endpoint}/${id}/extended`),
+      tvdbGet(`/${endpoint}/${id}/translations/eng`).catch(() => null)
     ]);
     const data = extRes?.data?.data;
     if (!data) return null;
     const translation = trRes?.data?.data || {};
     const characters = data.characters || [];
-    const actors = characters
-      .filter((row) => row.peopleType === "Actor")
-      .sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured) || Number(a.sort || 0) - Number(b.sort || 0))
-      .slice(0, 12)
-      .map((row) => ({
-        name: row.personName || row.name,
-        role: row.name || "",
-        image: artworkUrl(row.image)
-      }))
-      .filter((row) => row.name);
+    const actors = peopleOfRole(characters, "Actor");
     const rating = (data.contentRatings || []).find((row) => row.country === "usa") || data.contentRatings?.[0];
     const awards = [...new Set((data.awards || []).map((row) => row.name).filter(Boolean))]
       .slice(0, 4)
@@ -201,15 +234,19 @@ export const getTvdbMovieDetails = async (tvdbId) => {
       pgRating: rating?.name || rating?.rating || "",
       releaseDate: data.first_release?.date || data.year || "",
       awards,
-      cast: actors
+      cast: actors,
+      type: mediaType
     });
-    detailCache.set(id, { at: Date.now(), movie });
+    detailCache.set(cacheKey, { at: Date.now(), movie });
     return movie;
   } catch (err) {
-    console.error("TVDB MOVIE DETAILS ERROR:", err.message);
+    console.error(`TVDB ${mediaType.toUpperCase()} DETAILS ERROR:`, err.message);
     return null;
   }
 };
+
+export const getTvdbMovieDetails = (tvdbId) => getTvdbTitleDetails("movie", tvdbId);
+export const getTvdbSeriesDetails = (tvdbId) => getTvdbTitleDetails("series", tvdbId);
 
 const matchesSearchTerms = (title, query) => {
   const normalize = (value) => String(value || "")
@@ -233,6 +270,7 @@ const matchesSearchTerms = (title, query) => {
 };
 
 export const listTvdbMovies = async ({
+  type = "movie",
   q = "",
   genre = "",
   year = "",
@@ -240,6 +278,8 @@ export const listTvdbMovies = async ({
   limit = 60,
   offset = 0
 } = {}) => {
+  const mediaType = type === "series" ? "series" : "movie";
+  const endpoint = mediaType === "series" ? "series" : "movies";
   const take = Math.min(Number(limit) || 60, 100);
   const skip = Number(offset) || 0;
   const needle = String(q || "").trim();
@@ -247,7 +287,7 @@ export const listTvdbMovies = async ({
   if (needle) {
     const res = await tvdbGet("/search", {
       query: needle,
-      type: "movie",
+      type: mediaType,
       limit: 50,
       ...(year ? { year: String(year) } : {})
     });
@@ -257,13 +297,13 @@ export const listTvdbMovies = async ({
     const genreNeedle = String(genre || "").trim().toLowerCase();
     if (genreNeedle) {
       hits = hits.filter((hit) =>
-        (hit.genres || []).some((item) => String(item).toLowerCase() === genreNeedle)
+        (hit.genres || []).some((item) => String(typeof item === "string" ? item : item?.name || "").toLowerCase() === genreNeedle)
       );
     }
     if (sort === "year") hits.sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
     else if (sort === "alpha") hits.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
     const total = hits.length;
-    const movies = hits.slice(skip, skip + take).map((hit) => toClientTvdbMovie(hit));
+    const movies = hits.slice(skip, skip + take).map((hit) => toClientTvdbMovie(hit, { type: mediaType }));
     return { total, movies };
   }
 
@@ -276,11 +316,11 @@ export const listTvdbMovies = async ({
   if (year) params.year = String(year);
   if (genreId) params.genre = genreId;
 
-  const res = await tvdbGet("/movies/filter", params);
+  const res = await tvdbGet(`/${endpoint}/filter`, params);
   const rows = res?.data?.data || [];
   const total = res?.data?.links?.total_items || rows.length;
   const start = skip % 500;
-  const movies = rows.slice(start, start + take).map((hit) => toClientTvdbMovie(hit));
+  const movies = rows.slice(start, start + take).map((hit) => toClientTvdbMovie(hit, { type: mediaType }));
   return { total, movies };
 };
 

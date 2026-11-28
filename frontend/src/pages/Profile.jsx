@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import useUserStore from '../store/useUserStore';
 import { formatCinephileScore } from '../lib/mapUser';
-import { Edit3, Plus, Trash2, Camera, Save, Star, X, Film, ThumbsUp, Heart, Bookmark, MessageSquare, PlusCircle, Check } from 'lucide-react';
+import { Edit3, Plus, Trash2, Save, Star, X, Film, Heart, Bookmark, PlusCircle, Check } from 'lucide-react';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -24,9 +24,9 @@ const Profile = () => {
   
   // Edit Profile modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editBio, setEditBio] = useState("");
-  const [editAvatar, setEditAvatar] = useState("");
+  const [editName, setEditName] = useState(user?.name || "");
+  const [editBio, setEditBio] = useState(user?.bio || "");
+  const [editAvatar, setEditAvatar] = useState(user?.avatar || "");
 
   // Custom List creation state
   const [newListName, setNewListName] = useState("");
@@ -39,6 +39,8 @@ const Profile = () => {
     "/images/actor_1.png",
     "/images/actor_hero_bg.png"
   ];
+
+  const logout = useUserStore((state) => state.logout);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -82,11 +84,13 @@ const Profile = () => {
   };
 
   // Handle Custom List Creation
-  const handleCreateList = (e) => {
+  const handleCreateList = async (e) => {
     e.preventDefault();
     if (!newListName.trim()) return;
-    createCustomList(newListName.trim());
-    setNewListName("");
+    try {
+      await createCustomList(newListName.trim());
+      setNewListName("");
+    } catch (error) { console.error("Could not create list", error); }
   };
 
   return (
@@ -132,6 +136,7 @@ const Profile = () => {
                   >
                     Dashboard
                   </Button>
+                  <Button onClick={() => { logout(); navigate('/'); }} variant="outline" className="border-white/20 text-gray-300 hover:text-white text-xs px-4 py-3 rounded-lg">Sign out</Button>
                 </div>
               </div>
 
@@ -330,7 +335,7 @@ const Profile = () => {
                     <div key={list.id} className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 relative">
                       {/* Delete List Trigger */}
                       <button 
-                        onClick={() => deleteCustomList(list.id)}
+                        onClick={() => deleteCustomList(list.id).catch((error) => console.error("Could not delete list", error))}
                         className="absolute top-5 right-5 p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors cursor-pointer"
                         title="Delete List"
                       >
@@ -347,12 +352,12 @@ const Profile = () => {
                         <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 mb-6">
                           {list.movies.map((movie) => (
                             <div key={movie.id} className="relative aspect-[2/3] rounded-xl overflow-hidden bg-white/5 border border-white/5 group shadow-lg">
-                              <Link to={movie.id ? `/movie/${movie.id}` : '/explore'} className="block w-full h-full">
+                              <Link to={movie.id ? `/${['series', 'tv'].includes(movie.type) ? 'series' : 'movie'}/${movie.id}` : '/explore'} className="block w-full h-full">
                                 <img src={movie.image} alt={movie.title} className="w-full h-full object-cover" />
                               </Link>
                               <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2 pointer-events-none">
                                 <button
-                                  onClick={() => removeMovieFromCustomList(list.id, movie.id)}
+                                  onClick={() => removeMovieFromCustomList(list.id, movie.id).catch((error) => console.error("Could not remove title", error))}
                                   className="p-1.5 rounded-full bg-red-500 text-white cursor-pointer hover:scale-115 transition-transform pointer-events-auto"
                                   title="Remove from list"
                                 >

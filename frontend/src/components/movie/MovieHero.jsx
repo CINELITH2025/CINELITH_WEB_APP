@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Bookmark, Award, Check, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import useUserStore from '../../store/useUserStore';
@@ -51,13 +51,13 @@ const MovieHero = ({ movie }) => {
       <div className="w-full lg:w-[320px] shrink-0">
         <div className="bg-white/5 border border-white/10 p-3 rounded-2xl shadow-2xl">
           <div className="aspect-[2/3] w-full rounded-xl overflow-hidden bg-white/5">
-            <MoviePoster 
-              src={movie.image || movie.poster} 
+            <MoviePoster
+              src={movie.image || movie.poster}
               alt={movie.title}
               id={movie.id}
               size="w342"
               priority={true}
-              className="w-full h-full object-cover" 
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -69,9 +69,11 @@ const MovieHero = ({ movie }) => {
         <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-2 tracking-tight">
           {movie.title} ({movie.year})
         </h1>
-        <div className="text-xs text-gray-500 font-black uppercase tracking-widest mb-6">
-          {movie.pgRating}
-        </div>
+        {movie.pgRating ? (
+          <div className="text-xs text-gray-500 font-black uppercase tracking-widest mb-6">
+            {movie.pgRating}
+          </div>
+        ) : null}
 
         {/* Scores */}
         <div className="flex items-center gap-4 mb-8">
@@ -89,24 +91,32 @@ const MovieHero = ({ movie }) => {
           </div>
         </div>
 
-        {/* Specs List */}
+        {/* Specs List - Rendered only when real data exists */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8 border-b border-white/5 pb-8">
-          <div className="flex flex-col gap-1">
-            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Genre</span>
-            <span className="text-white font-bold text-sm">{movie.genre}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Runtime</span>
-            <span className="text-white font-bold text-sm">{movie.runtime}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Release</span>
-            <span className="text-white font-bold text-sm">{movie.releaseDate}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Awards</span>
-            <span className="text-white font-bold text-sm">{movie.awards}</span>
-          </div>
+          {movie.genre ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Genre</span>
+              <span className="text-white font-bold text-sm">{movie.genre}</span>
+            </div>
+          ) : null}
+          {movie.runtime ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Runtime</span>
+              <span className="text-white font-bold text-sm">{movie.runtime}</span>
+            </div>
+          ) : null}
+          {movie.releaseDate ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Release</span>
+              <span className="text-white font-bold text-sm">{movie.releaseDate}</span>
+            </div>
+          ) : null}
+          {movie.awards ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Awards</span>
+              <span className="text-white font-bold text-sm">{movie.awards}</span>
+            </div>
+          ) : null}
         </div>
 
         {/* Overview & Crew Row */}
@@ -116,44 +126,47 @@ const MovieHero = ({ movie }) => {
             <h3 className="text-lg font-black text-white tracking-tight">Overview</h3>
             <p className="text-sm md:text-base text-gray-400 leading-relaxed font-medium">
               {showFullOverview || !(movie.description || "").length
-                ? (movie.description || "No overview in the catalog for this title.")
+                ? (movie.description || "No overview available for this title.")
                 : `${movie.description.slice(0, 200)}...`}
             </p>
-            <button 
-              onClick={() => setShowFullOverview(!showFullOverview)}
-              className="text-[#F5BF26] hover:underline font-bold text-xs w-fit cursor-pointer"
-            >
-              {showFullOverview ? 'Read Less' : 'Read More'}
-            </button>
+            {movie.description && movie.description.length > 200 && (
+              <button
+                onClick={() => setShowFullOverview(!showFullOverview)}
+                className="text-[#F5BF26] hover:underline font-bold text-xs w-fit cursor-pointer"
+              >
+                {showFullOverview ? 'Read Less' : 'Read More'}
+              </button>
+            )}
           </div>
 
-          {/* Crew & Awards Logos */}
+          {/* Crew & Awards */}
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1.5">
-              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Director(s)</span>
-              <span className="text-white font-bold text-sm">{movie.director}</span>
-            </div>
+            {movie.director ? (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Director(s)</span>
+                <span className="text-white font-bold text-sm">{movie.director}</span>
+              </div>
+            ) : null}
 
-            <div className="flex flex-col gap-1.5">
-              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Writer(s)</span>
-              <span className="text-white font-bold text-sm">{movie.writer}</span>
-            </div>
+            {movie.writer ? (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Writer(s)</span>
+                <span className="text-white font-bold text-sm">{movie.writer}</span>
+              </div>
+            ) : null}
 
-            {/* Awards & Recognition Badges */}
-            <div className="flex flex-col gap-3">
-              <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Awards & Recognition</span>
-              <div className="flex items-center gap-2">
-                <div title="Academy Award" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-[#F5BF26] hover:bg-white/10 transition-colors">
-                  <Award className="w-5 h-5" />
-                </div>
-                <div title="Golden Globe" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-emerald-400 hover:bg-white/10 transition-colors">
-                  <Award className="w-5 h-5" />
-                </div>
-                <div title="BAFTA" className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-blue-400 hover:bg-white/10 transition-colors">
-                  <Award className="w-5 h-5" />
+            {/* Awards & Recognition - Only rendered when verified awards exist */}
+            {movie.awards ? (
+              <div className="flex flex-col gap-3">
+                <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">Awards & Recognition</span>
+                <div className="flex items-center gap-2">
+                  <div title={movie.awards} className="p-2.5 bg-white/5 rounded-xl border border-white/10 text-[#F5BF26] hover:bg-white/10 transition-colors flex items-center gap-2">
+                    <Award className="w-5 h-5 shrink-0" />
+                    <span className="text-xs font-bold text-gray-300">{movie.awards}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </div>
 
@@ -172,11 +185,11 @@ const MovieHero = ({ movie }) => {
           </Button>
 
           {/* Watchlist Toggle */}
-          <Button 
+          <Button
             onClick={handleWatchlistToggle}
             className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
-              inWatchlist 
-                ? 'bg-white/10 border border-[#F5BF26]/40 text-[#F5BF26]' 
+              inWatchlist
+                ? 'bg-white/10 border border-[#F5BF26]/40 text-[#F5BF26]'
                 : 'bg-[#F5BF26] text-black hover:bg-[#F5BF26]'
             }`}
           >
@@ -185,11 +198,11 @@ const MovieHero = ({ movie }) => {
           </Button>
 
           {/* Watched Toggle */}
-          <Button 
+          <Button
             onClick={handleWatchedToggle}
             className={`font-black text-xs px-6 py-4 rounded-xl transition-all shadow-lg cursor-pointer ${
-              isWatched 
-                ? 'bg-emerald-500/10 border border-emerald-500/40 text-emerald-400' 
+              isWatched
+                ? 'bg-emerald-500/10 border border-emerald-500/40 text-emerald-400'
                 : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'
             }`}
           >
@@ -226,12 +239,12 @@ const MovieHero = ({ movie }) => {
                     className="p-0.5 cursor-pointer transition-transform hover:scale-125"
                     title={`Rate ${value}/10`}
                   >
-                    <Star 
+                    <Star
                       className={`w-5 h-5 transition-colors ${
-                        isFilled 
-                          ? 'fill-[#F5BF26] text-[#F5BF26]' 
+                        isFilled
+                          ? 'fill-[#F5BF26] text-[#F5BF26]'
                           : 'text-gray-600 hover:text-gray-400'
-                      }`} 
+                      }`}
                     />
                   </button>
                 );

@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react'
+import { useEffect, Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import useUserStore from './store/useUserStore'
 import ErrorBoundary from './components/ui/ErrorBoundary'
@@ -94,6 +94,7 @@ function AppRoutes() {
         <Route path="/recommend" element={<Recommend />} />
         <Route path="/movies" element={<Navigate to="/explore" replace />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
+        <Route path="/series/:id" element={<MovieDetails />} />
         <Route path="/actor/:id" element={<ActorProfile />} />
 
         {/* Social & Community */}

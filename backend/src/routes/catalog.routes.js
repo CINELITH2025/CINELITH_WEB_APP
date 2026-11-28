@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import { protect } from "../middleware/auth.middleware.js";
 import MovieComment from "../models/MovieComment.js";
 import User from "../models/User.js";
@@ -11,7 +12,9 @@ import { resolvePoster } from "../services/poster.service.js";
 import {
   getTvdbHomeCatalog,
   getTvdbMovieDetails,
+  getTvdbSeriesDetails,
   listTvdbMovies,
+  tvdbSearchPeople,
   tvdbCatalogFilters
 } from "../services/tvdb.service.js";
 import { attachScores, attachScoresMany } from "../services/rating.service.js";
@@ -47,6 +50,12 @@ router.get("/filters", async (_req, res) => {
   }
 });
 
+router.get("/people", async (req, res) => {
+  const query = String(req.query.q || "").trim();
+  if (!query) return res.json({ people: [] });
+  res.json({ people: await tvdbSearchPeople(query) });
+});
+
 router.get("/poster/:id", async (req, res) => {
   try {
     const result = await resolvePoster(req.params.id);
@@ -66,6 +75,7 @@ router.get("/movies", async (req, res) => {
   try {
     const result = await listTvdbMovies({
       q: req.query.q,
+      type: req.query.type,
       genre: req.query.genre,
       year: req.query.year,
       sort: req.query.sort,
@@ -77,6 +87,18 @@ router.get("/movies", async (req, res) => {
       movies.sort((a, b) => (b.clScore || 0) - (a.clScore || 0));
     }
     res.json({ ...result, movies });
+  } catch (err) {
+    res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
+  }
+});
+
+router.get("/series/:id", async (req, res) => {
+  try {
+    const series = await getTvdbSeriesDetails(req.params.id);
+    if (!series) return res.status(404).json({ message: "Series not found" });
+    const scored = await attachScores({ ...series, movieId: series.tvdbId });
+    scored.related = [];
+    res.json(scored);
   } catch (err) {
     res.status(503).json({ message: err.message || "TVDB catalog unavailable" });
   }

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Bell, LogOut, MessageCircle } from 'lucide-react';
+import { Search, Bell, MessageCircle, Bookmark } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 import Logo from '../ui/Logo';
 import MobileNav from './MobileNav';
@@ -9,12 +8,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
 
   return (
     <>
@@ -30,7 +23,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
             <Link to="/" className="hover:text-white transition-colors">Home</Link>
             <Link to="/explore" className="hover:text-white transition-colors">Explore</Link>
-            <Link to="/recommend" className="hover:text-white transition-colors">For You</Link>
+            <Link to="/explore?type=series" className="hover:text-white transition-colors">TV Shows</Link>
             <Link to="/people" className="hover:text-white transition-colors">People</Link>
             {isAuthenticated && (
               <Link to="/messages" className="hover:text-white transition-colors">Messages</Link>
@@ -60,6 +53,11 @@ const Navbar = () => {
             <Bell className="w-5 h-5" />
           </Link>
           {isAuthenticated && (
+            <Link to="/profile?tab=Wishlist" aria-label="Saved titles" title="Saved titles" className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
+              <Bookmark className="w-5 h-5" />
+            </Link>
+          )}
+          {isAuthenticated && (
             <Link to="/messages" className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white">
               <MessageCircle className="w-5 h-5" />
             </Link>
@@ -68,14 +66,6 @@ const Navbar = () => {
           {/* Dynamic Auth Actions */}
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              {/* Sign Out Icon */}
-              <button
-                onClick={handleLogout}
-                className="p-2 rounded-full hover:bg-white/10 transition-colors text-gray-400 hover:text-white cursor-pointer"
-                title="Sign Out"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
               {/* User Profile Avatar Link */}
               <Link 
                 to="/profile" 

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { api, apiErrorMessage, getToken, setToken } from '../lib/api';
+import { api, getToken, setToken } from '../lib/api';
 import { mapUser, mapMovie, mapChatMessage, toBackendMovie, toBackendActor } from '../lib/mapUser';
 import { connectSocket, disconnectSocket, sendChatMessage } from '../lib/socket';
 
@@ -177,9 +177,9 @@ const useUserStore = create(
       fetchCatalog: async (params = {}) => {
         try {
           const { data } = await api.get("/catalog/movies", { params });
-          if (data && data.movies && data.movies.length > 0) return data;
-        } catch {}
-        let list = [...MOVIE_CATALOG];
+          if (data && Array.isArray(data.movies)) return data;
+        } catch { /* Use the local catalog when the API is unavailable. */ }
+        let list = params.type === "series" ? [] : [...MOVIE_CATALOG];
         if (params.q) {
           const q = params.q.toLowerCase();
           list = list.filter(m => m.title.toLowerCase().includes(q) || m.genre?.toLowerCase().includes(q));
@@ -190,6 +190,9 @@ const useUserStore = create(
         if (params.year) {
           list = list.filter(m => String(m.year) === String(params.year));
         }
+        if (params.sort === "alpha") list.sort((a, b) => a.title.localeCompare(b.title));
+        if (params.sort === "year") list.sort((a, b) => Number(b.year) - Number(a.year));
+        if (params.sort === "rating") list.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
         return { movies: list, total: list.length };
       },
 
@@ -197,17 +200,22 @@ const useUserStore = create(
         try {
           const { data } = await api.get("/catalog/filters");
           if (data?.genres?.length) return data;
-        } catch {}
+        } catch { /* Use curated filters when the API is unavailable. */ }
         const genres = Array.from(new Set(MOVIE_CATALOG.flatMap(m => m.genre?.split(",").map(s => s.trim()) || []))).filter(Boolean);
         const years = Array.from(new Set(MOVIE_CATALOG.map(m => m.year))).filter(Boolean).sort().reverse();
         return { genres, years };
+      },
+
+      searchCatalogPeople: async (query) => {
+        const { data } = await api.get("/catalog/people", { params: { q: query } });
+        return data.people || [];
       },
 
       fetchHomeCatalog: async () => {
         try {
           const { data } = await api.get("/catalog/home");
           if (data && (data.trending?.length || data.classics?.length)) return data;
-        } catch {}
+        } catch { /* Fall through to the recommendation fallback. */ }
         return {
           trending: MOVIE_CATALOG.slice(0, 10),
           classics: MOVIE_CATALOG.slice(10, 20)
@@ -216,6 +224,11 @@ const useUserStore = create(
 
       fetchCatalogMovie: async (id) => {
         const { data } = await api.get(`/catalog/movies/${id}`);
+        return data;
+      },
+
+      fetchCatalogSeries: async (id) => {
+        const { data } = await api.get(`/catalog/series/${id}`);
         return data;
       },
 
@@ -330,46 +343,27 @@ const useUserStore = create(
         await get().fetchMe();
       },
 
-      deleteCustomList: (id) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-        set({
-          user: {
-            ...currentUser,
-            customLists: (currentUser.customLists || []).filter((list) => list.id !== id)
-          }
-        });
+      deleteCustomList: async (id) => {
+        await api.delete(`/users/collections/${id}`);
+        await get().fetchMe();
       },
 
-      addMovieToCustomList: (listId, movie) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-        const currentLists = currentUser.customLists || [];
-        set({
-          user: {
-            ...currentUser,
-            customLists: currentLists.map((list) => {
-              if (list.id !== listId) return list;
-              if (list.movies.some((item) => item.id === movie.id)) return list;
-              return { ...list, movies: [...list.movies, movie] };
-            })
-          }
+      addMovieToCustomList: async (listId, movie) => {
+        const list = (get().user?.customLists || []).find((item) => String(item.id) === String(listId));
+        if (!list || list.movies.some((item) => String(item.id) === String(movie.id))) return;
+        await api.patch(`/users/collections/${listId}`, {
+          movies: [...list.movies, toBackendMovie(movie)]
         });
+        await get().fetchMe();
       },
 
-      removeMovieFromCustomList: (listId, movieId) => {
-        const currentUser = get().user;
-        if (!currentUser) return;
-        set({
-          user: {
-            ...currentUser,
-            customLists: (currentUser.customLists || []).map((list) =>
-              list.id === listId
-                ? { ...list, movies: list.movies.filter((movie) => movie.id !== movieId) }
-                : list
-            )
-          }
+      removeMovieFromCustomList: async (listId, movieId) => {
+        const list = (get().user?.customLists || []).find((item) => String(item.id) === String(listId));
+        if (!list) return;
+        await api.patch(`/users/collections/${listId}`, {
+          movies: list.movies.filter((movie) => String(movie.id) !== String(movieId)).map(toBackendMovie)
         });
+        await get().fetchMe();
       },
 
       toggleMovieWatchlist: async (movie) => {
