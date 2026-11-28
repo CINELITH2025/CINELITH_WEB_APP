@@ -1,40 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Swords, Award, Check, X, Sparkles, HelpCircle, Trophy } from 'lucide-react';
+import { useState } from 'react';
+import { Swords, Check, X, Sparkles, HelpCircle } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
-import { Button } from '@/components/ui/button';
 
 const InteractiveActivities = () => {
-  const user = useUserStore((state) => state.user);
   const recordActivity = useUserStore((state) => state.recordActivity);
 
   // --- Battle of the Day States ---
-  const [battleVote, setBattleVote] = useState(null); // 'dune' or 'oppenheimer'
-  const [battlePercentages, setBattlePercentages] = useState({ dune: 48, oppenheimer: 52 });
+  const [battleVote, setBattleVote] = useState(() => localStorage.getItem('cinelith_battle_vote'));
+  const [battlePercentages, setBattlePercentages] = useState(() => {
+    const savedVote = localStorage.getItem('cinelith_battle_vote');
+    return savedVote === 'dune' ? { dune: 49, oppenheimer: 51 }
+      : savedVote ? { dune: 47, oppenheimer: 53 }
+        : { dune: 48, oppenheimer: 52 };
+  });
   
   // --- Quiz States ---
-  const [selectedQuizOption, setSelectedQuizOption] = useState(null); // index
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [selectedQuizOption, setSelectedQuizOption] = useState(() => {
+    const saved = localStorage.getItem('cinelith_quiz_selection');
+    return saved === null ? null : Number.parseInt(saved, 10);
+  });
+  const [quizSubmitted, setQuizSubmitted] = useState(() => localStorage.getItem('cinelith_quiz_selection') !== null);
   const [toastMessage, setToastMessage] = useState(null);
-
-  // Load persistent states on mount
-  useEffect(() => {
-    const savedVote = localStorage.getItem('cinelith_battle_vote');
-    if (savedVote) {
-      setBattleVote(savedVote);
-      // Adjust percentages based on the saved vote for local visualization
-      if (savedVote === 'dune') {
-        setBattlePercentages({ dune: 49, oppenheimer: 51 });
-      } else {
-        setBattlePercentages({ dune: 47, oppenheimer: 53 });
-      }
-    }
-
-    const savedQuizOpt = localStorage.getItem('cinelith_quiz_selection');
-    if (savedQuizOpt) {
-      setSelectedQuizOption(parseInt(savedQuizOpt, 10));
-      setQuizSubmitted(true);
-    }
-  }, []);
 
   const triggerToast = (msg) => {
     setToastMessage(msg);

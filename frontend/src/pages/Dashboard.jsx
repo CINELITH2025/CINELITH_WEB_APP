@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import InteractiveActivities from '../components/dashboard/InteractiveActivities';
@@ -14,7 +14,7 @@ const Dashboard = () => {
   const loggedUser = useUserStore((state) => state.user);
 
   // Fallback demo user for guest lock preview
-  const user = loggedUser || {
+  const user = useMemo(() => loggedUser || ({
     name: "Guest",
     username: "",
     avatar: "/images/actor_1.png",
@@ -26,7 +26,7 @@ const Dashboard = () => {
     watchedMovies: [],
     favoriteActors: [],
     favoriteGenres: []
-  };
+  }), [loggedUser]);
 
   const fetchMe = useUserStore((state) => state.fetchMe);
 
