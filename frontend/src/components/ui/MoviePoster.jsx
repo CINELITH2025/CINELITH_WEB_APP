@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clapperboard } from 'lucide-react';
+import { getOptimizedImageUrl } from '../../lib/image';
 
 // Fast local poster fallbacks for top curated titles
 const LOCAL_POSTERS = {
@@ -30,18 +31,6 @@ const LOCAL_POSTERS = {
   25: "/images/poster_25.jpg"
 };
 
-/**
- * Optimizes TMDb image URLs to requested resolution (w185 for thumbnails, w342 for medium cards, w500 for heroes).
- * Reduces payload by 60-75% for dramatic speedups.
- */
-export const getOptimizedImageUrl = (src, size = "w185") => {
-  if (!src) return "/images/poster_1.jpg";
-  if (typeof src === "string" && src.includes("image.tmdb.org/t/p/")) {
-    return src.replace(/\/t\/p\/[^\/]+/, `/t/p/${size}`);
-  }
-  return src;
-};
-
 const MoviePoster = ({
   src,
   alt = "Movie Poster",
@@ -50,25 +39,16 @@ const MoviePoster = ({
   id = null,
   priority = false
 }) => {
-  const [loaded, setLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
-  // If external poster provided, use it (and optimize TMDb URLs); otherwise fall back to local poster for ID
+  const fallbackSrc = (id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg";
   const candidateUrl = src ? getOptimizedImageUrl(src, size) : ((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg");
-  const [currentSrc, setCurrentSrc] = useState(candidateUrl);
-
-  React.useEffect(() => {
-    setCurrentSrc(src ? getOptimizedImageUrl(src, size) : ((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg"));
-    setHasError(false);
-  }, [src, id, size]);
+  const [failedUrls, setFailedUrls] = useState([]);
+  const [loadedSrc, setLoadedSrc] = useState(null);
+  const currentSrc = failedUrls.includes(candidateUrl) ? fallbackSrc : candidateUrl;
+  const hasError = failedUrls.includes(currentSrc);
+  const loaded = loadedSrc === currentSrc;
 
   const handleError = () => {
-    // If external TMDB/TVDB image failed or is slow/blocked, fall back to safe local poster
-    if (currentSrc !== "/images/poster_1.jpg") {
-      setCurrentSrc((id && LOCAL_POSTERS[id]) || "/images/poster_1.jpg");
-    } else {
-      setHasError(true);
-    }
+    setFailedUrls((failed) => failed.includes(currentSrc) ? failed : [...failed, currentSrc]);
   };
 
   return (
@@ -92,7 +72,7 @@ const MoviePoster = ({
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           referrerPolicy="no-referrer"
-          onLoad={() => setLoaded(true)}
+          onLoad={() => setLoadedSrc(currentSrc)}
           onError={handleError}
           className={`${className} transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
         />
