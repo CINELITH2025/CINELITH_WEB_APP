@@ -1,43 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Search, ChevronDown, Check, UserPlus, MessageCircle, X, Sparkles, Hourglass, UserCheck } from 'lucide-react';
-import useUserStore, { MOVIE_CATALOG, ACTOR_CATALOG } from '../store/useUserStore';
+import useUserStore from '../store/useUserStore';
 import { mapPerson } from '../lib/mapUser';
 import UnlockGate from '../components/auth/UnlockGate';
 import { Button } from '@/components/ui/button';
-
-// Mock list of community users with extended attributes (genres, actors, movies, profile type)
-const COMMUNITY_USERS = [
-  { name: "Sophia Bennett", handle: "@sophia_b", role: "Film enthusiast", genres: ["Sci-Fi", "Drama", "Thriller"], actors: ["Timothée Chalamet", "Zendaya", "Cillian Murphy"], movies: ["Dune: Part Two", "Oppenheimer", "Interstellar"], bio: "Lover of sci-fi epics and character dramas. Always dissecting screenplays.", followers: 1420, avatar: "/images/actor_1.png", isPrivate: true },
-  { name: "Ethan Carter", handle: "@ethan_c", role: "Movie buff", genres: ["Action", "Sci-Fi", "Crime"], actors: ["Austin Butler", "Leonardo DiCaprio", "Christian Bale"], movies: ["The Dark Knight", "Inception", "Blade Runner"], bio: "Action movie collector and soundtrack collector. Big Christopher Nolan fan.", followers: 850, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Olivia Davis", handle: "@olivia_d", role: "Cinema lover", genres: ["Drama", "Crime", "History"], actors: ["Cillian Murphy", "Emma Stone", "Christian Bale"], movies: ["Oppenheimer", "The Godfather", "Citizen Kane"], bio: "Classic noir films and historical stories are my jam. Cinephile since childhood.", followers: 1040, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Liam Foster", handle: "@liam_f", role: "Avid watcher", genres: ["Comedy", "Romance", "Drama"], actors: ["Emma Stone", "Mark Ruffalo", "Zendaya"], movies: ["Poor Things", "The Holdovers", "Anatomy of a Fall"], bio: "Indie dramedies and romantic stories. I review every single movie I watch.", followers: 2310, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Ava Green", handle: "@ava_g", role: "Film critic", genres: ["Thriller", "Horror", "Crime"], actors: ["Christian Bale", "Leonardo DiCaprio", "Emma Stone"], movies: ["Fight Club", "Pulp Fiction", "Anatomy of a Fall"], bio: "Nothing beats a good psychological thriller or suspense. Horror lover.", followers: 3410, avatar: "/images/actor_1.png", isPrivate: true },
-  { name: "Noah Harris", handle: "@noah_h", role: "Indie film fan", genres: ["Sci-Fi", "Adventure", "Action"], actors: ["Timothée Chalamet", "Zendaya", "Austin Butler"], movies: ["Dune: Part Two", "Blade Runner 2049", "The Creator"], bio: "Big screen spectacles and space operas. Amateur filmmaker.", followers: 980, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Isabella Jones", handle: "@isabella_j", role: "Classic movie lover", genres: ["History", "Drama", "Romance"], actors: ["Cillian Murphy", "Emma Stone", "Zendaya"], movies: ["Oppenheimer", "The Godfather", "Citizen Kane"], bio: "Historical dramas and period pieces. Enjoys old Hollywood classics.", followers: 1150, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Jackson King", handle: "@jackson_k", role: "Documentary enthusiast", genres: ["Crime", "Thriller", "Action"], actors: ["Leonardo DiCaprio", "Christian Bale", "Austin Butler"], movies: ["The Dark Knight", "Fight Club", "Pulp Fiction"], bio: "Fascinated by crime sagas, thrillers, and deep-dive investigative docs.", followers: 730, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Mia Lewis", handle: "@mia_l", role: "Foreign film aficionado", genres: ["Comedy", "Drama", "Romance"], actors: ["Emma Stone", "Mark Ruffalo", "Timothée Chalamet"], movies: ["Poor Things", "Anatomy of a Fall", "Parasite"], bio: "Feel-good movies and complex relationships. Exploring international cinema.", followers: 1670, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Lucas Morgan", handle: "@lucas_m", role: "Horror movie fan", genres: ["Horror", "Thriller", "Mystery"], actors: ["Christian Bale", "Mark Ruffalo", "Cillian Murphy"], movies: ["Fight Club", "Oppenheimer", "The Dark Knight"], bio: "Midnight movies and horror marathons. Slasher and psychological horror fan.", followers: 520, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Chloe Nelson", handle: "@chloe_n", role: "Sci-fi movie lover", genres: ["Sci-Fi", "Thriller", "Mystery"], actors: ["Timothée Chalamet", "Zendaya", "Leonardo DiCaprio"], movies: ["Blade Runner", "Inception", "2001: A Space Odyssey"], bio: "Sci-fi mysteries and cyberpunk aesthetics. Huge Philip K. Dick reader.", followers: 1290, avatar: "/images/actor_1.png", isPrivate: false },
-  { name: "Owen Parker", handle: "@owen_p", role: "Comedy movie fan", genres: ["Comedy", "Action", "Adventure"], actors: ["Mark Ruffalo", "Austin Butler", "Zendaya"], movies: ["The Holdovers", "Dune: Part Two", "The Creator"], bio: "Love blockbuster action comedies and lighthearted stories. Popcorn movie lover.", followers: 880, avatar: "/images/actor_1.png", isPrivate: false }
-];
-
-const SUGGESTED_USERS = [
-  { name: "Caleb Reed", handle: "@caleb_r", avatar: "/images/actor_1.png", genres: ["Action", "Thriller"], actors: ["Leonardo DiCaprio"], movies: ["Inception", "Fight Club"], bio: "Avid collector of high-stakes thriller screenplays.", followers: 420, role: "Action Fanatic", isPrivate: true },
-  { name: "Emma Turner", handle: "@emma_t", avatar: "/images/actor_1.png", genres: ["Drama", "Romance"], actors: ["Timothée Chalamet"], movies: ["Dune: Part Two", "Poor Things"], bio: "Enjoying indie films and deep romance cinema.", followers: 310, role: "Dramatist", isPrivate: false },
-  { name: "Daniel Walker", handle: "@daniel_w", avatar: "/images/actor_1.png", genres: ["Sci-Fi", "Adventure"], actors: ["Zendaya"], movies: ["Interstellar", "The Creator"], bio: "Exploring the boundary of sci-fi world-building.", followers: 190, role: "Future Seeker", isPrivate: false },
-  { name: "Grace Young", handle: "@grace_y", avatar: "/images/actor_1.png", genres: ["Horror", "Mystery"], actors: ["Christian Bale"], movies: ["The Dark Knight", "Fight Club"], bio: "Psycho horror analyzer. Slasher expert.", followers: 580, role: "Horror Guru", isPrivate: true },
-  { name: "Henry Adams", handle: "@henry_a", avatar: "/images/actor_1.png", genres: ["Comedy", "Drama"], actors: ["Emma Stone"], movies: ["The Holdovers", "Poor Things"], bio: "Lover of dark humour and coming of age classics.", followers: 260, role: "Humourist", isPrivate: false },
-  { name: "Isabelle Baker", handle: "@isabelle_b", avatar: "/images/actor_1.png", genres: ["History", "Crime"], actors: ["Cillian Murphy"], movies: ["Oppenheimer", "The Godfather"], bio: "Period pieces and organized crime movies reviewer.", followers: 410, role: "Historian", isPrivate: false }
-];
 
 // Reusable Searchable Dropdown for filtering people
 const PeopleFilterDropdown = ({ label, value, onChange, options, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const dropdownRef = React.useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -114,7 +89,6 @@ const People = () => {
   const [selectedMovie, setSelectedMovie] = useState("All");
   const [sortByMatch, setSortByMatch] = useState(true);
   const [selectedProfileUser, setSelectedProfileUser] = useState(null);
-  const [isLoadingPeople, setIsLoadingPeople] = useState(false);
 
   // Dynamic values extraction
   const availableGenres = useMemo(() => {
@@ -136,7 +110,7 @@ const People = () => {
   }, [people]);
 
   // Compute taste score based on: Genres (10% each), Actors (12% each), Movies (15% each)
-  const calculateMatchScore = (member) => {
+  const calculateMatchScore = useCallback((member) => {
     if (!user) return 75; // guest baseline
 
     const userGenres = user.favoriteGenres || [];
@@ -160,21 +134,18 @@ const People = () => {
 
     const calculated = 55 + (genreMatches * 10) + (actorMatches * 12) + (movieMatches * 15);
     return Math.min(calculated, 99);
-  };
+  }, [user]);
 
   // Build members list with dynamic match scores
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
-      setIsLoadingPeople(true);
       try {
         const results = await useUserStore.getState().searchPeople(searchQuery);
         if (!cancelled) setPeople((results || []).map(mapPerson));
       } catch (err) {
         console.error(err);
         if (!cancelled) setPeople([]);
-      } finally {
-        if (!cancelled) setIsLoadingPeople(false);
       }
     };
     const timer = setTimeout(load, 250);
@@ -189,7 +160,7 @@ const People = () => {
       ...m,
       matchScore: calculateMatchScore(m)
     }));
-  }, [user, people]);
+  }, [people, calculateMatchScore]);
 
   // Filter & sort members
   const filteredMembers = useMemo(() => {
@@ -378,13 +349,13 @@ const People = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
-            {SUGGESTED_USERS.slice(0, 0).concat(people.slice(0, 6)).map((sUser, idx) => {
+            {people.slice(0, 6).map((sUser) => {
               const isFollowing = followingIds.includes(String(sUser._id));
               const isRequested = friendIds.includes(String(sUser._id));
 
               return (
                 <div 
-                  key={idx}
+                  key={sUser._id}
                   onClick={() => setSelectedProfileUser(sUser)}
                   className="flex flex-col items-center p-4 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-2xl cursor-pointer group transition-all"
                 >

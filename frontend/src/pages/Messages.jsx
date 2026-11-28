@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { Search, Send, Film, MessageCircle, Phone, Video, Info, User, CheckCheck } from 'lucide-react';
+import { Search, Send, Film, Phone, Video, CheckCheck } from 'lucide-react';
 import useUserStore from '../store/useUserStore';
 
 const Messages = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const userParam = searchParams.get('user');
 
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const currentUser = useUserStore((state) => state.user);
-  const chats = useUserStore((state) => state.chats) || {};
+  const chats = useUserStore((state) => state.chats);
   const sendMessage = useUserStore((state) => state.sendMessage);
-  const loadChat = useUserStore((state) => state.loadChat);
   const friends = currentUser?.friends || [];
 
-  const [activeContactId, setActiveContactId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [showNotification, setShowNotification] = useState(false);
@@ -31,13 +29,7 @@ const Messages = () => {
     }
   }, [isAuthenticated, currentUser, navigate]);
 
-  useEffect(() => {
-    if (userParam) {
-      setActiveContactId(userParam);
-    } else if (friends[0]) {
-      setActiveContactId(String(friends[0]._id || friends[0]));
-    }
-  }, [userParam, currentUser?.friends]);
+  const activeContactId = userParam || (friends[0] ? String(friends[0]._id || friends[0]) : "");
 
   useEffect(() => {
     if (activeContactId) {
@@ -135,7 +127,7 @@ const Messages = () => {
                 return (
                   <div
                     key={c.id}
-                    onClick={() => setActiveContactId(c.id)}
+                    onClick={() => setSearchParams({ user: c.id })}
                     className={`flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all border group ${
                       isActive
                         ? 'bg-[#F5BF26]/10 border-[#F5BF26]/30 text-white'

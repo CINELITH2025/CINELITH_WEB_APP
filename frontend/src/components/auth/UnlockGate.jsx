@@ -1,12 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Sparkles, ShieldCheck, ArrowRight, Zap, CheckCircle2, Film } from 'lucide-react';
+import { Lock, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 import useUserStore from '../../store/useUserStore';
 
 const UnlockGate = ({ title, subtitle, features = [], children }) => {
   const navigate = useNavigate();
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
-  const login = useUserStore((state) => state.login);
 
   const handleQuickDemoLogin = () => {
     navigate('/auth');
